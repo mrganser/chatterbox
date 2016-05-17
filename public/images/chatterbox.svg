@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="345.45587"
+   height="36.160156"
+   id="svg2985"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="chatterbox.svg"
+   inkscape:export-filename="D:\mrganser\chatterbox\public\images\chatterbox.png"
+   inkscape:export-xdpi="69.118225"
+   inkscape:export-ydpi="69.118225">
+  <defs
+     id="defs2987" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="193.27143"
+     inkscape:cy="-1.6674942"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1137"
+     inkscape:window-x="1272"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <sodipodi:guide
+       orientation="0,1"
+       position="188.50001,0.0013027135"
+       id="guide3029" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="250.12501,35.958334"
+       id="guide3877" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata2990">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(-111.24999,-8.4231758)">
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans;"
+       x="111.24999"
+       y="44.583332"
+       id="text2993"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="D:\mrganser\chatterbox\public\images\chatterbox.png"
+       inkscape:export-xdpi="69.118225"
+       inkscape:export-ydpi="69.118225"><tspan
+         sodipodi:role="line"
+         id="tspan2995"
+         x="111.24999"
+         y="44.583332"
+         style="font-size:64px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:4px;fill:#ffffff;font-family:FORCED SQUARE;-inkscape-font-specification:FORCED SQUARE;">chatter<tspan
+   style="letter-spacing:41.70000076px;fill:#ffffff;"
+   id="tspan3039">bx</tspan></tspan></text>
+    <path
+       d="m 389.29774,19.944104 14.03148,4.550416 v 20.021915 l -13.94028,-4.745106 m 17.39941,4.810702 14.08027,-4.810702 V 20.074597 l -14.03394,4.35503 m -1.76517,-2.27521 12.88196,-4.19086 -12.88196,-3.900058 -13.17804,3.900058"
+       id="AWS"
+       inkscape:connector-curvature="0"
+       style="fill:#ffffff" />
+  </g>
+</svg>

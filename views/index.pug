@@ -1,0 +1,34 @@
+extends layout
+
+block content
+    .jumbotron
+      .container
+        h1 Welcome to ChatterBox!
+        p
+          | Here you can videochat with your friends just with your web browser!
+        p
+          a.btn.btn-primary.btn-lg(href='/videochat', role='button') Go to VideoChat! &raquo;
+    .container
+      .row
+        .col-md-4.text-center
+          h2 Videochat with your friends
+          p
+            | Prepare your webcam!
+          p
+            span(aria-hidden='true').fa.fa-camera.fa-5x
+        .col-md-4.text-center
+          h2 No plugins needed
+          p
+            | Only your web browser
+          p
+            span(aria-hidden='true').fa.fa-chrome.fa-5x
+        .col-md-4.text-center
+          h2 Point to point connection
+          p
+            | Your information doesn't go through a server!
+          p
+            span(aria-hidden='true').fa.fa-refresh.fa-5x
+      hr
+      footer
+        p
+            a(href='http://mrganser.com/', target='_blank', rel='noopener noreferrer') &copy;mrganser
