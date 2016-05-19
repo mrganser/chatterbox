@@ -3,17 +3,16 @@ html
   head
     title=title
     meta(charset='utf-8')
-    meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1')
-    meta(name='description', content='')
-    meta(name='author', content='')
-    link(rel='stylesheet', href='/thirdparty/font-awesome/css/font-awesome.min.css')
+    meta(name='description', content='Videochat using WebRTC')
+    meta(name='author', content='@mrganser')
     link(rel='icon', href='/favicon.ico')
-    link(href='/thirdparty/bootstrap/css/bootstrap.min.css', rel='stylesheet')
+    link(rel='stylesheet', href='/thirdparty/bootstrap/bootstrap.min.css')
+    link(rel='stylesheet', href='/thirdparty/font-awesome/css/font-awesome.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src='https://www.google.com/recaptcha/api.js')
   body
-    .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+    .navbar.navbar-default.navbar-fixed-top(role='navigation')
       .container
         .navbar-header
           button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
@@ -29,7 +28,7 @@ html
               a(href='/videochat', role='button') Videochat
 
     script(src='/thirdparty/jquery/jquery-2.2.3.min.js')
-    script(src='/thirdparty/bootstrap/js/bootstrap.min.js')
+    script(src='/thirdparty/bootstrap/bootstrap.min.js')
     script(src='/javascripts/utils.js')
 
     block content

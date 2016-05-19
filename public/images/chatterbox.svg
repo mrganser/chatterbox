@@ -9,8 +9,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="345.45587"
-   height="36.160156"
+   width="198.05568"
+   height="28.24"
    id="svg2985"
    version="1.1"
    inkscape:version="0.91 r13725"
@@ -28,8 +28,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8284271"
-     inkscape:cx="193.27143"
-     inkscape:cy="-1.6674942"
+     inkscape:cx="104.72952"
+     inkscape:cy="83.668694"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -43,16 +43,7 @@
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0">
-    <sodipodi:guide
-       orientation="0,1"
-       position="188.50001,0.0013027135"
-       id="guide3029" />
-    <sodipodi:guide
-       orientation="1,0"
-       position="250.12501,35.958334"
-       id="guide3877" />
-  </sodipodi:namedview>
+     fit-margin-bottom="0" />
   <metadata
      id="metadata2990">
     <rdf:RDF>
@@ -61,7 +52,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -69,12 +60,12 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     transform="translate(-111.24999,-8.4231758)">
+     transform="translate(-138.30715,-13.268848)">
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans;"
-       x="111.24999"
-       y="44.583332"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'Lobster 1.4';-inkscape-font-specification:'Lobster 1.4, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;"
+       x="138.82715"
+       y="41.268848"
        id="text2993"
        sodipodi:linespacing="125%"
        inkscape:export-filename="D:\mrganser\chatterbox\public\images\chatterbox.png"
@@ -82,15 +73,42 @@
        inkscape:export-ydpi="69.118225"><tspan
          sodipodi:role="line"
          id="tspan2995"
-         x="111.24999"
-         y="44.583332"
-         style="font-size:64px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:4px;fill:#ffffff;font-family:FORCED SQUARE;-inkscape-font-specification:FORCED SQUARE;">chatter<tspan
-   style="letter-spacing:41.70000076px;fill:#ffffff;"
-   id="tspan3039">bx</tspan></tspan></text>
+         x="138.82715"
+         y="41.268848"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'Lobster 1.4';-inkscape-font-specification:'Lobster 1.4, Normal';text-align:start;letter-spacing:4px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;"
+         rotate="0 0 0 0 0 0 0 0">chatterb</tspan></text>
     <path
-       d="m 389.29774,19.944104 14.03148,4.550416 v 20.021915 l -13.94028,-4.745106 m 17.39941,4.810702 14.08027,-4.810702 V 20.074597 l -14.03394,4.35503 m -1.76517,-2.27521 12.88196,-4.19086 -12.88196,-3.900058 -13.17804,3.900058"
+       d="m 294.299,25.49757 9.11853,2.957148 0,13.011502 -9.05926,-3.08367 m 11.30724,3.126298 9.15023,-3.126298 0,-12.800176 -9.12014,2.830172 m -1.14712,-1.478575 8.37151,-2.723485 -8.37151,-2.534503 -8.5639,2.534503"
        id="AWS"
        inkscape:connector-curvature="0"
-       style="fill:#ffffff" />
+       style="fill:#ffffff"
+       inkscape:export-xdpi="69.118225"
+       inkscape:export-ydpi="69.118225" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="304.82047"
+       y="-2.9695988"
+       id="text4231"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4233"
+         x="304.82047"
+         y="-2.9695988"></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'Lobster 1.4';-inkscape-font-specification:'Lobster 1.4, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;"
+       x="316.36282"
+       y="41.268848"
+       id="text2993-0"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="D:\mrganser\chatterbox\public\images\chatterbox.png"
+       inkscape:export-xdpi="69.118225"
+       inkscape:export-ydpi="69.118225"><tspan
+         sodipodi:role="line"
+         id="tspan2995-3"
+         x="316.36282"
+         y="41.268848"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'Lobster 1.4';-inkscape-font-specification:'Lobster 1.4, Normal';text-align:start;letter-spacing:4px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;">x</tspan></text>
   </g>
 </svg>

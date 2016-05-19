@@ -8,13 +8,10 @@ html, body{
 }
 
 body {
-  padding-top: 50px;
+  padding-top: 40px;
   padding-bottom: 20px;
 }
 
 #logo {
-	height: 26px;
-}
-.navbar-brand {
-	padding: 12px 12px;
+	height: 22px;
 }
