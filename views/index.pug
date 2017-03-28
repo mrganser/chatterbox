@@ -1,34 +1,40 @@
 extends layout
 
 block content
-    .jumbotron
-      .container
-        h1 Welcome to ChatterBox!
-        p
-          | Here you can videochat with your friends just with your web browser!
-        p
-          a.btn.btn-warning(href='/videochat', role='button') Go to VideoChat! &raquo;
+  .jumbotron
     .container
       .row
-        .col-md-4.text-center
-          h2 Videochat with your friends
-          p
-            | Prepare your webcam!
-          p
-            span(aria-hidden='true').fa.fa-camera.fa-5x
-        .col-md-4.text-center
-          h2 No plugins needed
-          p
-            | Only your web browser
-          p
-            span(aria-hidden='true').fa.fa-chrome.fa-5x
-        .col-md-4.text-center
-          h2 Point to point connection
-          p
-            | Your information doesn't go through a server!
-          p
-            span(aria-hidden='true').fa.fa-refresh.fa-5x
+        .col-md-12.text-center
+          h1 Welcome to ChatterBox!
+          p Here you can videochat with your friends with just your web browser!
+      .row.text-center
+        img(src='/images/imago.png', alt='Chatter Box')
       hr
-      footer
+      .row
+        .col-md-8.col-md-offset-2
+          form(action='/goroom' method='POST')
+            .input-group
+              input.form-control(name='roomName', required='required', placeholder='Conference room name', maxLength='36')
+              span.input-group-btn
+                button.btn.btn-success(type='submit') Join
+  .container
+    .row
+      .col-md-4.text-center
+        h2 Videochat with your friends
+        p Prepare your webcam!
         p
-            a(href='http://mrganser.com/', target='_blank', rel='noopener noreferrer') &copy;mrganser
+          span(aria-hidden='true').fa.fa-camera.fa-5x
+      .col-md-4.text-center
+        h2 No plugins needed
+        p Only your web browser
+        p
+          span(aria-hidden='true').fa.fa-chrome.fa-5x
+      .col-md-4.text-center
+        h2 Point to point connection
+        p Your information doesn't go through a server!
+        p
+          span(aria-hidden='true').fa.fa-refresh.fa-5x
+    hr
+    footer
+      p
+        a(href='http://mrganser.com/', target='_blank', rel='noopener noreferrer') &copy;mrganser

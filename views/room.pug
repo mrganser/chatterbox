@@ -1,0 +1,31 @@
+extends layout
+
+block content
+  div#overlay
+    #toolbar
+      button#call.btn.btn-default(title='Call')
+        i.fa.fa-phone
+      a.btn.btn-default(href='/', title='Leave')
+        i.fa.fa-reply
+      button.btn.btn-default(onclick='toggleFullScreen();', title='Enter/exit fullscreen')
+        i.fa.fa-arrows-alt
+      button.btn.btn-default(title='Share')
+        i.fa.fa-share
+      button.btn.btn-default(title='Start/stop camera')
+        i.fa.fa-video-camera
+      button.btn.btn-default(title='Mute/unmute')
+        i.fa.fa-microphone
+  div#mainVideoContainer
+    video#mainVideo(autoplay)
+  div#allVideosContainer
+    video#localVideo.membersVideo(muted, autoplay, width='160' height='120')
+    video.membersVideo(autoplay, width='160' height='120')
+    video.membersVideo(autoplay, width='160' height='120')
+    video.membersVideo(autoplay, width='160' height='120')
+    video.membersVideo(autoplay, width='160' height='120')
+
+  script.
+    var roomName="#{roomName}";
+  script(src='/socket.io/socket.io.js')
+  script(src='/thirdparty/adapter/adapter.js')
+  script(src='/javascripts/controllers/room.js')
