@@ -11,9 +11,9 @@ block content
         i.fa.fa-arrows-alt.fa-lg
       button.toolbarButton.btn.btn-default(title='Share')
         i.fa.fa-share.fa-lg
-      button.toolbarButton.btn.btn-default(title='Start/stop camera')
+      button.toolbarButton.btn.btn-default(onclick='toggleVideo();', title='Start/stop camera')
         i.fa.fa-video-camera.fa-lg
-      button.toolbarButton.btn.btn-default(title='Mute/unmute')
+      button.toolbarButton.btn.btn-default(onclick='toggleAudio();', title='Mute/unmute')
         i.fa.fa-microphone.fa-lg
   div#mainVideoContainer
     video#mainVideo(autoplay)

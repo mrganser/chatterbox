@@ -4,11 +4,12 @@ var pc_config = { 'iceServers': [{ 'url': 'stun:stun.l.google.com:19302' }] };
 
 var pc_constraints = { 'optional': [{ 'DtlsSrtpKeyAgreement': true }] };
 
+var localStream;
+
 $(function () {
-  var localStream, localPeerConnection, remotePeerConnection;
+  var localPeerConnection, remotePeerConnection;
 
   function localVideoChat() {
-
     //TODO: Check browser compatibility, if not, show error message
 
     var localVideo = document.querySelector('#localVideo');
@@ -105,3 +106,35 @@ $(function () {
 
   enterRoom();
 });
+
+
+//Utils
+function toggleVideo(){
+  localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
+}
+
+function toggleAudio(){
+  localStream.getAudioTracks()[0].enabled = !(localStream.getAudioTracks()[0].enabled);
+}
+function toggleFullScreen() {
+	var element;
+	var requestMethod;
+
+	var isInFullScreen = document.fullScreenElement || document.mozFullScreen || document.webkitIsFullScreen || document.msIsFullScreen;
+	if (!isInFullScreen) {
+		element = document.documentElement;
+		requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen || element.msRequestFullScreen;
+	} else {
+		element = document;
+		requestMethod = element.cancelFullScreen || element.webkitCancelFullScreen || element.mozCancelFullScreen || element.msCancelFullscreen || element.msCancelFullScreen;
+	}
+
+	if (requestMethod) { // Native full screen.
+		requestMethod.call(element);
+	} else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+		var wscript = new ActiveXObject("WScript.Shell");
+		if (wscript !== null) {
+			wscript.SendKeys("{F11}");
+		}
+	}
+}
