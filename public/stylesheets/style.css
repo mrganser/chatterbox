@@ -16,6 +16,12 @@ body {
 	height: 22px;
 }
 
+.transparentNavbar {
+  background: transparent;
+  border-color: transparent;
+  transition: all 1s ease-in-out;
+}
+
 #roomName {
   float: right;
   color: white;
@@ -31,10 +37,21 @@ body {
   width: 100%;
   z-index: 1000;
 }
+#overlay:hover > #toolbar {
+  visibility: visible;
+  opacity: 0.4;
+}
 
 #toolbar {
   margin-top: 20px;
   text-align: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 1s ease-in-out 0s;
+}
+
+.toolbarButton {
+  border-radius: 0;
 }
 
 #mainVideo {  
@@ -44,7 +61,7 @@ body {
 
 #mainVideoContainer {
   position: absolute;
-  top: 50px;
+  top: 0;
   bottom: 0;
   left: 0;
   width: 100%;

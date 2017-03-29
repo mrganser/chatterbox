@@ -3,18 +3,18 @@ extends layout
 block content
   div#overlay
     #toolbar
-      button#call.btn.btn-default(title='Call')
-        i.fa.fa-phone
-      a.btn.btn-default(href='/', title='Leave')
-        i.fa.fa-reply
-      button.btn.btn-default(onclick='toggleFullScreen();', title='Enter/exit fullscreen')
-        i.fa.fa-arrows-alt
-      button.btn.btn-default(title='Share')
-        i.fa.fa-share
-      button.btn.btn-default(title='Start/stop camera')
-        i.fa.fa-video-camera
-      button.btn.btn-default(title='Mute/unmute')
-        i.fa.fa-microphone
+      a.toolbarButton.btn.btn-default(href='/', title='Leave')
+        i.fa.fa-reply.fa-lg
+      button#call.toolbarButton.btn.btn-default(title='Call')
+        i.fa.fa-phone.fa-lg
+      button.toolbarButton.btn.btn-default(onclick='toggleFullScreen();', title='Enter/exit fullscreen')
+        i.fa.fa-arrows-alt.fa-lg
+      button.toolbarButton.btn.btn-default(title='Share')
+        i.fa.fa-share.fa-lg
+      button.toolbarButton.btn.btn-default(title='Start/stop camera')
+        i.fa.fa-video-camera.fa-lg
+      button.toolbarButton.btn.btn-default(title='Mute/unmute')
+        i.fa.fa-microphone.fa-lg
   div#mainVideoContainer
     video#mainVideo(autoplay)
   div#allVideosContainer

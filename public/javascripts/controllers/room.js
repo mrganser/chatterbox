@@ -81,6 +81,10 @@ $(function () {
     init();
   }
 
+  function makeNavbarTransparent(){
+    document.querySelector('#appHeader').className += ' transparentNavbar';
+  }
+
   function enterRoom() {
     socket.emit('createJoin', roomName);
 
@@ -90,6 +94,7 @@ $(function () {
 
     socket.on('joinedRoom', function (room) {
       console.log('Joined room: ', room);
+      makeNavbarTransparent();
       localVideoChat();
     });
 
