@@ -5,8 +5,6 @@ block content
     #toolbar
       a.toolbarButton.btn.btn-default(href='/', title='Leave')
         i.fa.fa-reply.fa-lg
-      button#call.toolbarButton.btn.btn-default(title='Call')
-        i.fa.fa-phone.fa-lg
       button.toolbarButton.btn.btn-default(onclick='toggleFullScreen();', title='Enter/exit fullscreen')
         i.fa.fa-arrows-alt.fa-lg
       button.toolbarButton.btn.btn-default(title='Share')
@@ -19,10 +17,6 @@ block content
     video#mainVideo(autoplay)
   div#allVideosContainer
     video#localVideo.membersVideo(muted, autoplay, width='160' height='120')
-    video.membersVideo(autoplay, width='160' height='120')
-    video.membersVideo(autoplay, width='160' height='120')
-    video.membersVideo(autoplay, width='160' height='120')
-    video.membersVideo(autoplay, width='160' height='120')
 
   script.
     var roomName="#{roomName}";

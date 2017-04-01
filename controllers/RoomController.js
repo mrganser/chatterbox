@@ -23,15 +23,15 @@ function createJoin(io, socket, roomName) {
   });
 }
 
-function message(socket, room, message) {
-  socket.broadcast.to(room).emit('message', message);
+function message(socket, message) {
+  socket.to(message.to).emit('message', _.assign({id: socket.id}, message));
 }
 
 function disconnect(io, socket, rooms) {
   _.forEach(rooms, function(room) {
     if (room != socket.id) {
       console.log('User disconnected: ' + socket.id + ' from room: ' + room);
-      socket.broadcast.to(room).emit('disconnect', {id: socket.id});
+      socket.to(room).emit('leave', {id: socket.id});
     }
   });
 }

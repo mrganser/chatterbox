@@ -11,8 +11,8 @@ env.initialize(function (err, app, io) {
       RoomController.createJoin(io, socket, room);
     });
 
-    socket.on('message', function (room, message) {
-      RoomController.message(socket, room, message);
+    socket.on('message', function (message) {
+      RoomController.message(socket, message);
     });
 
     socket.on('disconnecting', function () {
