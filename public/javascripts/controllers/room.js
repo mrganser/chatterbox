@@ -49,6 +49,8 @@ $(function () {
       video.srcObject = event.stream;
       video.id = id;
       document.querySelector('#allVideosContainer').appendChild(video);
+      //TODO: Put in main the one speaking or the only one
+      document.querySelector('#mainVideo').srcObject = event.stream;
     };
     peerConnection.onicecandidate = function (event) {
       if (event.candidate) {
