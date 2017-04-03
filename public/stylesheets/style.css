@@ -31,7 +31,7 @@ body {
   z-index: 1;
   text-align: center;
 }
-#overlay:hover > #toolbar {
+#overlay:hover > #toolbar, #overlay:active > #toolbar, #overlay:focus > #toolbar {
   visibility: visible;
   opacity: 0.6;
 }
