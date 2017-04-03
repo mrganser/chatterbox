@@ -9,6 +9,7 @@ router.get('/', function (req, res) {
 
 router.post('/goroom', function (req, res) {
   var roomName = req.body.roomName || uuidV4();
+  roomName = roomName.substring(0, 32);
   res.redirect('/room/' + roomName);
 });
 

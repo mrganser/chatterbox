@@ -41,14 +41,15 @@ $(function () {
     peerConnection.addStream(localStream);
 
     peerConnection.onaddstream = function (event) {
+      var wrapper = document.createElement("div");
+      wrapper.className = 'memberVideoWrapper';
       var video = document.createElement("video");
       video.setAttribute('autoplay', 'true');
-      video.setAttribute('width', '160');
-      video.setAttribute('height', '120');
-      video.className = 'membersVideo';
+      video.className = 'memberVideo';
       video.srcObject = event.stream;
       video.id = id;
-      document.querySelector('#allVideosContainer').appendChild(video);
+      wrapper.appendChild(video);
+      document.querySelector('#allVideosContainer').appendChild(wrapper);
       //TODO: Put in main the one speaking or the only one
       document.querySelector('#mainVideo').srcObject = event.stream;
     };
@@ -118,12 +119,35 @@ $(function () {
 });
 
 
-// Utils
+// Toolbar utils
+function copyLinkToClipboard() {  
+            window.clipboardData.setData("Text", location.href);
+            return;
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Copying text command was ' + msg);
+  } catch (err) {
+    console.log('Oops, unable to copy');
+  }
+}
 function toggleVideo(){
-  localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
+  var toggleTo = !(localStream.getVideoTracks()[0].enabled);
+  if (toggleTo) {
+    document.querySelector('#cameraIconBan').style.visibility = 'hidden';
+  } else {
+    document.querySelector('#cameraIconBan').style.visibility = 'visible';
+  }
+  localStream.getVideoTracks()[0].enabled = toggleTo;
 }
 function toggleAudio(){
-  localStream.getAudioTracks()[0].enabled = !(localStream.getAudioTracks()[0].enabled);
+  var toggleTo = !(localStream.getAudioTracks()[0].enabled);
+  if (toggleTo) {
+    document.querySelector('#muteIconBan').style.visibility = 'hidden';
+  } else {
+    document.querySelector('#muteIconBan').style.visibility = 'visible';
+  }
+  localStream.getAudioTracks()[0].enabled = toggleTo;
 }
 function toggleFullScreen() {
 	var element;

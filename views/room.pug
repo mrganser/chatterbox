@@ -1,25 +1,43 @@
 extends layout
 
 block content
-  div#overlay
+  script.
+    var roomName = '#{roomName}';
+  #shareModal.modal.fade(role='dialog')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.text-primary.close(type='button', data-dismiss='modal') &times;
+          h4.modal-title Copy the link and share it!
+        .modal-body
+          input.form-control(type='text', onclick="this.select();", value=urlToShare)
+        .modal-footer
+          button.btn.btn-primary(type='button', data-dismiss='modal') Close
+  #overlay
     #toolbar
       a.toolbarButton.btn.btn-default(href='/', title='Leave')
-        i.fa.fa-reply.fa-lg
+        span.fa-stack.fa-lg
+          i.fa.fa-reply.fa-stack-1x.text-danger
       button.toolbarButton.btn.btn-default(onclick='toggleFullScreen();', title='Enter/exit fullscreen')
-        i.fa.fa-arrows-alt.fa-lg
-      button.toolbarButton.btn.btn-default(title='Share')
-        i.fa.fa-share.fa-lg
+        span.fa-stack.fa-lg
+          i.fa.fa-arrows-alt.fa-stack-1x
+      button.toolbarButton.btn.btn-default(data-toggle="modal", data-target="#shareModal", title='Share')
+        span.fa-stack.fa-lg
+          i.fa.fa-share.fa-stack-1x
       button.toolbarButton.btn.btn-default(onclick='toggleVideo();', title='Start/stop camera')
-        i.fa.fa-video-camera.fa-lg
+        span.fa-stack.fa-lg
+          i.fa.fa-video-camera.fa-stack-1x
+          i#cameraIconBan.fa.fa-ban.fa-stack-2x.text-danger
       button.toolbarButton.btn.btn-default(onclick='toggleAudio();', title='Mute/unmute')
-        i.fa.fa-microphone.fa-lg
+        span.fa-stack.fa-lg
+          i.fa.fa-microphone.fa-stack-1x
+          i#muteIconBan.fa.fa-ban.fa-stack-2x.text-danger
   div#mainVideoContainer
     video#mainVideo(autoplay)
   div#allVideosContainer
-    video#localVideo.membersVideo(muted, autoplay, width='160' height='120')
+    .memberVideoWrapper
+      video#localVideo.memberVideo(muted, autoplay)
 
-  script.
-    var roomName="#{roomName}";
   script(src='/socket.io/socket.io.js')
   script(src='/thirdparty/adapter/adapter.js')
   script(src='/javascripts/controllers/room.js')

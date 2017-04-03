@@ -22,25 +22,18 @@ body {
   transition: all 1s ease-in-out;
 }
 
-#roomName {
-  float: right;
-  color: white;
-  margin: 0;
-  padding: 12px;
-}
-
 #overlay {
   position: absolute;
   top: 50px;
   bottom: 0;
   left: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 1;
   text-align: center;
 }
 #overlay:hover > #toolbar {
   visibility: visible;
-  opacity: 0.4;
+  opacity: 0.6;
 }
 
 #toolbar {
@@ -54,6 +47,16 @@ body {
 
 .toolbarButton {
   border-radius: 0;
+}
+.toolbarButton .text-danger {
+  color: #D9534F;
+}
+
+#cameraIconBan {
+  visibility: hidden;
+}
+#muteIconBan {
+  visibility: hidden;
 }
 
 #mainVideo {  
@@ -72,15 +75,19 @@ body {
 
 #allVideosContainer {
   display: flex;
-  flex-direction: row-reverse;
-  flex-wrap: nowrap;
-  justify-content: flex-end;
+  flex-flow: row-reverse nowrap;
   position: absolute;
-  right: 10px;
   bottom: 10px;
+  right: 10px;
+  max-height: 120px;
 }
 
-.membersVideo {
-  margin-left: 12px;
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+.memberVideoWrapper {
+  max-width: 160px;
+  max-height: 120px;
+  margin-left: 10px;
+}
+
+.memberVideo {
+  width: 100%;
 }
