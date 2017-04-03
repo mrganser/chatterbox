@@ -19,7 +19,7 @@ body {
 .transparentNavbar {
   background: transparent;
   border-color: transparent;
-  transition: all 1s ease-in-out;
+  transition: all 1s ease-in;
 }
 
 #overlay {
@@ -41,7 +41,7 @@ body {
   margin-top: 20px;
   visibility: hidden;
   opacity: 0;
-  transition: all 1s ease-in-out 0s;
+  transition: all 1s ease-out 0s;
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 
