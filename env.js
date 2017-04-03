@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var app = express();
+app.enable('trust proxy');
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
 
