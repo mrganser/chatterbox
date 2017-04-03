@@ -76,6 +76,7 @@ body {
 #allVideosContainer {
   display: flex;
   flex-flow: row-reverse nowrap;
+  align-items: center;
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -89,5 +90,6 @@ body {
 }
 
 .memberVideo {
+  max-height: 120px;
   width: 100%;
 }
