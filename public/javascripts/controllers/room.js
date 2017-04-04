@@ -37,18 +37,18 @@ $(function () {
     var peerConnection = new RTCPeerConnection(pc_config, pc_constraints);
     peerConnection.addStream(localStream);
 
-    peerConnection.ontrack = function (event) {
+    peerConnection.onaddstream = function (event) {
       var video = document.createElement("video");
       video.setAttribute('autoplay', 'true');
       video.className = 'memberVideo';
-      video.srcObject = event.streams[0];
+      video.srcObject = event.stream;
       var wrapper = document.createElement("div");
       wrapper.className = 'memberVideoWrapper';
       wrapper.id = id;
       wrapper.appendChild(video);
       document.querySelector('#allVideosContainer').appendChild(wrapper);
       //TODO: Put in main the one speaking or the only one
-      document.querySelector('#mainVideo').srcObject = event.streams[0];
+      document.querySelector('#mainVideo').srcObject = event.stream;
     };
     peerConnection.onicecandidate = function (event) {
       if (event.candidate) {
