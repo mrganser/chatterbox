@@ -1,6 +1,6 @@
 var socket = io();
 
-var pc_config = { 'iceServers': [{ 'url': 'stun:stun.l.google.com:19302' }] };
+var pc_config = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] };
 
 var pc_constraints = { 'optional': [{ 'DtlsSrtpKeyAgreement': true }] };
 
@@ -8,6 +8,10 @@ var localStream;
 var peerConnections = {};
 
 $(function () {
+
+  function handleError(error) {
+    console.dir(error);
+  }
 
   function getLocalVideoChat() {
     if (!window.RTCPeerConnection || !navigator.mediaDevices.getUserMedia) {
@@ -21,14 +25,7 @@ $(function () {
       localStream = stream;
       localVideo.srcObject = stream;
       return localStream;
-    }).catch(function (error) {
-      //TODO: Show error message to refresh browser and accept audio/video permissions
-      console.log('Error: ', error);
     });
-  }
-
-  function handleError(error) {
-    console.dir(error);
   }
 
   function getPeerConnection(id) {
@@ -40,18 +37,18 @@ $(function () {
     var peerConnection = new RTCPeerConnection(pc_config, pc_constraints);
     peerConnection.addStream(localStream);
 
-    peerConnection.onaddstream = function (event) {
-      var wrapper = document.createElement("div");
-      wrapper.className = 'memberVideoWrapper';
+    peerConnection.ontrack = function (event) {
       var video = document.createElement("video");
       video.setAttribute('autoplay', 'true');
       video.className = 'memberVideo';
-      video.srcObject = event.stream;
-      video.id = id;
+      video.srcObject = event.streams[0];
+      var wrapper = document.createElement("div");
+      wrapper.className = 'memberVideoWrapper';
+      wrapper.id = id;
       wrapper.appendChild(video);
       document.querySelector('#allVideosContainer').appendChild(wrapper);
       //TODO: Put in main the one speaking or the only one
-      document.querySelector('#mainVideo').srcObject = event.stream;
+      document.querySelector('#mainVideo').srcObject = event.streams[0];
     };
     peerConnection.onicecandidate = function (event) {
       if (event.candidate) {
@@ -70,6 +67,19 @@ $(function () {
     getLocalVideoChat().then(function(localStream){
       makeNavbarTransparent();
       socket.emit('createJoin', roomName);
+    }, function(error) {
+      switch(error.name) {
+        case 'NotAllowedError':
+          document.querySelector('#helperMessage').innerHTML = 'You must allow camera permission to enter the room';
+          console.error('');
+          break;
+        case 'NotReadableError':
+          document.querySelector('#helperMessage').innerHTML = 'Another browser/app is already accessing your camera';
+          break;
+        default:
+          document.querySelector('#helperMessage').innerHTML = 'Unexpected error. Try again';
+          break;
+      }
     });
 
     socket.on('fullRoom', function () {
@@ -79,7 +89,7 @@ $(function () {
     socket.on('message', function (data) {
       var peerConnection = getPeerConnection(data.id);
       if (data.sdp) {
-        peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp), function() {
+        peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(function() {
           console.log('Setting remote description by offer');
           peerConnection.createAnswer().then(function(sdp) {
             peerConnection.setLocalDescription(sdp);
@@ -120,34 +130,27 @@ $(function () {
 
 
 // Toolbar utils
-function copyLinkToClipboard() {  
-            window.clipboardData.setData("Text", location.href);
-            return;
-  try {
-    var successful = document.execCommand('copy');
-    var msg = successful ? 'successful' : 'unsuccessful';
-    console.log('Copying text command was ' + msg);
-  } catch (err) {
-    console.log('Oops, unable to copy');
-  }
-}
 function toggleVideo(){
-  var toggleTo = !(localStream.getVideoTracks()[0].enabled);
-  if (toggleTo) {
-    document.querySelector('#cameraIconBan').style.visibility = 'hidden';
-  } else {
-    document.querySelector('#cameraIconBan').style.visibility = 'visible';
+  if (localStream && localStream.getVideoTracks()[0]) {
+    var toggleTo = !(localStream.getVideoTracks()[0].enabled);
+    if (toggleTo) {
+      document.querySelector('#cameraIconBan').style.visibility = 'hidden';
+    } else {
+      document.querySelector('#cameraIconBan').style.visibility = 'visible';
+    }
+    localStream.getVideoTracks()[0].enabled = toggleTo;
   }
-  localStream.getVideoTracks()[0].enabled = toggleTo;
 }
 function toggleAudio(){
-  var toggleTo = !(localStream.getAudioTracks()[0].enabled);
-  if (toggleTo) {
-    document.querySelector('#muteIconBan').style.visibility = 'hidden';
-  } else {
-    document.querySelector('#muteIconBan').style.visibility = 'visible';
+  if (localStream && localStream.getVideoTracks()[0]) {
+    var toggleTo = !(localStream.getAudioTracks()[0].enabled);
+    if (toggleTo) {
+      document.querySelector('#muteIconBan').style.visibility = 'hidden';
+    } else {
+      document.querySelector('#muteIconBan').style.visibility = 'visible';
+    }
+    localStream.getAudioTracks()[0].enabled = toggleTo;
   }
-  localStream.getAudioTracks()[0].enabled = toggleTo;
 }
 function toggleFullScreen() {
 	var element;

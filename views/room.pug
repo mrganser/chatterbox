@@ -3,6 +3,9 @@ extends layout
 block content
   script.
     var roomName = '#{roomName}';
+  #helperMessage 
+    i.fa.fa-users(aria-hidden='true')
+    p Waiting for members to join
   #shareModal.modal.fade(role='dialog')
     .modal-dialog
       .modal-content
@@ -10,7 +13,7 @@ block content
           button.text-primary.close(type='button', data-dismiss='modal') &times;
           h4.modal-title Copy the link and share it!
         .modal-body
-          input.form-control(type='text', onclick="this.select();", value=urlToShare)
+          input.form-control(type='text', onclick='this.select();', value=urlToShare)
         .modal-footer
           button.btn.btn-primary(type='button', data-dismiss='modal') Close
   #overlay(aria-haspopup='true')
@@ -21,7 +24,7 @@ block content
       button.toolbarButton.btn.btn-default(onclick='toggleFullScreen();', title='Enter/exit fullscreen')
         span.fa-stack.fa-lg
           i.fa.fa-arrows-alt.fa-stack-1x
-      button.toolbarButton.btn.btn-default(data-toggle="modal", data-target="#shareModal", title='Share')
+      button.toolbarButton.btn.btn-default(data-toggle='modal', data-target='#shareModal', title='Share')
         span.fa-stack.fa-lg
           i.fa.fa-share.fa-stack-1x
       button.toolbarButton.btn.btn-default(onclick='toggleVideo();', title='Start/stop camera')
