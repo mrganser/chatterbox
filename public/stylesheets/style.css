@@ -45,12 +45,9 @@ body {
   font-size: 4vw;
   font-weight: bold;
   text-shadow: rgba(255,255,255,0.5) 0px 2px 2px;
-  background-color: #666;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #666;
 }
-#helperMessage > .fa {
+#helperMessageIcon {
   display: inline;
 }
 
