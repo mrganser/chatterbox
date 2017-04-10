@@ -22,6 +22,7 @@ body {
   transition: all 1s ease-in;
 }
 
+/*TODO: It doesn't disappear on mobiles*/
 #overlay {
   position: absolute;
   top: 50px;

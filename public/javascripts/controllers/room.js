@@ -16,7 +16,7 @@ $(function () {
   function getLocalVideoChat() {
     if (!window.RTCPeerConnection || !navigator.mediaDevices.getUserMedia) {
           document.querySelector('#helperMessageIcon').className = 'fa fa-frown-o fa-lg';
-          document.querySelector('#helperMessageText').innerHTML = 'Sorry, your browser is incompatible. We recommend using Chrome or Firefox.';
+          document.querySelector('#helperMessageText').innerHTML = 'Sorry, your web browser is incompatible. <br /> We recommend using Chrome or Firefox';
       return;
     }
 
@@ -90,7 +90,8 @@ $(function () {
     });
 
     socket.on('fullRoom', function () {
-      console.log('Room is full');
+      document.querySelector('#helperMessageIcon').className = 'fa fa-ban fa-lg';
+      document.querySelector('#helperMessageText').innerHTML = 'This room is already full';
     });
 
     socket.on('message', function (data) {
@@ -180,4 +181,7 @@ function toggleFullScreen() {
 			wscript.SendKeys("{F11}");
 		}
 	}
+}
+function copyLinkToClipboard() {
+  //TODO
 }
