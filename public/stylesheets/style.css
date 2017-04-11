@@ -64,10 +64,9 @@ body {
 .toolbarButton {
   border-radius: 0;
 }
-.toolbarButton .text-danger {
-  color: #D9534F;
+#shareModal .close {
+  color: #666;
 }
-
 #cameraIconBan {
   visibility: hidden;
 }

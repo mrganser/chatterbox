@@ -6,35 +6,35 @@ block content
   #helperMessage 
     i#helperMessageIcon.fa.fa-users.fa-lg(aria-hidden='true')
     p#helperMessageText Waiting for members to join. <br /> Share the link with your friends.
+    <!-- TODO: Show somehow how to share the link -->
   #shareModal.modal.fade(role='dialog')
     .modal-dialog
       .modal-content
         .modal-header
-          button.text-primary.close(type='button', data-dismiss='modal') &times;
+          button.close(type='button', data-dismiss='modal')
+            i.fa.fa-times
           h4.modal-title Copy the link and share it!
         .modal-body
           .input-group
-            input.form-control(type='text', onclick='this.select();', value=urlToShare)
+            input#urlToCopy.form-control(type='text', onclick='this.select();', value=urlToShare)
             span.input-group-btn
-              button.btn.btn-success(type='button', onclick='copyLinkToClipboard()') Copy
-        .modal-footer
-          button.btn.btn-primary(type='button', data-dismiss='modal') Close
+              button.btn.btn-success(type='button', onclick='copyLinkToClipboard()', data-dismiss='modal') Copy
   #overlay(aria-haspopup='true')
     #toolbar
-      a.toolbarButton.btn.btn-default(href='/', title='Leave')
+      a.toolbarButton.btn.btn-default(href='/', data-tooltip='tooltip', title='Leave')
         span.fa-stack.fa-lg
           i.fa.fa-sign-out.fa-flip-horizontal.fa-stack-1x
-      button.toolbarButton.btn.btn-default(onclick='toggleFullScreen();', title='Enter/exit fullscreen')
+      button.toolbarButton.btn.btn-default(onclick='toggleFullScreen();', data-tooltip='tooltip', title='Enter/exit fullscreen')
         span.fa-stack.fa-lg
           i.fa.fa-arrows-alt.fa-stack-1x
-      button.toolbarButton.btn.btn-default(data-toggle='modal', data-target='#shareModal', title='Share')
+      button.toolbarButton.btn.btn-default(data-toggle='modal', data-target='#shareModal', data-tooltip='tooltip', title='Share')
         span.fa-stack.fa-lg
           i.fa.fa-share-alt.fa-stack-1x
-      button.toolbarButton.btn.btn-default(onclick='toggleVideo();', title='Start/stop your camera')
+      button.toolbarButton.btn.btn-default(onclick='toggleVideo();', data-tooltip='tooltip', title='Start/stop your camera')
         span.fa-stack.fa-lg
           i.fa.fa-video-camera.fa-stack-1x
           i#cameraIconBan.fa.fa-ban.fa-stack-2x.text-danger
-      button.toolbarButton.btn.btn-default(onclick='toggleAudio();', title='Mute/unmute your microphone')
+      button.toolbarButton.btn.btn-default(onclick='toggleAudio();', data-tooltip='tooltip', title='Mute/unmute your microphone')
         span.fa-stack.fa-lg
           i.fa.fa-microphone.fa-stack-1x
           i#muteIconBan.fa.fa-ban.fa-stack-2x.text-danger

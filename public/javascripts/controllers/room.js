@@ -183,5 +183,6 @@ function toggleFullScreen() {
 	}
 }
 function copyLinkToClipboard() {
-  //TODO
+  document.querySelector('#urlToCopy').select();
+  document.execCommand('copy');
 }
