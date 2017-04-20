@@ -80,7 +80,7 @@ $(function () {
           break;
         case 'NotFoundError':
           document.querySelector('#helperMessageIcon').className = 'fa fa-video-camera fa-lg';
-          document.querySelector('#helperMessageText').innerHTML = 'You need to have a camera connected';
+          document.querySelector('#helperMessageText').innerHTML = 'You need to connect a camera. Refresh your browser when ready';
           break;
         default:
           document.querySelector('#helperMessageIcon').className = 'fa fa-frown-o fa-lg';
@@ -160,6 +160,11 @@ function toggleAudio(){
     localStream.getAudioTracks()[0].enabled = toggleTo;
   }
 }
+function copyLinkToClipboard() {
+  document.querySelector('#urlToCopy').select();
+  document.execCommand('copy');
+}
+
 function toggleFullScreen() {
 	var element;
 	var requestMethod;
@@ -173,16 +178,19 @@ function toggleFullScreen() {
 		requestMethod = element.cancelFullScreen || element.webkitCancelFullScreen || element.mozCancelFullScreen || element.msCancelFullscreen || element.msCancelFullScreen;
 	}
 
-	if (requestMethod) { // Native full screen.
+	if (requestMethod) {
 		requestMethod.call(element);
-	} else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
-		var wscript = new ActiveXObject("WScript.Shell");
-		if (wscript !== null) {
-			wscript.SendKeys("{F11}");
-		}
 	}
 }
-function copyLinkToClipboard() {
-  document.querySelector('#urlToCopy').select();
-  document.execCommand('copy');
+
+document.addEventListener('fullscreenchange', onFullScreenChange);
+document.addEventListener('webkitfullscreenchange', onFullScreenChange);
+document.addEventListener('mozfullscreenchange', onFullScreenChange);
+function onFullScreenChange() {
+	var isInFullScreen = document.fullScreenElement || document.mozFullScreen || document.webkitIsFullScreen || document.msIsFullScreen;
+  if (isInFullScreen) {
+    document.querySelector('#fullscreenIconBan').style.visibility = 'visible';
+  } else {
+    document.querySelector('#fullscreenIconBan').style.visibility = 'hidden';
+  }
 }
