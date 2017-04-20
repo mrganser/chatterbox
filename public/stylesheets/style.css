@@ -26,7 +26,6 @@ body {
 #overlay {
   position: absolute;
   top: 50px;
-  bottom: 0;
   left: 0;
   width: 100%;
   z-index: 1;
