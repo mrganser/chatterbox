@@ -22,18 +22,25 @@ body {
   transition: all 1s ease-in;
 }
 
-/*TODO: It doesn't disappear on mobiles*/
 #overlay {
   position: absolute;
   top: 50px;
+  bottom: 0;
   left: 0;
   width: 100%;
   z-index: 1;
   text-align: center;
 }
-#overlay:hover > #toolbar, #overlay:active > #toolbar, #overlay:focus > #toolbar {
-  visibility: visible;
-  opacity: 0.6;
+#toolbar {
+  display: inline-block;
+  margin-top: 20px;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 1s ease-out 0s;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+.toolbarButton {
+  border-radius: 0;
 }
 
 #helperMessage {
@@ -51,18 +58,6 @@ body {
   display: inline;
 }
 
-#toolbar {
-  display: inline-block;
-  margin-top: 20px;
-  visibility: hidden;
-  opacity: 0;
-  transition: all 1s ease-out 0s;
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-}
-
-.toolbarButton {
-  border-radius: 0;
-}
 #shareModal .close {
   color: #666;
 }
@@ -100,6 +95,7 @@ body {
   right: 10px;
   color: white;
   z-index: 3;
+  visibility: hidden;
 }
 
 .memberVideoWrapper {

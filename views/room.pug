@@ -19,7 +19,7 @@ block content
             input#urlToCopy.form-control(type='text', onclick='this.select();', value=urlToShare)
             span.input-group-btn
               button.btn.btn-success(type='button', onclick='copyLinkToClipboard()', data-dismiss='modal') Copy
-  #overlay(aria-haspopup='true')
+  #overlay(onmousemove='toggleToolbar();' ontouchend='toggleToolbar();')
     #toolbar
       a.toolbarButton.btn.btn-default(href='/', data-tooltip='tooltip', title='Leave')
         span.fa-stack.fa-lg

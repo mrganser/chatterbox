@@ -66,6 +66,7 @@ $(function () {
 
   function enterRoom() {
     getLocalVideoChat().then(function(localStream){
+      document.querySelector('#localVideoToolbar').style.visibility = 'visible';
       makeNavbarTransparent();
       socket.emit('createJoin', roomName);
     }, function(error) {
@@ -144,7 +145,7 @@ function toggleVideo(){
     if (toggleTo) {
       document.querySelector('#cameraIconBan').style.visibility = 'hidden';
     } else {
-      document.querySelector('#cameraIconBan').style.visibility = 'visible';
+      document.querySelector('#cameraIconBan').style.visibility = 'inherit';
     }
     localStream.getVideoTracks()[0].enabled = toggleTo;
   }
@@ -155,7 +156,7 @@ function toggleAudio(){
     if (toggleTo) {
       document.querySelector('#muteIconBan').style.visibility = 'hidden';
     } else {
-      document.querySelector('#muteIconBan').style.visibility = 'visible';
+      document.querySelector('#muteIconBan').style.visibility = 'inherit';
     }
     localStream.getAudioTracks()[0].enabled = toggleTo;
   }
@@ -189,8 +190,18 @@ document.addEventListener('mozfullscreenchange', onFullScreenChange);
 function onFullScreenChange() {
 	var isInFullScreen = document.fullScreenElement || document.mozFullScreen || document.webkitIsFullScreen || document.msIsFullScreen;
   if (isInFullScreen) {
-    document.querySelector('#fullscreenIconBan').style.visibility = 'visible';
+    document.querySelector('#fullscreenIconBan').style.visibility = 'inherit';
   } else {
     document.querySelector('#fullscreenIconBan').style.visibility = 'hidden';
+  }
+}
+function toggleToolbar() {
+  if (document.querySelector('#toolbar').style.visibility !== 'visible'){
+    document.querySelector('#toolbar').style.visibility = 'visible';
+    document.querySelector('#toolbar').style.opacity = 0.6;
+    setTimeout(function() {
+      document.querySelector('#toolbar').style.removeProperty('opacity');
+      document.querySelector('#toolbar').style.removeProperty('visibility');
+    }, 3000);
   }
 }
