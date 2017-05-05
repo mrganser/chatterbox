@@ -6,6 +6,7 @@ var pc_constraints = { 'optional': [{ 'DtlsSrtpKeyAgreement': true }] };
 
 var localStream;
 var peerConnections = {};
+var remoteStreams = [];
 
 $(function () {
 
@@ -48,8 +49,10 @@ $(function () {
       wrapper.id = id;
       wrapper.appendChild(video);
       document.querySelector('#allVideosContainer').appendChild(wrapper);
-      //TODO: Put in main the one speaking or the only one
-      document.querySelector('#mainVideo').srcObject = event.stream;
+      remoteStreams.push(new RemoteStream(event.stream));
+      if (remoteStreams.length === 1) {
+        document.querySelector('#mainVideo').srcObject = event.stream;
+      }
     };
     peerConnection.onicecandidate = function (event) {
       if (event.candidate) {
@@ -204,4 +207,40 @@ function toggleToolbar() {
       document.querySelector('#toolbar').style.removeProperty('visibility');
     }, 3000);
   }
+}
+
+setInterval(function() {
+  if (remoteStreams.length > 0) {
+    var streamSpeaking = remoteStreams[0];
+    for (var i = 0; i < remoteStreams.length; i++){
+      if (streamSpeaking.instant < remoteStreams[i].instant) {
+        streamSpeaking = remoteStreams[i];
+      }      
+    }
+    document.querySelector('#mainVideo').srcObject = streamSpeaking.stream;
+  }
+}, 5000);
+
+function RemoteStream(stream) {
+  var that = this;
+  that.stream = stream;
+  var audioContext = new AudioContext();
+  var script = audioContext.createScriptProcessor(2048, 1, 1);
+  script.onaudioprocess = function(event) {
+    var input = event.inputBuffer.getChannelData(0);
+    var i;
+    var sum = 0.0;
+    var clipcount = 0;
+    for (i = 0; i < input.length; ++i) {
+      sum += input[i] * input[i];
+      if (Math.abs(input[i]) > 0.99) {
+        clipcount += 1;
+      }
+    }
+    that.instant = Math.sqrt(sum / input.length);
+  };
+
+  var source = audioContext.createMediaStreamSource(stream);
+  source.connect(script);
+  script.connect(audioContext.destination);
 }
