@@ -6,7 +6,8 @@ var pc_constraints = { 'optional': [{ 'DtlsSrtpKeyAgreement': true }] };
 
 var localStream;
 var peerConnections = {};
-var remoteStreams = [];
+var remoteStreams = {};
+var audioContext = new AudioContext();
 
 $(function () {
 
@@ -49,8 +50,8 @@ $(function () {
       wrapper.id = id;
       wrapper.appendChild(video);
       document.querySelector('#allVideosContainer').appendChild(wrapper);
-      remoteStreams.push(new RemoteStream(event.stream));
-      if (remoteStreams.length === 1) {
+      remoteStreams[id] = new RemoteStream(event.stream);
+      if (Object.keys(remoteStreams).length === 1) {
         document.querySelector('#mainVideo').srcObject = event.stream;
       }
     };
@@ -133,7 +134,10 @@ $(function () {
     socket.on('leave', function (user) {
       console.log('User : ', user.id + ' left this room');
       delete peerConnections[user.id];
+      if (remoteStreams[user.id]) remoteStreams[user.id].disconnect();
+      delete remoteStreams[user.id];
       document.querySelector('#allVideosContainer').removeChild(document.getElementById(user.id));
+      putStreamSpeakingOnMainVideo();
     });
   }
 
@@ -209,24 +213,25 @@ function toggleToolbar() {
   }
 }
 
-setInterval(function() {
+setInterval(putStreamSpeakingOnMainVideo, 5000);
+
+function putStreamSpeakingOnMainVideo () {
   if (remoteStreams.length > 0) {
-    var streamSpeaking = remoteStreams[0];
-    for (var i = 0; i < remoteStreams.length; i++){
-      if (streamSpeaking.instant < remoteStreams[i].instant) {
-        streamSpeaking = remoteStreams[i];
+    var streamSpeaking;
+    for (var id in remoteStreams){
+      if (!streamSpeaking || (streamSpeaking.instant < remoteStreams[id].instant)) {
+        streamSpeaking = remoteStreams[id];
       }      
     }
     document.querySelector('#mainVideo').srcObject = streamSpeaking.stream;
   }
-}, 5000);
+}
 
 function RemoteStream(stream) {
-  var that = this;
-  that.stream = stream;
-  var audioContext = new AudioContext();
-  var script = audioContext.createScriptProcessor(2048, 1, 1);
-  script.onaudioprocess = function(event) {
+  var self = this;
+  self.stream = stream;
+  self.script = audioContext.createScriptProcessor(2048, 1, 1);
+  self.script.onaudioprocess = function(event) {
     var input = event.inputBuffer.getChannelData(0);
     var i;
     var sum = 0.0;
@@ -237,10 +242,15 @@ function RemoteStream(stream) {
         clipcount += 1;
       }
     }
-    that.instant = Math.sqrt(sum / input.length);
+    self.instant = Math.sqrt(sum / input.length);
   };
 
-  var source = audioContext.createMediaStreamSource(stream);
-  source.connect(script);
-  script.connect(audioContext.destination);
+  self.source = audioContext.createMediaStreamSource(stream);
+  self.source.connect(self.script);
+  self.script.connect(audioContext.destination);
+
+  self.disconnect = function () {
+    self.source.disconnect();
+    self.script.disconnect();
+  }
 }
