@@ -69,7 +69,10 @@ body {
   min-width: 100%;
   min-height: 100%;
 }
-
+#mainVideo2 {  
+  min-width: 100%;
+  min-height: 100%;
+}
 #mainVideoContainer {
   position: absolute;
   top: 0;

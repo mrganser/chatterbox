@@ -216,14 +216,23 @@ function toggleToolbar() {
 setInterval(putStreamSpeakingOnMainVideo, 5000);
 
 function putStreamSpeakingOnMainVideo () {
-  if (remoteStreams.length > 0) {
+  if (Object.keys(remoteStreams).length > 0) {
     var streamSpeaking;
     for (var id in remoteStreams){
       if (!streamSpeaking || (streamSpeaking.instant < remoteStreams[id].instant)) {
         streamSpeaking = remoteStreams[id];
       }      
     }
-    document.querySelector('#mainVideo').srcObject = streamSpeaking.stream;
+    var videoElement = document.querySelector('#mainVideo');
+    var videoSpeaking = videoElement.cloneNode();
+    videoSpeaking.id = 'mainVideo2';
+    videoSpeaking.srcObject = streamSpeaking.stream;
+    var videoContainer = document.querySelector('#mainVideoContainer');
+    videoContainer.appendChild(videoSpeaking);
+    setTimeout(function () {
+      videoContainer.removeChild(videoElement);
+      videoSpeaking.id = 'mainVideo';
+    }, 500);
   }
 }
 
