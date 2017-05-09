@@ -65,14 +65,6 @@ body {
   visibility: hidden;
 }
 
-#mainVideo {  
-  min-width: 100%;
-  min-height: 100%;
-}
-#mainVideo2 {  
-  min-width: 100%;
-  min-height: 100%;
-}
 #mainVideoContainer {
   position: absolute;
   top: 0;
@@ -80,6 +72,10 @@ body {
   left: 0;
   width: 100%;
   overflow: hidden;
+}
+#mainVideoContainer > video {
+  min-width: 100%;
+  min-height: 100%;
 }
 
 #allVideosContainer {

@@ -1,7 +1,5 @@
 'use strict';
 
-var _ = require('lodash');
-
 exports.createJoin = createJoin;
 exports.message = message;
 exports.disconnect = disconnect;
@@ -24,11 +22,11 @@ function createJoin(io, socket, roomName) {
 }
 
 function message(socket, message) {
-  socket.to(message.to).emit('message', _.assign({id: socket.id}, message));
+  socket.to(message.to).emit('message', Object.assign({id: socket.id}, message));
 }
 
 function disconnect(io, socket, rooms) {
-  _.forEach(rooms, function(room) {
+  rooms.forEach(function(room) {
     if (room != socket.id) {
       console.log('User disconnected: ' + socket.id + ' from room: ' + room);
       socket.to(room).emit('leave', {id: socket.id});

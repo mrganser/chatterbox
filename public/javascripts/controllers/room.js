@@ -7,6 +7,7 @@ var pc_constraints = { 'optional': [{ 'DtlsSrtpKeyAgreement': true }] };
 var localStream;
 var peerConnections = {};
 var remoteStreams = {};
+var mainRemoteStream;
 var audioContext = new AudioContext();
 
 $(function () {
@@ -35,8 +36,7 @@ $(function () {
     if (peerConnections[id]) {
       return peerConnections[id];
     }
-    
-    //TODO: ontrack, promises
+
     var peerConnection = new RTCPeerConnection(pc_config, pc_constraints);
     peerConnection.addStream(localStream);
 
@@ -50,8 +50,9 @@ $(function () {
       wrapper.id = id;
       wrapper.appendChild(video);
       document.querySelector('#allVideosContainer').appendChild(wrapper);
-      remoteStreams[id] = new RemoteStream(event.stream);
+      remoteStreams[id] = new RemoteStream(id, event.stream);
       if (Object.keys(remoteStreams).length === 1) {
+        mainRemoteStream = remoteStreams[id];
         document.querySelector('#mainVideo').srcObject = event.stream;
       }
     };
@@ -223,21 +224,25 @@ function putStreamSpeakingOnMainVideo () {
         streamSpeaking = remoteStreams[id];
       }      
     }
-    var videoElement = document.querySelector('#mainVideo');
-    var videoSpeaking = videoElement.cloneNode();
-    videoSpeaking.id = 'mainVideo2';
-    videoSpeaking.srcObject = streamSpeaking.stream;
-    var videoContainer = document.querySelector('#mainVideoContainer');
-    videoContainer.appendChild(videoSpeaking);
-    setTimeout(function () {
-      videoContainer.removeChild(videoElement);
-      videoSpeaking.id = 'mainVideo';
-    }, 500);
+    if (streamSpeaking && streamSpeaking.id !== mainRemoteStream.id) {
+      mainRemoteStream = streamSpeaking
+      var videoElement = document.querySelector('#mainVideo');
+      var videoSpeaking = videoElement.cloneNode();
+      videoSpeaking.id = 'newMainVideo';
+      videoSpeaking.srcObject = streamSpeaking.stream;
+      var videoContainer = document.querySelector('#mainVideoContainer');
+      videoContainer.appendChild(videoSpeaking);
+      setTimeout(function () {
+        videoContainer.removeChild(videoElement);
+        videoSpeaking.id = 'mainVideo';
+      }, 400);
+    }
   }
 }
 
-function RemoteStream(stream) {
+function RemoteStream(id, stream) {
   var self = this;
+  self.id = id;
   self.stream = stream;
   self.script = audioContext.createScriptProcessor(2048, 1, 1);
   self.script.onaudioprocess = function(event) {
