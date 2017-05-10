@@ -88,6 +88,10 @@ $(function () {
           document.querySelector('#helperMessageIcon').className = 'fa fa-video-camera fa-lg';
           document.querySelector('#helperMessageText').innerHTML = 'You need to connect a camera. Refresh your browser when ready';
           break;
+        case 'NotSupportedError':
+          document.querySelector('#helperMessageIcon').className = 'fa fa-lock fa-lg';
+          document.querySelector('#helperMessageText').innerHTML = 'Make sure you are using HTTPS';
+          break;          
         default:
           document.querySelector('#helperMessageIcon').className = 'fa fa-frown-o fa-lg';
           document.querySelector('#helperMessageText').innerHTML = 'Unexpected error. Try again';
