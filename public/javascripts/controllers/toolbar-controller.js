@@ -1,7 +1,9 @@
 'use strict';
 
 //All toolbar functions
-//Show toolbar on focus
+//Show toolbar on focus or touch on mobile
+document.querySelector('#overlay').addEventListener('touchend', toggleToolbar);
+document.querySelector('#overlay').addEventListener('mouseover', toggleToolbar);
 function toggleToolbar() {
   if (document.querySelector('#toolbar').style.visibility !== 'visible'){
     document.querySelector('#toolbar').style.visibility = 'visible';
