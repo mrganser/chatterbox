@@ -1,11 +1,11 @@
 {
   "name": "chatterbox",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "author": "mrganser",
   "private": true,
   "license": "Copyright 2016 @mrganser",
   "scripts": {
-    "start": "node app.js"
+    "start": "node server/app.js"
   },
   "dependencies": {
     "body-parser": "~1.17.2",
@@ -21,6 +21,7 @@
     "uuid": "~3.0.1"
   },
   "engines": {
-    "node": "6.0.0"
+    "node": ">=6.0.0",
+    "npm": ">=3.8.6"
   }
 }

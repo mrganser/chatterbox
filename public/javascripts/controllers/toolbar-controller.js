@@ -1,3 +1,7 @@
+'use strict';
+
+//All toolbar functions
+//Show toolbar on focus
 function toggleToolbar() {
   if (document.querySelector('#toolbar').style.visibility !== 'visible'){
     document.querySelector('#toolbar').style.visibility = 'visible';
@@ -8,6 +12,7 @@ function toggleToolbar() {
     }, 3000);
   }
 }
+//Button to block/unblock your camera
 function toggleVideo(){
   var localStream = currentRoom.getLocalStream();
   if (localStream && localStream.getVideoTracks()[0]) {
@@ -20,6 +25,7 @@ function toggleVideo(){
     localStream.getVideoTracks()[0].enabled = toggleTo;
   }
 }
+//Button to mute/unmute your audio
 function toggleAudio(){
   var localStream = currentRoom.getLocalStream();
   if (localStream && localStream.getVideoTracks()[0]) {
@@ -32,11 +38,12 @@ function toggleAudio(){
     localStream.getAudioTracks()[0].enabled = toggleTo;
   }
 }
+//Button on share modal to copy URL for sharing
 function copyLinkToClipboard() {
   document.querySelector('#urlToCopy').select();
   document.execCommand('copy');
 }
-
+//Button to enter/exit fullscreen
 function toggleFullScreen() {
 	var element;
 	var requestMethod;
@@ -55,6 +62,7 @@ function toggleFullScreen() {
 	}
 }
 
+//Listeners for showing correctly the fullscreen icon when we enter/exit fullscreen without the button
 document.addEventListener('fullscreenchange', onFullScreenChange);
 document.addEventListener('webkitfullscreenchange', onFullScreenChange);
 document.addEventListener('mozfullscreenchange', onFullScreenChange);

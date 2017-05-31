@@ -1,3 +1,5 @@
+'use strict';
+
 var env = require('./env');
 var RoomController = require('./controllers/RoomController');
 
@@ -21,7 +23,6 @@ env.initialize(function (err, app, io) {
     });
 
   });
-  //-------------
 
   // Run the server
   env.run(function (err) {

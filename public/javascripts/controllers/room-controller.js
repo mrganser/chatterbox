@@ -1,3 +1,5 @@
+'use strict';
+
 var currentRoom = new RoomController();
 currentRoom.init();
 
@@ -7,11 +9,10 @@ function RoomController () {
   var socket = io();
 
   var audioContext = new AudioContext();
-  var peerConnections = {};
-  var remoteStreams = {};
-  var mainRemoteStream;
-  var localStream;
-
+  var peerConnections = {};  //Store all peer connections by socket id
+  var remoteStreams = {};    //Store all remote streams by socket id
+  var mainRemoteStream;      //Main stream representing the person speaking at fullscreen
+  var localStream;           //Out own local stream
 
   function getLocalVideoChat() {
     if (!window.RTCPeerConnection || !navigator.mediaDevices.getUserMedia) {
@@ -73,12 +74,12 @@ function RoomController () {
     }
     if (!mainRemoteStream || streamSpeaking.id !== mainRemoteStream.id) {
       mainRemoteStream = streamSpeaking
+      //Clone existing main video and replace it with the new one after a timeout, needed to change smoothly
       var videoSpeaking = videoElement.cloneNode();
       videoSpeaking.id = 'newMainVideo';
       videoSpeaking.srcObject = streamSpeaking.stream;
       var videoContainer = document.querySelector('#mainVideoContainer');
       videoContainer.appendChild(videoSpeaking);
-      //Timeout needed to change smoothly between videos
       setTimeout(function () {
         videoContainer.removeChild(videoElement);
         videoSpeaking.id = 'mainVideo';
@@ -152,6 +153,7 @@ function RoomController () {
 
     socket.on('joinedRoom', function (room) {
       console.log('Joined room: ', room);
+      //When enter room, check who should be on main fullscreen video each 5 seconds
       setInterval(putStreamSpeakingOnMainVideo, 5000);
     });
 

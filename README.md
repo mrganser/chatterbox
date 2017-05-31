@@ -1,3 +1,4 @@
 A web for videochatting!
 
-heroku local web for deploying to localhost:5000
+npm install => install dependencies
+npm start   => start server @ localhost:5000
