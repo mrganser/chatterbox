@@ -12,7 +12,7 @@ function RoomController () {
   var peerConnections = {};  //Store all peer connections by socket id
   var remoteStreams = {};    //Store all remote streams by socket id
   var mainRemoteStream;      //Main stream representing the person speaking at fullscreen
-  var localStream;           //Out own local stream
+  var localStream;           //Our own local stream
 
   function getLocalVideoChat() {
     if (!window.RTCPeerConnection || !navigator.mediaDevices.getUserMedia) {
