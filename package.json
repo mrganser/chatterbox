@@ -11,13 +11,11 @@
     "body-parser": "~1.17.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.8",
-    "depd": "~1.1.0",
-    "encoding": "~0.1.12",
     "express": "~4.15.3",
     "morgan": "~1.8.2",
-    "pug": "~2.0.0-rc.1",
+    "pug": "~2.0.0-rc.2",
     "serve-favicon": "~2.4.3",
-    "socket.io": "~2.0.1",
+    "socket.io": "~2.0.2",
     "uuid": "~3.0.1"
   },
   "engines": {
