@@ -10,16 +10,11 @@ html
     link(rel='stylesheet', href='/thirdparty/bootstrap/bootstrap.min.css')
     link(rel='stylesheet', href='/thirdparty/font-awesome/css/font-awesome.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='https://www.google.com/recaptcha/api.js')
   body
     #appHeader.navbar.navbar-default.navbar-fixed-top(role='navigation')
       .container
         .navbar-header
           a.navbar-brand(href='/')
             img#logo(src='/images/chatterbox.png', alt='Chatter Box')
-
-    script(src='/thirdparty/jquery/jquery.min.js')
-    script(src='/thirdparty/bootstrap/bootstrap.min.js')
-    script(src='/javascripts/utils.js')
 
     block content

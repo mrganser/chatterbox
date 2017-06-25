@@ -6,14 +6,16 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var compression = require('compression')
 
 var app = express();
+app.use(compression())
+
 app.enable('trust proxy');
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
 
 var db = null;
-var APP_HOST = 'localhost';
 var APP_PORT = process.env.PORT || 5000;
 
 var index = require('./routes/index');
