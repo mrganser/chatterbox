@@ -8,12 +8,12 @@ block content
           h1 Welcome to ChatterBox!
           p Here you can videochat with your friends with just your web browser!
       .row.text-center
-        img(src='/images/imago.png', alt='Chatter Box')
+        img(src='/images/imago.png', alt='Chatter Box Image')
       hr
       .row
         .col-md-8.col-md-offset-2
           form(action='/goroom' method='POST')
-            .input-group
+            .input-group.input-group-lg
               input.form-control(name='roomName', required='required', placeholder='Conference room name', maxLength='36')
               span.input-group-btn
                 button.btn.btn-success(type='submit') Join
