@@ -82,7 +82,7 @@ var run = function (callback) {
       return callback(err);
     }
 
-    console.log('Server started');
+    console.log('Server started on port ' + APP_PORT);
 
     //Return successful start of server
     callback(null);

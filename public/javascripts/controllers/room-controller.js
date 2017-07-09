@@ -4,14 +4,20 @@ var currentRoom = new RoomController();
 currentRoom.init();
 
 function RoomController () {
-  var pc_config = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] };  //Public STUN server by Google
-  var pc_constraints = { 'optional': [{ 'DtlsSrtpKeyAgreement': true }] };  //Required for interoperating between Chrome and Firefox
+  //Public STUN server by Google
+  var pc_config = { 'iceServers': [
+    { 'urls': 'stun:stun.l.google.com:19302' }
+  ] };
+  //Required for interoperating between Chrome and Firefox
+  var pc_constraints = { 'optional': [
+    { 'DtlsSrtpKeyAgreement': true }
+  ] };
   var socket = io();
 
   var audioContext = new AudioContext();
-  var peerConnections = {};  //Store all peer connections by socket id
-  var remoteStreams = {};    //Store all remote streams by socket id
-  var mainRemoteStream;      //Main stream representing the person speaking at fullscreen
+  var peerConnections = {};  //Store peer connections by socket id
+  var remoteStreams = {};    //Store remote streams by socket id
+  var mainRemoteStream;      //Represents the peer at fullscreen
   var localStream;           //Our own local stream
 
   function getLocalVideoChat() {
@@ -127,6 +133,7 @@ function RoomController () {
       }
     });
 
+    //Websocket API
     socket.on('fullRoom', function () {
       document.querySelector('#helperMessageIcon').className = 'fa fa-ban fa-lg';
       document.querySelector('#helperMessageText').innerHTML = 'This room is already full';
