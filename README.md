@@ -1,4 +1,11 @@
-A web for videochatting!
+#A web for videochatting!
 
-npm install => install dependencies
-npm start   => start server @ localhost:5000
+Just two steps are needed:
+
+* install dependencies:
+
+    `npm install`
+
+* start server @ localhost:5000 by default:
+
+    `npm start`
