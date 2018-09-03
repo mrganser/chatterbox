@@ -1,9 +1,8 @@
 {
   "name": "chatterbox",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "author": "mrganser",
-  "private": true,
-  "license": "Copyright 2016 @mrganser",
+  "license": "MIT",
   "scripts": {
     "start": "node server/app.js"
   },
