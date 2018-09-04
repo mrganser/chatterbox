@@ -1,10 +1,24 @@
-# ChatterBox
+# ChatterBox &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/mrganser/chatterbox/blob/master/LICENSE)
 
-A web for videochatting made using WebRTC technology.
+A web application for conference calling using WebRTC technology.
+
+You just need to create a room with a name and share the link with your partners so they can join too.
 
 ## Demo
 
 https://chatterbox2.herokuapp.com/
+
+* Main page:
+
+<img src="demo/demo1.png" width="750">
+
+* Waiting for members:
+
+<img src="demo/demo2.png" width="750">
+
+* Conference with myself:
+
+<img src="demo/demo3.png" width="750">
 
 ## Getting Started
 
