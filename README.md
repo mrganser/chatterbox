@@ -26,6 +26,8 @@ https://chatterbox2.herokuapp.com/
 
 * You need to have a camera and a microphone connected to access a room.
 
+* Don't forget about current WebRTC compatibility. Check out: https://caniuse.com/#search=webrtc
+
 * Minimun engines supported:
 
 ```
