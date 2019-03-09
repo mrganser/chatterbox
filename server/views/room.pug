@@ -3,6 +3,9 @@ extends layout
 block content
   script.
     var roomName = '#{roomName}';
+  #precallActions
+    button.btn.btn-success(type='button', onclick='joinRoom()') JOIN 
+      i.fa.fa-phone.fa-fw
   #helperMessage 
     i#helperMessageIcon.fa.fa-users.fa-lg(aria-hidden='true')
     p#helperMessageText Waiting for members to join. <br /> Share the link with your friends.

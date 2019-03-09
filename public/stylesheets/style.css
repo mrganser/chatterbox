@@ -22,6 +22,24 @@ body {
   transition: all 1s ease-in;
 }
 
+#precallActions {
+  position: absolute;
+  width: 100%;
+  top: 30%;
+  text-align: center;
+  z-index: 1;
+}
+
+#precallActions > button {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 30px;
+  font-size: calc(16px + 2vw);
+  padding: 30px 10px 30px 20px;
+  margin: 10px;
+  border-radius: 50%;
+}
+
 #overlay {
   position: absolute;
   top: 50px;
@@ -30,6 +48,7 @@ body {
   width: 100%;
   z-index: 1;
   text-align: center;
+  display: none;
 }
 #toolbar {
   display: inline-block;
@@ -53,6 +72,7 @@ body {
   font-weight: bold;
   text-shadow: rgba(255,255,255,0.5) 0px 2px 2px;
   color: #666;
+  display: none;
 }
 #helperMessageIcon {
   display: inline;
