@@ -10,13 +10,13 @@ html
     link(rel='stylesheet', href='/thirdparty/bootstrap/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    #appHeader.navbar.navbar-default.navbar-fixed-top(role='navigation')
+    #appHeader.navbar.navbar-dark.fixed-top(role='navigation')
       .container
-        .navbar-header
-          a.navbar-brand(href='/')
-            img#logo(src='/images/chatterbox.png', alt='Chatter Box Logo')
+        a.navbar-brand(href='/')
+          img#logo(src='/images/chatterbox.png', alt='Chatter Box Logo')
 
     script(src='/thirdparty/jquery/jquery.min.js')
+    script(src='/thirdparty/popper/popper.min.js')
     script(src='/thirdparty/bootstrap/bootstrap.min.js')
     script(src='/thirdparty/font-awesome/all.min.js')
     script(src='/javascripts/utils.js')

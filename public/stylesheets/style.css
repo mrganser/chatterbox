@@ -10,16 +10,35 @@ html, body {
 body {
   padding-top: 40px;
   font-size: 16px;
+  background-color: #cccece;
+}
+
+a {
+  color: #0d747c;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #0a5a60;
+  text-decoration: underline;
 }
 
 #logo {
 	height: 22px;
 }
 
-.transparentNavbar {
-  background: transparent;
-  border-color: transparent;
+#appHeader {
+  background-color: #284157;
+}
+
+#appHeader.transparentNavbar {
+  background-color: transparent;
   transition: all 1s ease-in;
+}
+
+#jumbotron {
+  background-color: #0d747c;
+  color: white;
 }
 
 #precallActions {
@@ -78,9 +97,6 @@ body {
   display: inline;
 }
 
-#shareModal .close {
-  color: #666;
-}
 #fullscreenIconBan, #cameraIconBan, #muteIconBan {
   visibility: hidden;
 }
@@ -109,6 +125,7 @@ body {
   right: 10px;
   max-height: 120px;
   z-index: 2;
+  visibility: hidden;
 }
 #localVideoToolbar {
   position: absolute;

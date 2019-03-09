@@ -117,6 +117,7 @@ function RoomController () {
         var localVideo = document.querySelector('#localVideo');
         localStream = stream;
         localVideo.srcObject = stream;
+        document.querySelector('#allVideosContainer').style.visibility = 'visible';
         document.querySelector('#overlay').style.display = 'block';
         document.querySelector('#localVideoToolbar').style.visibility = 'visible';
         makeNavbarTransparent();
