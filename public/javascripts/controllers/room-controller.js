@@ -14,7 +14,7 @@ function RoomController () {
   ] };
   var socket = io();
 
-  var audioContext = new AudioContext();
+  var audioContext;
   var peerConnections = {};  //Store peer connections by socket id
   var remoteStreams = {};    //Store remote streams by socket id
   var mainRemoteStream;      //Represents the peer at fullscreen
@@ -38,18 +38,25 @@ function RoomController () {
     var peerConnection = new RTCPeerConnection(pc_config, pc_constraints);
     peerConnection.addStream(localStream);
 
-    peerConnection.onaddstream = function (event) {
-      var video = document.createElement("video");
-      video.setAttribute('autoplay', 'true');
-      video.className = 'memberVideo';
-      video.srcObject = event.stream;
-      var wrapper = document.createElement("div");
-      wrapper.className = 'memberVideoWrapper';
-      wrapper.id = id;
-      wrapper.appendChild(video);
-      document.querySelector('#allVideosContainer').appendChild(wrapper);
-      remoteStreams[id] = new RemoteStream(id, event.stream, audioContext);
-      putStreamSpeakingOnMainVideo();
+    //ontrack is called twice (audio track and video track)
+    peerConnection.ontrack = function (event) {
+      //Avoid adding the stream twice
+      if (!remoteStreams[id]) {
+        var video = document.createElement("video");
+        video.setAttribute('autoplay', 'true');
+        video.className = 'memberVideo';
+        video.srcObject = event.streams[0];
+        var wrapper = document.createElement("div");
+        wrapper.className = 'memberVideoWrapper';
+        wrapper.id = id;
+        wrapper.appendChild(video);
+        document.querySelector('#allVideosContainer').appendChild(wrapper);
+        if (!audioContext) {
+          audioContext = new AudioContext();
+        }
+        remoteStreams[id] = new RemoteStream(id, event.streams[0], audioContext);
+        putStreamSpeakingOnMainVideo();
+      }
     };
     peerConnection.onicecandidate = function (event) {
       if (event.candidate) {
