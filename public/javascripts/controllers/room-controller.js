@@ -1,7 +1,13 @@
 'use strict';
 
-var currentRoom = new RoomController();
-currentRoom.init();
+var currentRoom;
+
+function joinRoom() {
+  document.querySelector('#precallActions').style.display = 'none';
+  document.querySelector('#helperMessage').style.display = 'block';
+  currentRoom = new RoomController();
+  currentRoom.init();
+}
 
 function RoomController () {
   //Public STUN server by Google
@@ -111,6 +117,7 @@ function RoomController () {
         var localVideo = document.querySelector('#localVideo');
         localStream = stream;
         localVideo.srcObject = stream;
+        document.querySelector('#overlay').style.display = 'block';
         document.querySelector('#localVideoToolbar').style.visibility = 'visible';
         makeNavbarTransparent();
         socket.emit('createJoin', roomName);
