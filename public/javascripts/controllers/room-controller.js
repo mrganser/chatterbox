@@ -174,13 +174,13 @@ function RoomController () {
     });
 
     socket.on('joinedRoom', function (room) {
-      console.log('Joined room: ', room);
+      console.log('Joined room: ' + room);
       //When enter room, check who should be on main fullscreen video each 5 seconds
       setInterval(putStreamSpeakingOnMainVideo, 5000);
     });
 
     socket.on('userJoined', function (user) {
-      console.log('User : ', user.id + ' joined this room');
+      console.log('User : ' + user.id + ' joined this room');
       var peerConnection = getPeerConnection(user.id);
       peerConnection.createOffer(function (sdp) {
         peerConnection.setLocalDescription(sdp);
@@ -191,7 +191,7 @@ function RoomController () {
     });
 
     socket.on('leave', function (user) {
-      console.log('User : ', user.id + ' left this room');
+      console.log('User : ' + user.id + ' left this room');
       delete peerConnections[user.id];
       if (remoteStreams[user.id]) {
         remoteStreams[user.id].disconnect();
