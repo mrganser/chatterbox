@@ -15,7 +15,7 @@ function createJoin(io, socket, roomName) {
   } 
 
   socket.join(roomName, function() {
-    console.log('User ' + socket.id + ' joined room: ' + roomName);
+    console.log('User ' + socket.id + ' joined room: ' + roomName + '. Number of people in this room: ' + io.sockets.adapter.rooms[roomName].length);
     socket.emit('joinedRoom', roomName);
     socket.to(roomName).emit('userJoined', {id: socket.id});
   });
