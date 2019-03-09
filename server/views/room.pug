@@ -22,7 +22,7 @@ block content
     #toolbar
       a.toolbarButton.btn.btn-default(href='/', data-tooltip='tooltip', title='Leave')
         span.fa-stack.fa-lg
-          i.fa.fa-sign-out.fa-flip-horizontal.fa-stack-1x
+          i.fa.fa-sign-out-alt.fa-flip-horizontal.fa-stack-1x
       button.toolbarButton.btn.btn-default(onclick='toggleFullScreen();', data-tooltip='tooltip', title='Enter/exit fullscreen')
         span.fa-stack.fa-lg
           i.fa.fa-arrows-alt.fa-stack-1x
@@ -32,7 +32,7 @@ block content
           i.fa.fa-share-alt.fa-stack-1x
       button.toolbarButton.btn.btn-default(onclick='toggleVideo();', data-tooltip='tooltip', title='Start/stop your camera')
         span.fa-stack.fa-lg
-          i.fa.fa-video-camera.fa-stack-1x
+          i.fa.fa-video.fa-stack-1x
           i#cameraIconBan.fa.fa-ban.fa-stack-2x.text-danger
       button.toolbarButton.btn.btn-default(onclick='toggleAudio();', data-tooltip='tooltip', title='Mute/unmute your microphone')
         span.fa-stack.fa-lg
@@ -43,7 +43,7 @@ block content
   div#allVideosContainer
     .memberVideoWrapper
       div#localVideoToolbar
-        i(title='Me', data-tooltip='tooltip').fa.fa-user-circle-o
+        i(title='Me', data-tooltip='tooltip').fa.fa-user-circle
       video#localVideo.memberVideo(muted, autoplay)
 
   script(src='/socket.io/socket.io.js')

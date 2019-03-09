@@ -22,7 +22,7 @@ function RoomController () {
 
   function getLocalVideoChat() {
     if (!window.RTCPeerConnection || !navigator.mediaDevices.getUserMedia) {
-      document.querySelector('#helperMessageIcon').className = 'fa fa-frown-o fa-lg';
+      document.querySelector('#helperMessageIcon').className = 'fa fa-frown fa-lg';
       document.querySelector('#helperMessageText').innerHTML = 'Sorry, your web browser is incompatible. <br /> We recommend using Chrome or Firefox';
       return;
     }
@@ -122,11 +122,11 @@ function RoomController () {
           document.querySelector('#helperMessageText').innerHTML = 'You must allow camera permission to enter the room';
           break;
         case 'NotReadableError':
-          document.querySelector('#helperMessageIcon').className = 'fa fa-window-restore fa-lg';
+          document.querySelector('#helperMessageIcon').className = 'far fa-window-restore fa-lg';
           document.querySelector('#helperMessageText').innerHTML = 'Another browser/app is already accessing your camera';
           break;
         case 'NotFoundError':
-          document.querySelector('#helperMessageIcon').className = 'fa fa-video-camera fa-lg';
+          document.querySelector('#helperMessageIcon').className = 'fa fa-video fa-lg';
           document.querySelector('#helperMessageText').innerHTML = 'You need to connect a camera. Refresh your browser when ready';
           break;
         case 'NotSupportedError':
@@ -134,7 +134,7 @@ function RoomController () {
           document.querySelector('#helperMessageText').innerHTML = 'Make sure you are using HTTPS';
           break;          
         default:
-          document.querySelector('#helperMessageIcon').className = 'fa fa-frown-o fa-lg';
+          document.querySelector('#helperMessageIcon').className = 'fa fa-frown fa-lg';
           document.querySelector('#helperMessageText').innerHTML = 'Unexpected error. Try again';
           break;
       }
