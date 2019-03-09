@@ -28,7 +28,7 @@ function RoomController () {
 
   function getLocalVideoChat() {
     if (!window.RTCPeerConnection || !navigator.mediaDevices.getUserMedia) {
-      document.querySelector('#helperMessageIcon').className = 'fa fa-frown fa-lg';
+      document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-frown fa-lg');
       document.querySelector('#helperMessageText').innerHTML = 'Sorry, your web browser is incompatible. <br /> We recommend using Chrome or Firefox';
       return;
     }
@@ -125,23 +125,23 @@ function RoomController () {
     }, function(error) {
       switch(error.name) {
         case 'NotAllowedError':
-          document.querySelector('#helperMessageIcon').className = 'fa fa-arrow-up fa-lg';
+          document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-arrow-up fa-lg');
           document.querySelector('#helperMessageText').innerHTML = 'You must allow camera permission to enter the room';
           break;
         case 'NotReadableError':
-          document.querySelector('#helperMessageIcon').className = 'far fa-window-restore fa-lg';
+          document.querySelector('#helperMessageIcon').setAttribute('class', 'far fa-window-restore fa-lg');
           document.querySelector('#helperMessageText').innerHTML = 'Another browser/app is already accessing your camera';
           break;
         case 'NotFoundError':
-          document.querySelector('#helperMessageIcon').className = 'fa fa-video fa-lg';
+          document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-video fa-lg');
           document.querySelector('#helperMessageText').innerHTML = 'You need to connect a camera. Refresh your browser when ready';
           break;
         case 'NotSupportedError':
-          document.querySelector('#helperMessageIcon').className = 'fa fa-lock fa-lg';
+          document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-lock fa-lg');
           document.querySelector('#helperMessageText').innerHTML = 'Make sure you are using HTTPS';
           break;          
         default:
-          document.querySelector('#helperMessageIcon').className = 'fa fa-frown fa-lg';
+          document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-frown fa-lg');
           document.querySelector('#helperMessageText').innerHTML = 'Unexpected error. Try again';
           break;
       }
@@ -149,7 +149,7 @@ function RoomController () {
 
     //Websocket API
     socket.on('fullRoom', function () {
-      document.querySelector('#helperMessageIcon').className = 'fa fa-ban fa-lg';
+      document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-ban fa-lg');
       document.querySelector('#helperMessageText').innerHTML = 'This room is already full';
     });
 
