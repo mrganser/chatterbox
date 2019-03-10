@@ -6,12 +6,21 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var compression = require('compression')
+var compression = require('compression');
+var enforce = require('express-sslify');
+const helmet = require('helmet');
 
 var app = express();
+
+if (app.get('env') === 'production') {
+  app.enable('trust proxy');
+  app.use(enforce.HTTPS({ trustProtoHeader: true }));
+  app.use(helmet());
+  app.disable('x-powered-by');
+}
+
 app.use(compression())
 
-app.enable('trust proxy');
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
 
