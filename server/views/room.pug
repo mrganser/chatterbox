@@ -18,26 +18,26 @@ block content
             i.fa.fa-times
         .modal-body
           .input-group.input-group-lg
-            input#urlToCopy.form-control(type='text', onclick='this.select();', value=urlToShare)
+            input#urlToCopy.form-control(type='text', value=urlToShare)
             .input-group-append
-              button.btn.btn-success(type='button', onclick='copyLinkToClipboard()', data-dismiss='modal') Copy
+              button#copyURL.btn.btn-success(type='button', data-dismiss='modal') Copy
   #overlay
     #toolbar
       a.toolbarButton.btn.btn-sm.btn-light(href='/', data-tooltip='tooltip', title='Leave')
         span.fa-stack.fa-lg
           i.fa.fa-sign-out-alt.fa-flip-horizontal.fa-stack-1x
-      button.toolbarButton.btn.btn-sm.btn-light(onclick='toggleFullScreen();', data-tooltip='tooltip', title='Enter/exit fullscreen')
+      button#toggleFullScreen.toolbarButton.btn.btn-sm.btn-light(data-tooltip='tooltip', title='Enter/exit fullscreen')
         span.fa-stack.fa-lg
           i.fa.fa-arrows-alt.fa-stack-1x
           i#fullscreenIconBan.fa.fa-ban.fa-stack-2x.text-danger
       button.toolbarButton.btn.btn-sm.btn-light(data-toggle='modal', data-target='#shareModal', data-tooltip='tooltip', title='Share')
         span.fa-stack.fa-lg
           i.fa.fa-share-alt.fa-stack-1x
-      button.toolbarButton.btn.btn-sm.btn-light(onclick='toggleVideo();', data-tooltip='tooltip', title='Start/stop your camera')
+      button#toggleVideo.toolbarButton.btn.btn-sm.btn-light(data-tooltip='tooltip', title='Start/stop your camera')
         span.fa-stack.fa-lg
           i.fa.fa-video.fa-stack-1x
           i#cameraIconBan.fa.fa-ban.fa-stack-2x.text-danger
-      button.toolbarButton.btn.btn-sm.btn-light(onclick='toggleAudio();', data-tooltip='tooltip', title='Mute/unmute your microphone')
+      button#toggleAudio.toolbarButton.btn.btn-sm.btn-light(data-tooltip='tooltip', title='Mute/unmute your microphone')
         span.fa-stack.fa-lg
           i.fa.fa-microphone.fa-stack-1x
           i#muteIconBan.fa.fa-ban.fa-stack-2x.text-danger

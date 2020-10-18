@@ -1,6 +1,14 @@
 'use strict';
 
 //All toolbar functions
+
+//Onclick listeners
+document.getElementById('urlToCopy').addEventListener('click', function() { this.select(); });
+document.getElementById('copyURL').addEventListener('click', copyLinkToClipboard);
+document.getElementById('toggleFullScreen').addEventListener('click', toggleFullScreen);
+document.getElementById('toggleVideo').addEventListener('click', toggleVideo);
+document.getElementById('toggleAudio').addEventListener('click', toggleAudio);
+
 //Show toolbar on focus or touch on mobile
 document.querySelector('#overlay').addEventListener('touchend', toggleToolbar);
 document.querySelector('#overlay').addEventListener('mouseover', toggleToolbar);
