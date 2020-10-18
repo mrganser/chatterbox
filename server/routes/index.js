@@ -2,7 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
-var uuidV4 = require('uuid/v4');
+var { v4: uuidv4 } = require('uuid');
 var https = require('https');
 
 router.get('/', function (req, res) {
@@ -10,7 +10,7 @@ router.get('/', function (req, res) {
 });
 
 router.post('/goroom', function (req, res) {
-  var roomName = req.body.roomName || uuidV4();
+  var roomName = req.body.roomName || uuidv4();
   roomName = roomName.substring(0, 32);
   res.redirect('/room/' + roomName);
 });
