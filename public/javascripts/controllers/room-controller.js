@@ -121,7 +121,7 @@ function RoomController () {
         document.querySelector('#overlay').style.display = 'block';
         document.querySelector('#localVideoToolbar').style.visibility = 'visible';
         makeNavbarTransparent();
-        socket.emit('createJoin', roomName);
+        socket.emit('createJoin', document.querySelector('#roomName').value);
       }
     }, function(error) {
       switch(error.name) {

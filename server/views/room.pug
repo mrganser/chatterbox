@@ -1,10 +1,9 @@
 extends layout
 
 block content
-  script.
-    var roomName = '#{roomName}';
   #precallActions
     h1.display-4 Room #{roomName}
+    input#roomName(type='hidden', value=roomName)
     button.btn.btn-success(type='button', onclick='joinRoom()') JOIN 
       i.fa.fa-phone.fa-fw
   #helperMessage 
