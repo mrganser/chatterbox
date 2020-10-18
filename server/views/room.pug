@@ -4,7 +4,7 @@ block content
   #precallActions
     h1.display-4 Room #{roomName}
     input#roomName(type='hidden', value=roomName)
-    button.btn.btn-success(type='button', onclick='joinRoom()') JOIN 
+    button#joinRoom.btn.btn-success(type='button') JOIN 
       i.fa.fa-phone.fa-fw
   #helperMessage 
     i#helperMessageIcon.fa.fa-users.fa-lg(aria-hidden='true')

@@ -2,6 +2,8 @@
 
 var currentRoom;
 
+document.getElementById('joinRoom').addEventListener('click', joinRoom);
+
 function joinRoom() {
   document.querySelector('#precallActions').style.display = 'none';
   document.querySelector('#helperMessage').style.display = 'block';
