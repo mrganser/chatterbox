@@ -7,7 +7,7 @@ env.initialize(function (err, app, io) {
   if (err) throw err;
 
   // Websocket api
-  io.sockets.on('connection', function (socket) {
+  io.on('connection', function (socket) {
     socket.on('createJoin', function (room) {
       RoomController.createJoin(io, socket, room);
     });
@@ -17,7 +17,7 @@ env.initialize(function (err, app, io) {
     });
 
     socket.on('disconnecting', function () {
-      var rooms = Object.keys(socket.rooms);
+      var rooms = [...socket.rooms];
       RoomController.disconnect(io, socket, rooms);
     });
   });

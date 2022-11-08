@@ -25,7 +25,7 @@ function RoomController() {
   var localStream; //Our own local stream
 
   function getLocalVideoChat() {
-    if (!window.RTCPeerConnection || !navigator.mediaDevices.getUserMedia) {
+    if (!window.RTCPeerConnection || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-frown fa-lg');
       document.querySelector('#helperMessageText').innerHTML =
         'Sorry, your web browser is incompatible. <br /> We recommend using Chrome or Firefox';
@@ -111,47 +111,50 @@ function RoomController() {
   };
 
   this.init = function () {
-    getLocalVideoChat().then(
-      function (stream) {
-        if (stream) {
-          var localVideo = document.querySelector('#localVideo');
-          localStream = stream;
-          localVideo.srcObject = stream;
-          document.querySelector('#allVideosContainer').style.visibility = 'visible';
-          document.querySelector('#overlay').style.display = 'block';
-          document.querySelector('#localVideoToolbar').style.visibility = 'visible';
-          makeNavbarTransparent();
-          socket.emit('createJoin', document.querySelector('#roomName').value);
+    var localUserMedia = getLocalVideoChat();
+    if (localUserMedia) {
+      localUserMedia.then(
+        function (stream) {
+          if (stream) {
+            var localVideo = document.querySelector('#localVideo');
+            localStream = stream;
+            localVideo.srcObject = stream;
+            document.querySelector('#allVideosContainer').style.visibility = 'visible';
+            document.querySelector('#overlay').style.display = 'block';
+            document.querySelector('#localVideoToolbar').style.visibility = 'visible';
+            makeNavbarTransparent();
+            socket.emit('createJoin', document.querySelector('#roomName').value);
+          }
+        },
+        function (error) {
+          switch (error.name) {
+            case 'NotAllowedError':
+              document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-arrow-up fa-lg');
+              document.querySelector('#helperMessageText').innerHTML =
+                'You must allow camera permission to enter the room';
+              break;
+            case 'NotReadableError':
+              document.querySelector('#helperMessageIcon').setAttribute('class', 'far fa-window-restore fa-lg');
+              document.querySelector('#helperMessageText').innerHTML =
+                'Another browser/app is already accessing your camera';
+              break;
+            case 'NotFoundError':
+              document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-video fa-lg');
+              document.querySelector('#helperMessageText').innerHTML =
+                'You need to connect a camera. Refresh your browser when ready';
+              break;
+            case 'NotSupportedError':
+              document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-lock fa-lg');
+              document.querySelector('#helperMessageText').innerHTML = 'Make sure you are using HTTPS';
+              break;
+            default:
+              document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-frown fa-lg');
+              document.querySelector('#helperMessageText').innerHTML = 'Unexpected error. Try again';
+              break;
+          }
         }
-      },
-      function (error) {
-        switch (error.name) {
-          case 'NotAllowedError':
-            document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-arrow-up fa-lg');
-            document.querySelector('#helperMessageText').innerHTML =
-              'You must allow camera permission to enter the room';
-            break;
-          case 'NotReadableError':
-            document.querySelector('#helperMessageIcon').setAttribute('class', 'far fa-window-restore fa-lg');
-            document.querySelector('#helperMessageText').innerHTML =
-              'Another browser/app is already accessing your camera';
-            break;
-          case 'NotFoundError':
-            document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-video fa-lg');
-            document.querySelector('#helperMessageText').innerHTML =
-              'You need to connect a camera. Refresh your browser when ready';
-            break;
-          case 'NotSupportedError':
-            document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-lock fa-lg');
-            document.querySelector('#helperMessageText').innerHTML = 'Make sure you are using HTTPS';
-            break;
-          default:
-            document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-frown fa-lg');
-            document.querySelector('#helperMessageText').innerHTML = 'Unexpected error. Try again';
-            break;
-        }
-      }
-    );
+      );
+    }
 
     //Websocket API
     socket.on('fullRoom', function () {

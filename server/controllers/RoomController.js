@@ -7,25 +7,22 @@ exports.disconnect = disconnect;
 function createJoin(io, socket, roomName) {
   if (typeof roomName !== 'string') return;
 
-  var room = io.sockets.adapter.rooms[roomName];
-  if (room && room.length > 4) {
-    console.log('Room ' + roomName + ' is full!');
-    socket.emit('fullRoom');
-    return;
-  }
+  io.in(roomName)
+    .allSockets()
+    .then(function (room) {
+      if (room && room.size > 4) {
+        console.log('Room ' + roomName + ' is full!');
+        socket.emit('fullRoom');
+        return;
+      }
 
-  socket.join(roomName, function () {
-    console.log(
-      'User ' +
-        socket.id +
-        ' joined room: ' +
-        roomName +
-        '. Number of people in this room: ' +
-        io.sockets.adapter.rooms[roomName].length
-    );
-    socket.emit('joinedRoom', roomName);
-    socket.to(roomName).emit('userJoined', { id: socket.id });
-  });
+      socket.join(roomName);
+      console.log(
+        'User ' + socket.id + ' joined room: ' + roomName + '. Number of people in this room now: ' + (room.size + 1)
+      );
+      socket.emit('joinedRoom', roomName);
+      socket.to(roomName).emit('userJoined', { id: socket.id });
+    });
 }
 
 function message(socket, message) {
