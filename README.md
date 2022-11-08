@@ -6,17 +6,17 @@ You just need to create a room with a name and share the link with your partners
 
 ## Demo
 
-https://chatterbox2.herokuapp.com/
+https://chatterbox2.onrender.com/
 
-* Main page:
+- Main page:
 
 <img src="demo/demo1.png" width="750">
 
-* Waiting for members:
+- Waiting for members:
 
 <img src="demo/demo2.png" width="750">
 
-* Conference with myself:
+- Conference with myself:
 
 <img src="demo/demo3.png" width="750">
 
@@ -24,11 +24,11 @@ https://chatterbox2.herokuapp.com/
 
 ### Prerequisites
 
-* You need to have a camera and a microphone connected to access a room.
+- You need to have a camera and a microphone connected to access a room.
 
-* Don't forget about current WebRTC compatibility. Check out: https://caniuse.com/#search=webrtc
+- Don't forget about current WebRTC compatibility. Check out: https://caniuse.com/#search=webrtc
 
-* Minimun engines supported:
+- Minimun engines supported:
 
 ```
   "engines": {
@@ -39,21 +39,19 @@ https://chatterbox2.herokuapp.com/
 
 ### Installing
 
-* Clone the project
+- Clone the project
 
-* Install dependencies:
+- Install dependencies:
 
-    `npm install`
+  `npm install`
 
-* Start server @ localhost:5000 by default:
+- Start server @ localhost:5000 by default:
 
-    `npm start`
-
+  `npm start`
 
 ## Running the tests
 
 Work in progress
-
 
 ## Deployment
 
@@ -61,18 +59,17 @@ This project is ready to deploy to Heroku without any additional configuration.
 
 ## Built With
 
-* [Node.js](https://nodejs.org/es/) + [Express.js](http://expressjs.com/) - Web server
-* [Socket.IO](https://socket.io/) - Real time communication of peers information
-* [WebRTC](https://webrtc.org/) - Technology for conference calling through the browser
-
+- [Node.js](https://nodejs.org/es/) + [Express.js](http://expressjs.com/) - Web server
+- [Socket.IO](https://socket.io/) - Real time communication of peers information
+- [WebRTC](https://webrtc.org/) - Technology for conference calling through the browser
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/mrganser/chatterbox/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/mrganser/chatterbox/tags).
 
 ## Authors
 
-* **[mrganser](http://mrganser.com)**
+- **[mrganser](http://mrganser.com)**
 
 See also the list of [contributors](https://github.com/mrganser/chatterbox/contributors) who participated in this project.
 

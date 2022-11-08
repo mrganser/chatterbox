@@ -7,11 +7,11 @@ function RemoteStream(id, stream, audioContext) {
   self.id = id;
   self.stream = stream;
   self.script = audioContext.createScriptProcessor(2048, 1, 1);
-  self.script.onaudioprocess = function(event) {
+  self.script.onaudioprocess = function (event) {
     var input = event.inputBuffer.getChannelData(0);
     var sum = 0.0;
     for (var i = 0; i < input.length; ++i) {
-      sum += input[i] * input[i];  
+      sum += input[i] * input[i];
     }
     self.instant = Math.sqrt(sum / input.length);
   };
@@ -23,5 +23,5 @@ function RemoteStream(id, stream, audioContext) {
   self.disconnect = function () {
     self.source.disconnect();
     self.script.disconnect();
-  }
+  };
 }

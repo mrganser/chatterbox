@@ -19,10 +19,10 @@ if (app.get('env') === 'production') {
   app.disable('x-powered-by');
 }
 
-app.use(compression())
+app.use(compression());
 
 var server = require('http').Server(app);
-var io = require('socket.io').listen(server);
+var io = require('socket.io')(server);
 
 var db = null;
 var APP_PORT = process.env.PORT || 5000;
@@ -67,7 +67,7 @@ var initialize = function (callback) {
       res.status(err.status || 500);
       res.render('error', {
         message: err.message,
-        error: err
+        error: err,
       });
     });
   }
@@ -77,7 +77,7 @@ var initialize = function (callback) {
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
-      error: {}
+      error: {},
     });
   });
 
@@ -96,7 +96,7 @@ var run = function (callback) {
     //Return successful start of server
     callback(null);
   });
-}
+};
 
 exports.initialize = initialize;
 exports.run = run;

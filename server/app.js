@@ -8,7 +8,6 @@ env.initialize(function (err, app, io) {
 
   // Websocket api
   io.sockets.on('connection', function (socket) {
-
     socket.on('createJoin', function (room) {
       RoomController.createJoin(io, socket, room);
     });
@@ -21,7 +20,6 @@ env.initialize(function (err, app, io) {
       var rooms = Object.keys(socket.rooms);
       RoomController.disconnect(io, socket, rooms);
     });
-
   });
 
   // Run the server

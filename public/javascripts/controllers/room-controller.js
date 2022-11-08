@@ -11,27 +11,24 @@ function joinRoom() {
   currentRoom.init();
 }
 
-function RoomController () {
+function RoomController() {
   //Public STUN server by Google
-  var pc_config = { 'iceServers': [
-    { 'urls': 'stun:stun.l.google.com:19302' }
-  ] };
+  var pc_config = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
   //Required for interoperating between Chrome and Firefox
-  var pc_constraints = { 'optional': [
-    { 'DtlsSrtpKeyAgreement': true }
-  ] };
+  var pc_constraints = { optional: [{ DtlsSrtpKeyAgreement: true }] };
   var socket = io();
 
   var audioContext;
-  var peerConnections = {};  //Store peer connections by socket id
-  var remoteStreams = {};    //Store remote streams by socket id
-  var mainRemoteStream;      //Represents the peer at fullscreen
-  var localStream;           //Our own local stream
+  var peerConnections = {}; //Store peer connections by socket id
+  var remoteStreams = {}; //Store remote streams by socket id
+  var mainRemoteStream; //Represents the peer at fullscreen
+  var localStream; //Our own local stream
 
   function getLocalVideoChat() {
     if (!window.RTCPeerConnection || !navigator.mediaDevices.getUserMedia) {
       document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-frown fa-lg');
-      document.querySelector('#helperMessageText').innerHTML = 'Sorry, your web browser is incompatible. <br /> We recommend using Chrome or Firefox';
+      document.querySelector('#helperMessageText').innerHTML =
+        'Sorry, your web browser is incompatible. <br /> We recommend using Chrome or Firefox';
       return;
     }
 
@@ -50,11 +47,11 @@ function RoomController () {
     peerConnection.ontrack = function (event) {
       //Avoid adding the stream twice
       if (!remoteStreams[id]) {
-        var video = document.createElement("video");
+        var video = document.createElement('video');
         video.setAttribute('autoplay', 'true');
         video.className = 'memberVideo';
         video.srcObject = event.streams[0];
-        var wrapper = document.createElement("div");
+        var wrapper = document.createElement('div');
         wrapper.className = 'memberVideoWrapper';
         wrapper.id = id;
         wrapper.appendChild(video);
@@ -68,7 +65,7 @@ function RoomController () {
     };
     peerConnection.onicecandidate = function (event) {
       if (event.candidate) {
-        socket.emit('message', {ice: event.candidate, to: id});
+        socket.emit('message', { ice: event.candidate, to: id });
       }
     };
     peerConnections[id] = peerConnection;
@@ -79,14 +76,14 @@ function RoomController () {
     document.querySelector('#appHeader').className += ' transparentNavbar';
   }
 
-  function putStreamSpeakingOnMainVideo () {
+  function putStreamSpeakingOnMainVideo() {
     var streamSpeaking;
     var videoContainer = document.querySelector('#mainVideoContainer');
     var videoElement = document.querySelector('#mainVideo');
-    for (var id in remoteStreams){
-      if (!streamSpeaking || (streamSpeaking.instant < remoteStreams[id].instant)) {
+    for (var id in remoteStreams) {
+      if (!streamSpeaking || streamSpeaking.instant < remoteStreams[id].instant) {
         streamSpeaking = remoteStreams[id];
-      }      
+      }
     }
     if (!streamSpeaking) {
       videoContainer.style.opacity = 0;
@@ -94,7 +91,7 @@ function RoomController () {
       return;
     }
     if (!mainRemoteStream || streamSpeaking.id !== mainRemoteStream.id) {
-      mainRemoteStream = streamSpeaking
+      mainRemoteStream = streamSpeaking;
       //Clone existing main video and replace it with the new one after a timeout, needed to change smoothly
       var videoSpeaking = videoElement.cloneNode();
       videoSpeaking.id = 'newMainVideo';
@@ -111,44 +108,50 @@ function RoomController () {
 
   this.getLocalStream = function () {
     return localStream;
-  }
+  };
 
-  this.init = function (){
-    getLocalVideoChat().then(function(stream){
-      if (stream) {
-        var localVideo = document.querySelector('#localVideo');
-        localStream = stream;
-        localVideo.srcObject = stream;
-        document.querySelector('#allVideosContainer').style.visibility = 'visible';
-        document.querySelector('#overlay').style.display = 'block';
-        document.querySelector('#localVideoToolbar').style.visibility = 'visible';
-        makeNavbarTransparent();
-        socket.emit('createJoin', document.querySelector('#roomName').value);
+  this.init = function () {
+    getLocalVideoChat().then(
+      function (stream) {
+        if (stream) {
+          var localVideo = document.querySelector('#localVideo');
+          localStream = stream;
+          localVideo.srcObject = stream;
+          document.querySelector('#allVideosContainer').style.visibility = 'visible';
+          document.querySelector('#overlay').style.display = 'block';
+          document.querySelector('#localVideoToolbar').style.visibility = 'visible';
+          makeNavbarTransparent();
+          socket.emit('createJoin', document.querySelector('#roomName').value);
+        }
+      },
+      function (error) {
+        switch (error.name) {
+          case 'NotAllowedError':
+            document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-arrow-up fa-lg');
+            document.querySelector('#helperMessageText').innerHTML =
+              'You must allow camera permission to enter the room';
+            break;
+          case 'NotReadableError':
+            document.querySelector('#helperMessageIcon').setAttribute('class', 'far fa-window-restore fa-lg');
+            document.querySelector('#helperMessageText').innerHTML =
+              'Another browser/app is already accessing your camera';
+            break;
+          case 'NotFoundError':
+            document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-video fa-lg');
+            document.querySelector('#helperMessageText').innerHTML =
+              'You need to connect a camera. Refresh your browser when ready';
+            break;
+          case 'NotSupportedError':
+            document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-lock fa-lg');
+            document.querySelector('#helperMessageText').innerHTML = 'Make sure you are using HTTPS';
+            break;
+          default:
+            document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-frown fa-lg');
+            document.querySelector('#helperMessageText').innerHTML = 'Unexpected error. Try again';
+            break;
+        }
       }
-    }, function(error) {
-      switch(error.name) {
-        case 'NotAllowedError':
-          document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-arrow-up fa-lg');
-          document.querySelector('#helperMessageText').innerHTML = 'You must allow camera permission to enter the room';
-          break;
-        case 'NotReadableError':
-          document.querySelector('#helperMessageIcon').setAttribute('class', 'far fa-window-restore fa-lg');
-          document.querySelector('#helperMessageText').innerHTML = 'Another browser/app is already accessing your camera';
-          break;
-        case 'NotFoundError':
-          document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-video fa-lg');
-          document.querySelector('#helperMessageText').innerHTML = 'You need to connect a camera. Refresh your browser when ready';
-          break;
-        case 'NotSupportedError':
-          document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-lock fa-lg');
-          document.querySelector('#helperMessageText').innerHTML = 'Make sure you are using HTTPS';
-          break;          
-        default:
-          document.querySelector('#helperMessageIcon').setAttribute('class', 'fa fa-frown fa-lg');
-          document.querySelector('#helperMessageText').innerHTML = 'Unexpected error. Try again';
-          break;
-      }
-    });
+    );
 
     //Websocket API
     socket.on('fullRoom', function () {
@@ -159,11 +162,11 @@ function RoomController () {
     socket.on('message', function (data) {
       var peerConnection = getPeerConnection(data.id);
       if (data.sdp) {
-        peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(function() {
+        peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(function () {
           console.log('Setting remote description by offer');
-          peerConnection.createAnswer().then(function(sdp) {
+          peerConnection.createAnswer().then(function (sdp) {
             peerConnection.setLocalDescription(sdp);
-            socket.emit('message', {to: data.id, sdpAnswer: sdp});
+            socket.emit('message', { to: data.id, sdpAnswer: sdp });
           });
         });
       } else if (data.sdpAnswer) {
@@ -184,12 +187,15 @@ function RoomController () {
     socket.on('userJoined', function (user) {
       console.log('User : ' + user.id + ' joined this room');
       var peerConnection = getPeerConnection(user.id);
-      peerConnection.createOffer(function (sdp) {
-        peerConnection.setLocalDescription(sdp);
-        socket.emit('message', {to: user.id, sdp: sdp});
-      }, function (error) {
-        console.dir(error);
-      });  
+      peerConnection.createOffer(
+        function (sdp) {
+          peerConnection.setLocalDescription(sdp);
+          socket.emit('message', { to: user.id, sdp: sdp });
+        },
+        function (error) {
+          console.dir(error);
+        }
+      );
     });
 
     socket.on('leave', function (user) {
@@ -205,5 +211,5 @@ function RoomController () {
       }
       putStreamSpeakingOnMainVideo();
     });
-  }
+  };
 }
