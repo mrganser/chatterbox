@@ -28,12 +28,12 @@ https://thechatterbox.onrender.com/
 
 - Don't forget about current WebRTC compatibility. Check out: https://caniuse.com/#search=webrtc
 
-- Minimun engines supported:
+- Minimum engines supported:
 
 ```
   "engines": {
-    "node": ">=6.0.0",
-    "npm": ">=3.8.6"
+    "node": ">=10.0.0",
+    "npm": ">=5.6.0"
   }
 ```
 
