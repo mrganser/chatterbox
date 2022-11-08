@@ -41,11 +41,11 @@ https://thechatterbox.onrender.com/
 
 - Clone the project
 
-- Install dependencies:
+- Build command, install dependencies:
 
   `npm install`
 
-- Start server @ localhost:5000 by default:
+- Start command, start server @ localhost:5000 by default:
 
   `npm start`
 
@@ -55,7 +55,7 @@ Work in progress
 
 ## Deployment
 
-This project is ready to deploy to Heroku without any additional configuration.
+This project is ready to deploy to render.com adding the commands from installing steps.
 
 ## Built With
 
