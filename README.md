@@ -6,7 +6,7 @@ You just need to create a room with a name and share the link with your partners
 
 ## Demo
 
-https://chatterbox2.onrender.com/
+https://thechatterbox.onrender.com/
 
 - Main page:
 
