@@ -2,7 +2,13 @@
 
 A web application for conference calling using WebRTC technology.
 
-You just need to create a room with a name and share the link with your partners so they can join too.
+Create a room with a name and share the link with your partners so they can join too.
+
+## Features
+
+- Real-time video and audio conferencing
+- Screen sharing with presentation mode
+- Text chat
 
 ## Demo
 
@@ -12,60 +18,74 @@ https://thechatterbox.onrender.com/
 
 <img src="demo/demo1.png" width="750">
 
-- Waiting for members:
+- Room:
 
 <img src="demo/demo2.png" width="750">
 
-- Conference with myself:
+## Tech Stack
 
-<img src="demo/demo3.png" width="750">
+- **Framework:** Next.js 16 + React 19
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **Components:** shadcn/ui
+- **Linting/Formatting:** oxlint, oxfmt
+- **Real-time:** WebRTC (peer-to-peer), Socket.IO (signaling)
+
+## Prerequisites
+
+- Node.js >= 18.0.0
+- Camera and microphone for video calls
+- HTTPS in production (required for WebRTC)
 
 ## Getting Started
 
-### Prerequisites
+### Installation
 
-- You need to have a camera and a microphone connected to access a room.
+```bash
+# Clone the repository
+git clone https://github.com/mrganser/chatterbox.git
+cd chatterbox
 
-- Don't forget about current WebRTC compatibility. Check out: https://caniuse.com/#search=webrtc
-
-- Minimum engines supported:
-
-```
-  "engines": {
-    "node": ">=10.0.0",
-    "npm": ">=5.6.0"
-  }
+# Install dependencies
+npm install
 ```
 
-### Installing
+### Development
 
-- Clone the project
+```bash
+npm run dev
+```
 
-- Build command, install dependencies:
+The app will be available at http://localhost:3000
 
-  `npm install`
+### Production Build
 
-- Start command, start server @ localhost:5000 by default:
+```bash
+# Build the app
+npm run build
 
-  `npm start`
+# Start the production server
+npm start
+```
 
-## Running the tests
+## Scripts
 
-Work in progress
+| Command                | Description              |
+| ---------------------- | ------------------------ |
+| `npm run dev`          | Start development server |
+| `npm run build`        | Build for production     |
+| `npm start`            | Start production server  |
+| `npm run lint`         | Run linter (oxlint)      |
+| `npm run lint:fix`     | Run linter with auto-fix |
+| `npm run format`       | Format code (oxfmt)      |
+| `npm run format:check` | Check code formatting    |
 
 ## Deployment
 
-This project is ready to deploy to render.com adding the commands from installing steps.
+This project is ready to deploy to render.com:
 
-## Built With
-
-- [Node.js](https://nodejs.org/es/) + [Express.js](http://expressjs.com/) - Web server
-- [Socket.IO](https://socket.io/) - Real time communication of peers information
-- [WebRTC](https://webrtc.org/) - Technology for conference calling through the browser
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/mrganser/chatterbox/tags).
+1. Set build command: `npm ci --production && npm run build`
+2. Set start command: `npm start`
 
 ## Authors
 

@@ -1,0 +1,219 @@
+import { useEffect, useRef } from 'react';
+import { cn } from '@/lib/utils';
+import { Mic, MicOff, VideoOff, User } from 'lucide-react';
+
+interface VideoTileProps {
+  stream: MediaStream | null;
+  peerId: string;
+  isLocal?: boolean;
+  isSpeaking?: boolean;
+  isActive?: boolean;
+  videoEnabled?: boolean;
+  audioEnabled?: boolean;
+  isScreenShare?: boolean;
+  label?: string;
+  compact?: boolean;
+  fill?: boolean;
+  onClick?: () => void;
+  className?: string;
+}
+
+export function VideoTile({
+  stream,
+  peerId,
+  isLocal = false,
+  isSpeaking = false,
+  isActive = false,
+  videoEnabled = true,
+  audioEnabled = true,
+  isScreenShare = false,
+  label,
+  compact = false,
+  fill = false,
+  onClick,
+  className,
+}: VideoTileProps) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !stream) return;
+
+    video.srcObject = stream;
+
+    const handleTrackAdded = () => {
+      if (video.srcObject !== stream) {
+        video.srcObject = stream;
+      }
+      video.play().catch(() => {});
+    };
+
+    stream.addEventListener('addtrack', handleTrackAdded);
+    video.play().catch(() => {});
+
+    return () => {
+      stream.removeEventListener('addtrack', handleTrackAdded);
+    };
+  }, [stream]);
+
+  const displayName = label || (isLocal ? 'You' : `Peer ${peerId.slice(0, 6)}`);
+  const initials = isLocal ? 'Y' : peerId.slice(0, 2).toUpperCase();
+  const shouldMirror = isLocal && !isScreenShare;
+
+  // Determine aspect ratio class
+  const aspectClass = isScreenShare
+    ? '' // Screen shares fill container, video uses object-contain
+    : fill
+      ? '' // Fill mode: expand to fill grid cell
+      : 'aspect-video'; // Default: maintain 16:9 aspect ratio
+
+  return (
+    <div
+      className={cn(
+        'group relative overflow-hidden rounded-2xl transition-all duration-300',
+        'bg-secondary/80 border border-border/50',
+        aspectClass,
+        isSpeaking && 'speaking-ring border-primary/50',
+        isActive && 'ring-2 ring-primary ring-offset-2 ring-offset-background glow-strong',
+        onClick && 'cursor-pointer hover:border-primary/30',
+        className
+      )}
+      onClick={onClick}
+    >
+      {/* Video element */}
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted={isLocal || isScreenShare}
+        className={cn(
+          'h-full w-full transition-opacity duration-300',
+          isScreenShare ? 'object-contain bg-black' : 'object-cover',
+          shouldMirror && 'scale-x-[-1]',
+          (!stream || !videoEnabled) && 'opacity-0 absolute'
+        )}
+      />
+
+      {/* Avatar fallback when video is off */}
+      {(!stream || !videoEnabled) && (
+        <div className="absolute inset-0 flex items-center justify-center mesh-gradient">
+          <div className="relative">
+            {/* Outer ring */}
+            <div
+              className={cn(
+                'absolute -inset-3 rounded-full border border-primary/20 transition-all duration-300',
+                isSpeaking && 'border-primary/50 scale-110'
+              )}
+            />
+            {/* Avatar circle */}
+            <div
+              className={cn(
+                'flex items-center justify-center rounded-full',
+                'bg-gradient-to-br from-primary/20 to-glow-secondary/20',
+                'border border-primary/30 transition-all duration-300',
+                compact ? 'h-12 w-12' : 'h-20 w-20',
+                isSpeaking && 'glow'
+              )}
+            >
+              {isLocal ? (
+                <User className={cn(compact ? 'h-5 w-5' : 'h-8 w-8', 'text-primary/70')} />
+              ) : (
+                <span
+                  className={cn(compact ? 'text-lg' : 'text-2xl', 'font-semibold text-primary/80')}
+                >
+                  {initials}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Gradient overlay at bottom */}
+      <div
+        className={cn(
+          'absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none',
+          compact ? 'h-16' : 'h-24'
+        )}
+      />
+
+      {/* Info bar */}
+      <div
+        className={cn(
+          'absolute bottom-0 left-0 right-0 flex items-center justify-between',
+          compact ? 'p-2' : 'p-3'
+        )}
+      >
+        <div className="flex items-center gap-2">
+          {/* Name badge */}
+          <span
+            className={cn(
+              'rounded-lg font-medium',
+              'bg-black/40 backdrop-blur-sm text-white/90',
+              'border border-white/10',
+              compact ? 'px-2 py-1 text-[10px]' : 'px-3 py-1.5 text-xs'
+            )}
+          >
+            {displayName}
+          </span>
+
+          {/* Speaking indicator */}
+          {isSpeaking && videoEnabled && !compact && (
+            <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-primary/20 border border-primary/30">
+              <div className="flex gap-0.5">
+                <span className="w-0.5 h-2 bg-primary rounded-full animate-pulse" />
+                <span
+                  className="w-0.5 h-3 bg-primary rounded-full animate-pulse"
+                  style={{ animationDelay: '0.1s' }}
+                />
+                <span
+                  className="w-0.5 h-2 bg-primary rounded-full animate-pulse"
+                  style={{ animationDelay: '0.2s' }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Status indicators */}
+        {!compact && (
+          <div className="flex items-center gap-1.5">
+            {!audioEnabled && (
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-destructive/80 backdrop-blur-sm">
+                <MicOff className="h-3.5 w-3.5 text-white" />
+              </span>
+            )}
+            {!videoEnabled && (
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-destructive/80 backdrop-blur-sm">
+                <VideoOff className="h-3.5 w-3.5 text-white" />
+              </span>
+            )}
+            {audioEnabled && videoEnabled && (
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                <Mic className="h-3.5 w-3.5 text-white/70" />
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Local indicator */}
+      {isLocal && !compact && (
+        <div className="absolute top-3 left-3">
+          <span className="px-2 py-1 rounded-md text-[10px] font-medium uppercase tracking-wider bg-primary/20 text-primary border border-primary/30 backdrop-blur-sm">
+            You
+          </span>
+        </div>
+      )}
+
+      {/* Screen share indicator */}
+      {isScreenShare && (
+        <div className="absolute top-3 left-3">
+          <span className="px-2 py-1 rounded-md text-[10px] font-medium uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/30 backdrop-blur-sm">
+            Screen
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
