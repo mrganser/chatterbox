@@ -29,6 +29,7 @@ https://thechatterbox.onrender.com/
 - **Styling:** Tailwind CSS v4
 - **Components:** shadcn/ui
 - **Linting/Formatting:** oxlint, oxfmt
+- **Testing:** Vitest, React Testing Library
 - **Real-time:** WebRTC (peer-to-peer), Socket.IO (signaling)
 
 ## Prerequisites
@@ -75,6 +76,9 @@ npm start
 | `npm run dev`          | Start development server |
 | `npm run build`        | Build for production     |
 | `npm start`            | Start production server  |
+| `npm test`             | Run tests in watch mode  |
+| `npm run test:run`     | Run tests once           |
+| `npm run test:coverage`| Run tests with coverage  |
 | `npm run lint`         | Run linter (oxlint)      |
 | `npm run lint:fix`     | Run linter with auto-fix |
 | `npm run format`       | Format code (oxfmt)      |
