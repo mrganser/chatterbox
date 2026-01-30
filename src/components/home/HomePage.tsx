@@ -66,7 +66,7 @@ export function HomePage() {
                   onKeyDown={(e) => e.key === 'Enter' && handleCreateRoom()}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  className="flex-1 h-12 text-base bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/50"
+                  className="flex-1 h-12 text-base bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/60"
                 />
                 <Button
                   onClick={handleCreateRoom}
@@ -132,12 +132,12 @@ export function HomePage() {
             href="https://github.com/mrganser/chatterbox"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-muted-foreground/60 hover:text-primary transition-colors"
+            className="flex items-center gap-2 text-muted-foreground/70 hover:text-primary transition-colors"
           >
             <Github className="h-5 w-5" />
             <span className="text-sm">View on GitHub</span>
           </a>
-          <p className="text-xs text-muted-foreground/40">
+          <p className="text-xs text-muted-foreground/60">
             No tracking. No accounts. Just connection.
           </p>
         </div>

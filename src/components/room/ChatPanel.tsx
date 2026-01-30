@@ -143,6 +143,9 @@ export function ChatPanel({ messages, localPeerId, onSendMessage, onClose }: Cha
             <Send className="h-4 w-4" />
           </Button>
         </div>
+        <p className="text-[10px] text-muted-foreground/60 text-center mt-2">
+          Messages are ephemeral and not stored
+        </p>
       </form>
     </div>
   );
