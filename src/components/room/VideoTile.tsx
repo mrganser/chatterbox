@@ -57,8 +57,8 @@ export function VideoTile({
   }, [stream]);
 
   const displayName = label || (isLocal ? 'You' : `Peer ${peerId.slice(0, 6)}`);
-  const initials = isLocal ? 'Y' : peerId.slice(0, 2).toUpperCase();
   const shouldMirror = isLocal && !isScreenShare;
+  const showVideo = stream && videoEnabled;
 
   // Determine aspect ratio class
   const aspectClass = isScreenShare
@@ -90,12 +90,12 @@ export function VideoTile({
           'h-full w-full transition-opacity duration-300',
           isScreenShare ? 'object-contain bg-black' : 'object-cover',
           shouldMirror && 'scale-x-[-1]',
-          (!stream || !videoEnabled) && 'opacity-0 absolute'
+          !showVideo && 'opacity-0 absolute'
         )}
       />
 
       {/* Avatar fallback when video is off */}
-      {(!stream || !videoEnabled) && (
+      {!showVideo && (
         <div className="absolute inset-0 flex items-center justify-center mesh-gradient">
           <div className="relative">
             {/* Outer ring */}
@@ -115,15 +115,7 @@ export function VideoTile({
                 isSpeaking && 'glow'
               )}
             >
-              {isLocal ? (
-                <User className={cn(compact ? 'h-5 w-5' : 'h-8 w-8', 'text-primary/70')} />
-              ) : (
-                <span
-                  className={cn(compact ? 'text-lg' : 'text-2xl', 'font-semibold text-primary/80')}
-                >
-                  {initials}
-                </span>
-              )}
+              <User className={cn(compact ? 'h-5 w-5' : 'h-8 w-8', 'text-primary/70')} />
             </div>
           </div>
         </div>

@@ -95,6 +95,17 @@ export function setupSocketHandlers(io: SocketIOServer) {
       }
     });
 
+    socket.on(
+      'media-state-changed',
+      ({ videoEnabled, audioEnabled }: { videoEnabled: boolean; audioEnabled: boolean }) => {
+        if (currentRoomId) {
+          socket
+            .to(currentRoomId)
+            .emit('media-state-changed', { peerId: socket.id, videoEnabled, audioEnabled });
+        }
+      }
+    );
+
     socket.on('disconnect', () => {
       console.log(`Client disconnected: ${socket.id}`);
       if (currentRoomId) {

@@ -96,6 +96,28 @@ export function useRoom(roomId: string) {
     }
   }, [screenShare, socket]);
 
+  // Wrap toggle methods to emit media state changes
+  const toggleVideoWithSignal = useCallback(() => {
+    localStream.toggleVideo();
+    if (socket) {
+      // toggleVideo changes the state, so we need to use the opposite of current state
+      socket.emit('media-state-changed', {
+        videoEnabled: !localStream.videoEnabled,
+        audioEnabled: localStream.audioEnabled,
+      });
+    }
+  }, [localStream, socket]);
+
+  const toggleAudioWithSignal = useCallback(() => {
+    localStream.toggleAudio();
+    if (socket) {
+      socket.emit('media-state-changed', {
+        videoEnabled: localStream.videoEnabled,
+        audioEnabled: !localStream.audioEnabled,
+      });
+    }
+  }, [localStream, socket]);
+
   useEffect(() => {
     if (!socket) return;
 
@@ -182,10 +204,17 @@ export function useRoom(roomId: string) {
     stopScreenShare: stopScreenShareWithSignal,
   };
 
+  // Wrapped localStream that includes signaling for media state
+  const localStreamWithSignaling = {
+    ...localStream,
+    toggleVideo: toggleVideoWithSignal,
+    toggleAudio: toggleAudioWithSignal,
+  };
+
   return {
     roomState,
     isConnected,
-    localStream,
+    localStream: localStreamWithSignaling,
     screenShare: screenShareWithSignaling,
     screenSharingPeerId,
     peers: peerConnections.peers,

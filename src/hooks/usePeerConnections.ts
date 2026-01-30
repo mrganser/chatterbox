@@ -104,6 +104,8 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
         id: peerId,
         stream: null,
         connection: pc,
+        videoEnabled: true,
+        audioEnabled: true,
       };
 
       peersRef.current.set(peerId, newPeer);
@@ -283,16 +285,35 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
       removePeer(peerId);
     };
 
+    const onMediaStateChanged = ({
+      peerId,
+      videoEnabled,
+      audioEnabled,
+    }: {
+      peerId: string;
+      videoEnabled: boolean;
+      audioEnabled: boolean;
+    }) => {
+      const peer = peersRef.current.get(peerId);
+      if (peer) {
+        const updatedPeer = { ...peer, videoEnabled, audioEnabled };
+        peersRef.current.set(peerId, updatedPeer);
+        setPeers(new Map(peersRef.current));
+      }
+    };
+
     socket.on('offer', onOffer);
     socket.on('answer', onAnswer);
     socket.on('ice-candidate', onIceCandidate);
     socket.on('peer-left', onPeerLeft);
+    socket.on('media-state-changed', onMediaStateChanged);
 
     return () => {
       socket.off('offer', onOffer);
       socket.off('answer', onAnswer);
       socket.off('ice-candidate', onIceCandidate);
       socket.off('peer-left', onPeerLeft);
+      socket.off('media-state-changed', onMediaStateChanged);
     };
   }, [socket, handleOffer, handleAnswer, handleIceCandidate, removePeer]);
 

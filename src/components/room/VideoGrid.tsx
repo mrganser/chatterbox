@@ -104,6 +104,8 @@ export function VideoGrid({
               peerId={peer.id}
               isSpeaking={(speakerLevels.get(peer.id) || 0) > 20}
               isActive={activeSpeakerId === peer.id}
+              videoEnabled={peer.videoEnabled}
+              audioEnabled={peer.audioEnabled}
               className="scale-in"
               compact
             />
@@ -137,6 +139,8 @@ export function VideoGrid({
             peerId={peer.id}
             isSpeaking={(speakerLevels.get(peer.id) || 0) > 20}
             isActive={activeSpeakerId === peer.id}
+            videoEnabled={peer.videoEnabled}
+            audioEnabled={peer.audioEnabled}
             fill
             className="scale-in"
           />

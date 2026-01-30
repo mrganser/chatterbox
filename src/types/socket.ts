@@ -8,6 +8,11 @@ export interface ServerToClientEvents {
   'chat-message': (data: ChatMessage) => void;
   'screen-share-started': (data: { peerId: string }) => void;
   'screen-share-stopped': (data: { peerId: string }) => void;
+  'media-state-changed': (data: {
+    peerId: string;
+    videoEnabled: boolean;
+    audioEnabled: boolean;
+  }) => void;
   error: (data: { message: string }) => void;
 }
 
@@ -20,6 +25,7 @@ export interface ClientToServerEvents {
   'chat-message': (data: { message: string }) => void;
   'screen-share-started': () => void;
   'screen-share-stopped': () => void;
+  'media-state-changed': (data: { videoEnabled: boolean; audioEnabled: boolean }) => void;
 }
 
 export interface ChatMessage {
