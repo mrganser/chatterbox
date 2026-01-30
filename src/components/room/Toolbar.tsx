@@ -19,6 +19,7 @@ interface ToolbarProps {
   audioEnabled: boolean;
   isScreenSharing: boolean;
   chatUnreadCount: number;
+  visible?: boolean;
   onToggleVideo: () => void;
   onToggleAudio: () => void;
   onToggleScreenShare: () => void;
@@ -33,6 +34,7 @@ export function Toolbar({
   audioEnabled,
   isScreenSharing,
   chatUnreadCount,
+  visible = true,
   onToggleVideo,
   onToggleAudio,
   onToggleScreenShare,
@@ -42,7 +44,12 @@ export function Toolbar({
   onFullscreen,
 }: ToolbarProps) {
   return (
-    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 scale-in">
+    <div
+      className={cn(
+        'absolute bottom-6 left-1/2 -translate-x-1/2 z-10 transition-all duration-300 ease-out',
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+      )}
+    >
       <div className="flex items-center gap-2 p-2 rounded-2xl glass glow border border-border/50">
         {/* Audio toggle */}
         <Tooltip content={audioEnabled ? 'Mute' : 'Unmute'}>

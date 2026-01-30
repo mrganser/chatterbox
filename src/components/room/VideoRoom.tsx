@@ -20,10 +20,14 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
   const router = useRouter();
   const room = useRoom(roomId);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showToolbar, setShowToolbar] = useState(true);
 
   // Show confirmation dialog when user tries to leave while in a call
   const isInCall = room.roomState.status === 'connected';
   useNavigationGuard(isInCall);
+
+  const handleMouseEnter = useCallback(() => setShowToolbar(true), []);
+  const handleMouseLeave = useCallback(() => setShowToolbar(false), []);
 
   const handleLeave = useCallback(() => {
     room.leaveRoom();
@@ -70,7 +74,11 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
   }
 
   return (
-    <div className="relative flex h-[calc(100vh-4rem)] flex-col overflow-hidden">
+    <div
+      className="relative flex h-[calc(100vh-4rem)] flex-col overflow-hidden"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       {/* Ambient background */}
       <div className="absolute inset-0 mesh-gradient opacity-50 pointer-events-none" />
       <div className="absolute inset-0 grid-pattern opacity-30 pointer-events-none" />
@@ -110,6 +118,7 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
         audioEnabled={room.localStream.audioEnabled}
         isScreenSharing={room.screenShare.isSharing}
         chatUnreadCount={room.chat.unreadCount}
+        visible={showToolbar}
         onToggleVideo={room.localStream.toggleVideo}
         onToggleAudio={room.localStream.toggleAudio}
         onToggleScreenShare={handleToggleScreenShare}
