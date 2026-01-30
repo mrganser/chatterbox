@@ -1,6 +1,15 @@
 import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { Mic, MicOff, VideoOff, User } from 'lucide-react';
+import { Mic, MicOff, VideoOff, User, VolumeX, Volume2, VideoOff as VideoOffIcon, Video, LogOut } from 'lucide-react';
+import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+
+interface ModerationHandlers {
+  onMute: (peerId: string) => void;
+  onUnmute: (peerId: string) => void;
+  onDisableVideo: (peerId: string) => void;
+  onEnableVideo: (peerId: string) => void;
+  onKick: (peerId: string) => void;
+}
 
 interface VideoTileProps {
   stream: MediaStream | null;
@@ -15,6 +24,7 @@ interface VideoTileProps {
   fill?: boolean;
   onClick?: () => void;
   className?: string;
+  moderation?: ModerationHandlers;
 }
 
 export function VideoTile({
@@ -30,6 +40,7 @@ export function VideoTile({
   fill = false,
   onClick,
   className,
+  moderation,
 }: VideoTileProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -211,6 +222,46 @@ export function VideoTile({
           <span className="px-2 py-1 rounded-md text-[10px] font-medium uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/30 backdrop-blur-sm">
             Screen
           </span>
+        </div>
+      )}
+
+      {/* Moderation menu for remote peers */}
+      {!isLocal && !isScreenShare && moderation && !compact && (
+        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+          <DropdownMenu>
+            {audioEnabled ? (
+              <DropdownMenuItem
+                icon={<VolumeX className="h-4 w-4" />}
+                label="Mute"
+                onClick={() => moderation.onMute(peerId)}
+              />
+            ) : (
+              <DropdownMenuItem
+                icon={<Volume2 className="h-4 w-4" />}
+                label="Unmute"
+                onClick={() => moderation.onUnmute(peerId)}
+              />
+            )}
+            {videoEnabled ? (
+              <DropdownMenuItem
+                icon={<VideoOffIcon className="h-4 w-4" />}
+                label="Disable video"
+                onClick={() => moderation.onDisableVideo(peerId)}
+              />
+            ) : (
+              <DropdownMenuItem
+                icon={<Video className="h-4 w-4" />}
+                label="Enable video"
+                onClick={() => moderation.onEnableVideo(peerId)}
+              />
+            )}
+            <DropdownMenuItem
+              icon={<LogOut className="h-4 w-4" />}
+              label="Kick"
+              variant="destructive"
+              onClick={() => moderation.onKick(peerId)}
+            />
+          </DropdownMenu>
         </div>
       )}
     </div>

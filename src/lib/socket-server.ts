@@ -106,6 +106,26 @@ export function setupSocketHandlers(io: SocketIOServer) {
       }
     );
 
+    socket.on('moderation-mute', ({ targetPeerId }: { targetPeerId: string }) => {
+      io.to(targetPeerId).emit('moderation-mute', { fromPeerId: socket.id });
+    });
+
+    socket.on('moderation-unmute', ({ targetPeerId }: { targetPeerId: string }) => {
+      io.to(targetPeerId).emit('moderation-unmute', { fromPeerId: socket.id });
+    });
+
+    socket.on('moderation-disable-video', ({ targetPeerId }: { targetPeerId: string }) => {
+      io.to(targetPeerId).emit('moderation-disable-video', { fromPeerId: socket.id });
+    });
+
+    socket.on('moderation-enable-video', ({ targetPeerId }: { targetPeerId: string }) => {
+      io.to(targetPeerId).emit('moderation-enable-video', { fromPeerId: socket.id });
+    });
+
+    socket.on('moderation-kick', ({ targetPeerId }: { targetPeerId: string }) => {
+      io.to(targetPeerId).emit('moderation-kick', { fromPeerId: socket.id });
+    });
+
     socket.on('disconnect', () => {
       console.log(`Client disconnected: ${socket.id}`);
       if (currentRoomId) {

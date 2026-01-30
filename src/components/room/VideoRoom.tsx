@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRoom } from '@/hooks/useRoom';
 import { useNavigationGuard } from '@/hooks/useNavigationGuard';
@@ -24,7 +24,19 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
 
   // Show confirmation dialog when user tries to leave while in a call
   const isInCall = room.roomState.status === 'connected';
-  useNavigationGuard(isInCall);
+  useNavigationGuard(isInCall && !room.wasKicked);
+
+  // Refs to avoid stale closures in kick handler
+  const leaveRoomRef = useRef(room.leaveRoom);
+  leaveRoomRef.current = room.leaveRoom;
+
+  // Handle being kicked - redirect to home
+  useEffect(() => {
+    if (room.wasKicked) {
+      leaveRoomRef.current();
+      router.push('/');
+    }
+  }, [room.wasKicked, router]);
 
   const handleMouseEnter = useCallback(() => setShowToolbar(true), []);
   const handleMouseLeave = useCallback(() => setShowToolbar(false), []);
@@ -97,6 +109,13 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
             screenShareStream={room.screenShare.stream}
             isScreenSharing={room.screenShare.isSharing}
             screenSharingPeerId={room.screenSharingPeerId}
+            moderation={{
+              onMute: room.moderation.mutePeer,
+              onUnmute: room.moderation.unmutePeer,
+              onDisableVideo: room.moderation.disableVideoPeer,
+              onEnableVideo: room.moderation.enableVideoPeer,
+              onKick: room.moderation.kickPeer,
+            }}
           />
         </div>
 

@@ -13,6 +13,11 @@ export interface ServerToClientEvents {
     videoEnabled: boolean;
     audioEnabled: boolean;
   }) => void;
+  'moderation-mute': (data: { fromPeerId: string }) => void;
+  'moderation-unmute': (data: { fromPeerId: string }) => void;
+  'moderation-disable-video': (data: { fromPeerId: string }) => void;
+  'moderation-enable-video': (data: { fromPeerId: string }) => void;
+  'moderation-kick': (data: { fromPeerId: string }) => void;
   error: (data: { message: string }) => void;
 }
 
@@ -26,6 +31,11 @@ export interface ClientToServerEvents {
   'screen-share-started': () => void;
   'screen-share-stopped': () => void;
   'media-state-changed': (data: { videoEnabled: boolean; audioEnabled: boolean }) => void;
+  'moderation-mute': (data: { targetPeerId: string }) => void;
+  'moderation-unmute': (data: { targetPeerId: string }) => void;
+  'moderation-disable-video': (data: { targetPeerId: string }) => void;
+  'moderation-enable-video': (data: { targetPeerId: string }) => void;
+  'moderation-kick': (data: { targetPeerId: string }) => void;
 }
 
 export interface ChatMessage {

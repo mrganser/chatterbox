@@ -1,6 +1,14 @@
 import { VideoTile } from './VideoTile';
 import type { RemotePeer } from '@/types/webrtc';
 
+interface ModerationHandlers {
+  onMute: (peerId: string) => void;
+  onUnmute: (peerId: string) => void;
+  onDisableVideo: (peerId: string) => void;
+  onEnableVideo: (peerId: string) => void;
+  onKick: (peerId: string) => void;
+}
+
 interface VideoGridProps {
   localStream: MediaStream | null;
   localPeerId: string | null;
@@ -11,6 +19,7 @@ interface VideoGridProps {
   screenShareStream?: MediaStream | null;
   isScreenSharing?: boolean;
   screenSharingPeerId?: string | null;
+  moderation?: ModerationHandlers;
 }
 
 export function VideoGrid({
@@ -23,6 +32,7 @@ export function VideoGrid({
   screenShareStream,
   isScreenSharing,
   screenSharingPeerId,
+  moderation,
 }: VideoGridProps) {
   const totalParticipants = peers.length + 1;
 
@@ -104,6 +114,7 @@ export function VideoGrid({
               audioEnabled={peer.audioEnabled}
               className="scale-in"
               compact
+              moderation={moderation}
             />
           ))}
         </div>
@@ -137,6 +148,7 @@ export function VideoGrid({
             audioEnabled={peer.audioEnabled}
             fill
             className="scale-in"
+            moderation={moderation}
           />
         ))}
       </div>

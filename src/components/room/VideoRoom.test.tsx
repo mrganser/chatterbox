@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { VideoRoom } from './VideoRoom';
+import { ToastProvider } from '@/contexts/ToastContext';
 
 // Mock all the child components to simplify testing
 vi.mock('./VideoGrid', () => ({
@@ -24,6 +25,11 @@ const mockReplaceVideoTrack = vi.fn();
 const mockSendMessage = vi.fn();
 const mockToggleChat = vi.fn();
 const mockCloseChat = vi.fn();
+const mockMutePeer = vi.fn();
+const mockUnmutePeer = vi.fn();
+const mockDisableVideoPeer = vi.fn();
+const mockEnableVideoPeer = vi.fn();
+const mockKickPeer = vi.fn();
 
 // Track mock state that can be modified per test
 let mockRoomStatus: 'idle' | 'joining' | 'connected' | 'error' = 'idle';
@@ -71,6 +77,14 @@ vi.mock('@/hooks/useRoom', () => ({
     joinRoom: mockJoinRoom,
     leaveRoom: mockLeaveRoom,
     replaceVideoTrack: mockReplaceVideoTrack,
+    moderation: {
+      mutePeer: mockMutePeer,
+      unmutePeer: mockUnmutePeer,
+      disableVideoPeer: mockDisableVideoPeer,
+      enableVideoPeer: mockEnableVideoPeer,
+      kickPeer: mockKickPeer,
+    },
+    wasKicked: false,
   }),
 }));
 
@@ -81,6 +95,11 @@ vi.mock('next/navigation', () => ({
     push: mockPush,
   }),
 }));
+
+// Helper to render with ToastProvider
+const renderWithProviders = (ui: React.ReactElement) => {
+  return render(<ToastProvider>{ui}</ToastProvider>);
+};
 
 describe('VideoRoom', () => {
   beforeEach(() => {
@@ -94,21 +113,21 @@ describe('VideoRoom', () => {
 
   describe('pre-call state (idle)', () => {
     it('renders PreCallActions when status is idle', () => {
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       expect(screen.getByText(/ready to join/i)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /join room/i })).toBeInTheDocument();
     });
 
     it('shows room ID in pre-call screen', () => {
-      render(<VideoRoom roomId="my-special-room" />);
+      renderWithProviders(<VideoRoom roomId="my-special-room" />);
 
       expect(screen.getByText(/my-special-room/)).toBeInTheDocument();
     });
 
     it('calls joinRoom when Join Room button is clicked', async () => {
       const user = userEvent.setup();
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       const joinButton = screen.getByRole('button', { name: /join room/i });
       await user.click(joinButton);
@@ -120,7 +139,7 @@ describe('VideoRoom', () => {
   describe('joining state', () => {
     it('shows loading state when joining', () => {
       mockRoomStatus = 'joining';
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       expect(screen.getByText('Joining room...')).toBeInTheDocument();
     });
@@ -131,7 +150,7 @@ describe('VideoRoom', () => {
       mockRoomStatus = 'error';
       mockError = 'Failed to access camera';
 
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       expect(screen.getByText(/failed to access camera/i)).toBeInTheDocument();
     });
@@ -141,7 +160,7 @@ describe('VideoRoom', () => {
       mockError = 'Connection failed';
 
       const user = userEvent.setup();
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       const retryButton = screen.getByRole('button', { name: /try again/i });
       await user.click(retryButton);
@@ -156,13 +175,13 @@ describe('VideoRoom', () => {
     });
 
     it('renders the video grid when connected', () => {
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       expect(screen.getByTestId('video-grid')).toBeInTheDocument();
     });
 
     it('renders toolbar buttons when connected', () => {
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       const buttons = screen.getAllByRole('button');
       expect(buttons.length).toBeGreaterThan(0);
@@ -170,7 +189,7 @@ describe('VideoRoom', () => {
 
     it('toggles video when video button is clicked', async () => {
       const user = userEvent.setup();
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       const buttons = screen.getAllByRole('button');
       const videoButton = buttons.find(
@@ -184,7 +203,7 @@ describe('VideoRoom', () => {
 
     it('toggles audio when audio button is clicked', async () => {
       const user = userEvent.setup();
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       const buttons = screen.getAllByRole('button');
       const audioButton = buttons.find(
@@ -198,7 +217,7 @@ describe('VideoRoom', () => {
 
     it('toggles chat when chat button is clicked', async () => {
       const user = userEvent.setup();
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       const buttons = screen.getAllByRole('button');
       const chatButton = buttons.find((btn) => btn.querySelector('svg.lucide-message-square'));
@@ -210,7 +229,7 @@ describe('VideoRoom', () => {
 
     it('leaves room and navigates home when leave button is clicked', async () => {
       const user = userEvent.setup();
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       const buttons = screen.getAllByRole('button');
       const leaveButton = buttons.find((btn) => btn.querySelector('svg.lucide-phone-off'));
@@ -223,7 +242,7 @@ describe('VideoRoom', () => {
 
     it('opens share dialog when share button is clicked', async () => {
       const user = userEvent.setup();
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       const buttons = screen.getAllByRole('button');
       const shareButton = buttons.find((btn) => btn.querySelector('svg.lucide-share-2'));
@@ -246,7 +265,7 @@ describe('VideoRoom', () => {
       const user = userEvent.setup();
       mockStartScreenShare.mockResolvedValue(new MediaStream());
 
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       const buttons = screen.getAllByRole('button');
       const screenButton = buttons.find(
@@ -263,7 +282,7 @@ describe('VideoRoom', () => {
       mockIsScreenSharing = true;
       const user = userEvent.setup();
 
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       const buttons = screen.getAllByRole('button');
       const screenButton = buttons.find((btn) => btn.querySelector('svg.lucide-monitor-off'));
@@ -281,7 +300,7 @@ describe('VideoRoom', () => {
 
     it('shows chat panel when chat is open', () => {
       mockChatIsOpen = true;
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       expect(screen.getByText('Chat')).toBeInTheDocument();
       expect(screen.getByPlaceholderText('Type a message...')).toBeInTheDocument();
@@ -290,7 +309,7 @@ describe('VideoRoom', () => {
     it('shows unread count badge on chat button', () => {
       mockChatUnreadCount = 3;
 
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       expect(screen.getByText('3')).toBeInTheDocument();
     });
@@ -298,7 +317,7 @@ describe('VideoRoom', () => {
     it('sends message through chat panel', async () => {
       mockChatIsOpen = true;
       const user = userEvent.setup();
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       const input = screen.getByPlaceholderText('Type a message...');
       await user.type(input, 'Hello world');
@@ -312,7 +331,7 @@ describe('VideoRoom', () => {
     it('closes chat when close button is clicked', async () => {
       mockChatIsOpen = true;
       const user = userEvent.setup();
-      render(<VideoRoom roomId="test-room" />);
+      renderWithProviders(<VideoRoom roomId="test-room" />);
 
       const closeButtons = screen.getAllByRole('button');
       const closeButton = closeButtons.find((btn) => btn.querySelector('svg.lucide-x'));

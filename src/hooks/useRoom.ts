@@ -5,6 +5,7 @@ import { useScreenShare } from './useScreenShare';
 import { usePeerConnections } from './usePeerConnections';
 import { useActiveSpeaker } from './useActiveSpeaker';
 import { useChat } from './useChat';
+import { useModeration } from './useModeration';
 import type { RoomState } from '@/types/room';
 
 export function useRoom(roomId: string) {
@@ -40,6 +41,75 @@ export function useRoom(roomId: string) {
   );
 
   const chat = useChat({ socket });
+
+  // Track if user was kicked
+  const [wasKicked, setWasKicked] = useState(false);
+
+  // Moderation handlers
+  const handleMuted = useCallback(() => {
+    // Mute audio if not already muted
+    if (localStreamRef.current.audioEnabled) {
+      localStreamRef.current.toggleAudio();
+      if (socket) {
+        socket.emit('media-state-changed', {
+          videoEnabled: localStreamRef.current.videoEnabled,
+          audioEnabled: false,
+        });
+      }
+    }
+  }, [socket]);
+
+  const handleUnmuted = useCallback(() => {
+    // Unmute audio if currently muted
+    if (!localStreamRef.current.audioEnabled) {
+      localStreamRef.current.toggleAudio();
+      if (socket) {
+        socket.emit('media-state-changed', {
+          videoEnabled: localStreamRef.current.videoEnabled,
+          audioEnabled: true,
+        });
+      }
+    }
+  }, [socket]);
+
+  const handleVideoDisabled = useCallback(() => {
+    // Disable video if not already disabled
+    if (localStreamRef.current.videoEnabled) {
+      localStreamRef.current.toggleVideo();
+      if (socket) {
+        socket.emit('media-state-changed', {
+          videoEnabled: false,
+          audioEnabled: localStreamRef.current.audioEnabled,
+        });
+      }
+    }
+  }, [socket]);
+
+  const handleVideoEnabled = useCallback(() => {
+    // Enable video if currently disabled
+    if (!localStreamRef.current.videoEnabled) {
+      localStreamRef.current.toggleVideo();
+      if (socket) {
+        socket.emit('media-state-changed', {
+          videoEnabled: true,
+          audioEnabled: localStreamRef.current.audioEnabled,
+        });
+      }
+    }
+  }, [socket]);
+
+  const handleKicked = useCallback(() => {
+    setWasKicked(true);
+  }, []);
+
+  const moderation = useModeration({
+    socket,
+    onMuted: handleMuted,
+    onUnmuted: handleUnmuted,
+    onVideoDisabled: handleVideoDisabled,
+    onVideoEnabled: handleVideoEnabled,
+    onKicked: handleKicked,
+  });
 
   const joinRoom = useCallback(async () => {
     if (!socket || !isConnected) {
@@ -223,5 +293,7 @@ export function useRoom(roomId: string) {
     joinRoom,
     leaveRoom,
     replaceVideoTrack: peerConnections.replaceVideoTrack,
+    moderation,
+    wasKicked,
   };
 }
