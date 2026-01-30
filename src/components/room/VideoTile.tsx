@@ -63,7 +63,7 @@ export function VideoTile({
     return () => {
       stream.removeEventListener('addtrack', handleTrackAdded);
     };
-  }, [stream]);
+  }, [stream, peerId, isScreenShare]);
 
   const displayName = label || (isLocal ? 'You' : `Peer ${peerId.slice(0, 6)}`);
   const shouldMirror = isLocal && !isScreenShare;
@@ -108,7 +108,7 @@ export function VideoTile({
         ref={videoRef}
         autoPlay
         playsInline
-        muted={isLocal || isScreenShare}
+        muted={isLocal}
         className={cn(
           'h-full w-full transition-opacity duration-300',
           isScreenShare ? 'object-contain bg-black' : 'object-cover',
