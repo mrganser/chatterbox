@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRoom } from '@/hooks/useRoom';
+import { useNavigationGuard } from '@/hooks/useNavigationGuard';
 import { VideoGrid } from './VideoGrid';
 import { Toolbar } from './Toolbar';
 import { ShareDialog } from './ShareDialog';
@@ -19,6 +20,10 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
   const router = useRouter();
   const room = useRoom(roomId);
   const [showShareDialog, setShowShareDialog] = useState(false);
+
+  // Show confirmation dialog when user tries to leave while in a call
+  const isInCall = room.roomState.status === 'connected';
+  useNavigationGuard(isInCall);
 
   const handleLeave = useCallback(() => {
     room.leaveRoom();
