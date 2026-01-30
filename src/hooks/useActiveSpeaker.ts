@@ -11,7 +11,6 @@ export function useActiveSpeaker(
   peers: RemotePeer[],
   localPeerId: string | null
 ) {
-  const [activeSpeakerId, setActiveSpeakerId] = useState<string | null>(null);
   const [speakerLevels, setSpeakerLevels] = useState<Map<string, number>>(new Map());
   const audioContextRef = useRef<AudioContext | null>(null);
   const analysersRef = useRef<Map<string, AnalyserNode>>(new Map());
@@ -32,7 +31,7 @@ export function useActiveSpeaker(
   }, []);
 
   useEffect(() => {
-    if (localStream && localPeerId) {
+    if (localStream && localPeerId && !analysersRef.current.has(localPeerId)) {
       createAnalyser(localStream, localPeerId);
     }
 
@@ -52,7 +51,16 @@ export function useActiveSpeaker(
     });
   }, [localStream, peers, localPeerId, createAnalyser]);
 
+  // Track analyser count to restart the loop when new analysers are added
+  const [analyserCount, setAnalyserCount] = useState(0);
+
   useEffect(() => {
+    setAnalyserCount(analysersRef.current.size);
+  }, [localStream, peers, localPeerId]);
+
+  useEffect(() => {
+    if (analyserCount === 0) return;
+
     let animationFrameId: number;
 
     const checkLevels = () => {
@@ -72,25 +80,17 @@ export function useActiveSpeaker(
       });
       setSpeakerLevels(newLevels);
 
-      const activeSpeaker = levels.filter((l) => l.level > 20).sort((a, b) => b.level - a.level)[0];
-
-      if (activeSpeaker) {
-        setActiveSpeakerId(activeSpeaker.peerId);
-      }
-
       animationFrameId = requestAnimationFrame(checkLevels);
     };
 
-    if (analysersRef.current.size > 0) {
-      checkLevels();
-    }
+    checkLevels();
 
     return () => {
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, []);
+  }, [analyserCount]);
 
   useEffect(() => {
     return () => {
@@ -101,7 +101,6 @@ export function useActiveSpeaker(
   }, []);
 
   return {
-    activeSpeakerId,
     speakerLevels,
   };
 }

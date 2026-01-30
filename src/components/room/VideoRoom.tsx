@@ -91,7 +91,6 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
             localStream={room.localStream.stream}
             localPeerId={room.roomState.peerId}
             peers={room.peers}
-            activeSpeakerId={room.activeSpeakerId}
             speakerLevels={room.speakerLevels}
             videoEnabled={room.localStream.videoEnabled}
             audioEnabled={room.localStream.audioEnabled}

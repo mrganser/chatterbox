@@ -33,7 +33,7 @@ export function useRoom(roomId: string) {
   const replaceVideoTrackRef = useRef(peerConnections.replaceVideoTrack);
   replaceVideoTrackRef.current = peerConnections.replaceVideoTrack;
 
-  const { activeSpeakerId, speakerLevels } = useActiveSpeaker(
+  const { speakerLevels } = useActiveSpeaker(
     localStream.stream,
     peerConnections.peers,
     roomState.peerId
@@ -218,7 +218,6 @@ export function useRoom(roomId: string) {
     screenShare: screenShareWithSignaling,
     screenSharingPeerId,
     peers: peerConnections.peers,
-    activeSpeakerId,
     speakerLevels,
     chat,
     joinRoom,

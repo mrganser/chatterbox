@@ -5,7 +5,6 @@ interface VideoGridProps {
   localStream: MediaStream | null;
   localPeerId: string | null;
   peers: RemotePeer[];
-  activeSpeakerId: string | null;
   speakerLevels: Map<string, number>;
   videoEnabled: boolean;
   audioEnabled: boolean;
@@ -18,7 +17,6 @@ export function VideoGrid({
   localStream,
   localPeerId,
   peers,
-  activeSpeakerId,
   speakerLevels,
   videoEnabled,
   audioEnabled,
@@ -88,8 +86,7 @@ export function VideoGrid({
             stream={localStream}
             peerId={localPeerId || 'local'}
             isLocal
-            isSpeaking={(speakerLevels.get(localPeerId || '') || 0) > 20}
-            isActive={activeSpeakerId === localPeerId}
+            speakerLevel={speakerLevels.get(localPeerId || '') || 0}
             videoEnabled={videoEnabled}
             audioEnabled={audioEnabled}
             className="scale-in"
@@ -102,8 +99,7 @@ export function VideoGrid({
               key={peer.id}
               stream={peer.stream}
               peerId={peer.id}
-              isSpeaking={(speakerLevels.get(peer.id) || 0) > 20}
-              isActive={activeSpeakerId === peer.id}
+              speakerLevel={speakerLevels.get(peer.id) || 0}
               videoEnabled={peer.videoEnabled}
               audioEnabled={peer.audioEnabled}
               className="scale-in"
@@ -123,8 +119,7 @@ export function VideoGrid({
           stream={localStream}
           peerId={localPeerId || 'local'}
           isLocal
-          isSpeaking={(speakerLevels.get(localPeerId || '') || 0) > 20}
-          isActive={activeSpeakerId === localPeerId}
+          speakerLevel={speakerLevels.get(localPeerId || '') || 0}
           videoEnabled={videoEnabled}
           audioEnabled={audioEnabled}
           fill
@@ -137,8 +132,7 @@ export function VideoGrid({
             key={peer.id}
             stream={peer.stream}
             peerId={peer.id}
-            isSpeaking={(speakerLevels.get(peer.id) || 0) > 20}
-            isActive={activeSpeakerId === peer.id}
+            speakerLevel={speakerLevels.get(peer.id) || 0}
             videoEnabled={peer.videoEnabled}
             audioEnabled={peer.audioEnabled}
             fill

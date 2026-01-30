@@ -6,8 +6,7 @@ interface VideoTileProps {
   stream: MediaStream | null;
   peerId: string;
   isLocal?: boolean;
-  isSpeaking?: boolean;
-  isActive?: boolean;
+  speakerLevel?: number;
   videoEnabled?: boolean;
   audioEnabled?: boolean;
   isScreenShare?: boolean;
@@ -22,8 +21,7 @@ export function VideoTile({
   stream,
   peerId,
   isLocal = false,
-  isSpeaking = false,
-  isActive = false,
+  speakerLevel = 0,
   videoEnabled = true,
   audioEnabled = true,
   isScreenShare = false,
@@ -60,6 +58,22 @@ export function VideoTile({
   const shouldMirror = isLocal && !isScreenShare;
   const showVideo = stream && videoEnabled;
 
+  // Calculate glow intensity from speaker level (0-100 range, capped at 60)
+  const minThreshold = 15;
+  const maxLevel = 60;
+  const isSpeaking = speakerLevel > minThreshold;
+  const glowIntensity = isSpeaking
+    ? Math.min(speakerLevel - minThreshold, maxLevel - minThreshold) / (maxLevel - minThreshold)
+    : 0;
+
+  // Dynamic glow style based on speaker level
+  const glowStyle = isSpeaking ? {
+    boxShadow: `
+      0 0 ${20 + glowIntensity * 30}px rgba(0, 245, 212, ${0.15 + glowIntensity * 0.4}),
+      0 0 ${40 + glowIntensity * 40}px rgba(0, 245, 212, ${0.08 + glowIntensity * 0.2})
+    `,
+  } : {};
+
   // Determine aspect ratio class
   const aspectClass = isScreenShare
     ? '' // Screen shares fill container, video uses object-contain
@@ -73,8 +87,6 @@ export function VideoTile({
         'group relative overflow-hidden rounded-2xl transition-all duration-300',
         'bg-secondary/80 border border-border/50',
         aspectClass,
-        isSpeaking && 'speaking-ring border-primary/50',
-        isActive && 'ring-2 ring-primary ring-offset-2 ring-offset-background glow-strong',
         onClick && 'cursor-pointer hover:border-primary/30',
         className
       )}
@@ -99,21 +111,16 @@ export function VideoTile({
         <div className="absolute inset-0 flex items-center justify-center mesh-gradient">
           <div className="relative">
             {/* Outer ring */}
-            <div
-              className={cn(
-                'absolute -inset-3 rounded-full border border-primary/20 transition-all duration-300',
-                isSpeaking && 'border-primary/50 scale-110'
-              )}
-            />
+            <div className="absolute -inset-3 rounded-full border border-primary/20" />
             {/* Avatar circle */}
             <div
               className={cn(
                 'flex items-center justify-center rounded-full',
-                'bg-gradient-to-br from-primary/20 to-glow-secondary/20',
-                'border border-primary/30 transition-all duration-300',
-                compact ? 'h-12 w-12' : 'h-20 w-20',
-                isSpeaking && 'glow'
+                'bg-linear-to-br from-primary/20 to-glow-secondary/20',
+                'border border-primary/30 transition-all duration-150',
+                compact ? 'h-12 w-12' : 'h-20 w-20'
               )}
+              style={glowStyle}
             >
               <User className={cn(compact ? 'h-5 w-5' : 'h-8 w-8', 'text-primary/70')} />
             </div>
