@@ -9,6 +9,7 @@ Create a room with a name and share the link with your partners so they can join
 - Real-time video and audio conferencing
 - Screen sharing with presentation mode
 - Text chat
+- Speaker volume effects
 
 ## Demo
 
