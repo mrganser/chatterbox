@@ -4,15 +4,11 @@ interface FeatureCardProps {
   icon: LucideIcon;
   title: string;
   description: string;
-  delay?: number;
 }
 
-export function FeatureCard({ icon: Icon, title, description, delay = 0 }: FeatureCardProps) {
+export function FeatureCard({ icon: Icon, title, description }: FeatureCardProps) {
   return (
-    <div
-      className="group relative fade-in opacity-0 p-6 rounded-2xl glass glass-hover transition-all duration-300 cursor-default"
-      style={{ animationDelay: `${0.4 + delay * 0.1}s` }}
-    >
+    <div className="group relative fade-in p-6 rounded-2xl glass glass-hover transition-all duration-300 cursor-default">
       {/* Gradient border on hover */}
       <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-gradient" />
 

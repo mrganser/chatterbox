@@ -37,14 +37,14 @@ export function HomePage() {
           </div>
 
           {/* Main heading */}
-          <h1 className="fade-in stagger-1 mb-6 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+          <h1 className="fade-in mb-6 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
             <span className="text-foreground">Video Chat</span>
             <br />
             <span className="gradient-text">Made Simple</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="fade-in stagger-2 mb-12 text-lg text-muted-foreground md:text-xl max-w-xl mx-auto leading-relaxed">
+          <p className="fade-in mb-12 text-lg text-muted-foreground md:text-xl max-w-xl mx-auto leading-relaxed">
             Free, secure, peer-to-peer video conferencing.
             <br className="hidden sm:block" />
             Connect instantly with anyone, anywhere.
@@ -52,7 +52,7 @@ export function HomePage() {
 
           {/* Action area */}
           <div
-            className={`fade-in stagger-3 relative mx-auto max-w-md rounded-2xl p-1 transition-all duration-500 ${
+            className={`fade-in relative mx-auto max-w-md rounded-2xl p-1 transition-all duration-500 ${
               isFocused ? 'glow-strong' : ''
             }`}
           >
@@ -82,7 +82,7 @@ export function HomePage() {
           </div>
 
           {/* Quick tip */}
-          <p className="fade-in stagger-4 mt-4 text-xs text-muted-foreground/60">
+          <p className="fade-in mt-4 text-xs text-muted-foreground/60">
             Press Enter or click to start a room instantly
           </p>
         </div>
@@ -93,7 +93,7 @@ export function HomePage() {
             <h2 className="fade-in text-sm font-medium uppercase tracking-widest text-primary mb-2">
               Why ChatterBox
             </h2>
-            <p className="fade-in stagger-1 text-2xl font-semibold text-foreground">
+            <p className="fade-in text-2xl font-semibold text-foreground">
               Video calls without the bloat
             </p>
           </div>
@@ -103,25 +103,21 @@ export function HomePage() {
               icon={Shield}
               title="End-to-End Secure"
               description="Direct peer connections with encrypted streams"
-              delay={0}
             />
             <FeatureCard
               icon={Zap}
               title="Ultra Low Latency"
               description="No middleman servers slowing you down"
-              delay={1}
             />
             <FeatureCard
               icon={Users}
               title="Share & Connect"
               description="One link is all it takes to join"
-              delay={2}
             />
             <FeatureCard
               icon={MonitorPlay}
               title="Screen Sharing"
               description="Present your work with a single click"
-              delay={3}
             />
           </div>
         </div>
