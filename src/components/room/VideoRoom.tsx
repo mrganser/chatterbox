@@ -21,6 +21,7 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
   const [userName, setUserName] = useState('');
   const [startWithVideo, setStartWithVideo] = useState(true);
   const [startWithAudio, setStartWithAudio] = useState(true);
+  const [isLeaving, setIsLeaving] = useState(false);
   const room = useRoom(roomId, userName);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showToolbar, setShowToolbar] = useState(true);
@@ -36,6 +37,7 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
   // Handle being kicked - redirect to home
   useEffect(() => {
     if (room.wasKicked) {
+      setIsLeaving(true);
       leaveRoomRef.current();
       router.push('/');
     }
@@ -45,6 +47,7 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
   const handleMouseLeave = useCallback(() => setShowToolbar(false), []);
 
   const handleLeave = useCallback(() => {
+    setIsLeaving(true);
     room.leaveRoom();
     router.push('/');
   }, [room, router]);
@@ -66,6 +69,10 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
   }, []);
 
   const roomUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+  if (isLeaving) {
+    return <LoadingState message="Leaving room..." />;
+  }
 
   if (room.roomState.status === 'error') {
     return <RoomError error={room.roomState.error || 'Unknown error'} onRetry={room.joinRoom} />;
