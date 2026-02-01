@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { MicOff, VideoOff, User, VolumeX, VideoOff as VideoOffIcon, LogOut } from 'lucide-react';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
@@ -69,21 +69,26 @@ export function VideoTile({
   const shouldMirror = isLocal && !isScreenShare;
   const showVideo = stream && videoEnabled;
 
-  // Calculate glow intensity from speaker level (0-100 range, capped at 60)
-  const minThreshold = 15;
-  const maxLevel = 60;
-  const isSpeaking = speakerLevel > minThreshold;
-  const glowIntensity = isSpeaking
-    ? Math.min(speakerLevel - minThreshold, maxLevel - minThreshold) / (maxLevel - minThreshold)
-    : 0;
+  // Memoize glow calculations to prevent object recreation on every render
+  const { isSpeaking, glowStyle } = useMemo(() => {
+    const minThreshold = 15;
+    const maxLevel = 60;
+    const speaking = speakerLevel > minThreshold;
+    const glowIntensity = speaking
+      ? Math.min(speakerLevel - minThreshold, maxLevel - minThreshold) / (maxLevel - minThreshold)
+      : 0;
 
-  // Dynamic glow style based on speaker level
-  const glowStyle = isSpeaking ? {
-    boxShadow: `
-      0 0 ${20 + glowIntensity * 30}px rgba(0, 245, 212, ${0.15 + glowIntensity * 0.4}),
-      0 0 ${40 + glowIntensity * 40}px rgba(0, 245, 212, ${0.08 + glowIntensity * 0.2})
-    `,
-  } : {};
+    const style = speaking
+      ? {
+          boxShadow: `
+            0 0 ${20 + glowIntensity * 30}px rgba(0, 245, 212, ${0.15 + glowIntensity * 0.4}),
+            0 0 ${40 + glowIntensity * 40}px rgba(0, 245, 212, ${0.08 + glowIntensity * 0.2})
+          `,
+        }
+      : {};
+
+    return { isSpeaking: speaking, glowStyle: style };
+  }, [speakerLevel]);
 
   // Determine aspect ratio class
   const aspectClass = isScreenShare

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Shield, Zap, Users, MonitorPlay, ArrowRight, Sparkles, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,10 +12,13 @@ export function HomePage() {
   const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
 
-  const handleCreateRoom = () => {
+  const handleCreateRoom = useCallback(() => {
     const roomId = roomName.trim() || generateRoomId();
     router.push(`/room/${roomId}`);
-  };
+  }, [roomName, router]);
+
+  const handleFocus = useCallback(() => setIsFocused(true), []);
+  const handleBlur = useCallback(() => setIsFocused(false), []);
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
@@ -64,8 +67,8 @@ export function HomePage() {
                   value={roomName}
                   onChange={(e) => setRoomName(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleCreateRoom()}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
                   className="flex-1 h-12 text-base bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/60"
                 />
                 <Button

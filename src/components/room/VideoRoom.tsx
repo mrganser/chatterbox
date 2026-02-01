@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo, Activity } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRoom } from '@/hooks/useRoom';
 import { useNavigationGuard } from '@/hooks/useNavigationGuard';
@@ -70,6 +70,16 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
 
   const roomUrl = typeof window !== 'undefined' ? window.location.href : '';
 
+  // Memoize moderation handlers to prevent re-renders of VideoTile children
+  const moderation = useMemo(
+    () => ({
+      onMute: room.moderation.mutePeer,
+      onDisableVideo: room.moderation.disableVideoPeer,
+      onKick: room.moderation.kickPeer,
+    }),
+    [room.moderation.mutePeer, room.moderation.disableVideoPeer, room.moderation.kickPeer]
+  );
+
   if (isLeaving) {
     return <LoadingState message="Leaving room..." />;
   }
@@ -123,16 +133,12 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
             screenShareStream={room.screenShare.stream}
             isScreenSharing={room.screenShare.isSharing}
             screenSharingPeerId={room.screenSharingPeerId}
-            moderation={{
-              onMute: room.moderation.mutePeer,
-              onDisableVideo: room.moderation.disableVideoPeer,
-              onKick: room.moderation.kickPeer,
-            }}
+            moderation={moderation}
           />
         </div>
 
-        {/* Chat panel */}
-        {room.chat.isOpen && (
+        {/* Chat panel - using Activity to preserve state when hidden */}
+        <Activity mode={room.chat.isOpen ? 'visible' : 'hidden'}>
           <ChatPanel
             messages={room.chat.messages}
             localPeerId={room.roomState.peerId}
@@ -140,7 +146,7 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
             onSendMessage={room.chat.sendMessage}
             onClose={room.chat.closeChat}
           />
-        )}
+        </Activity>
       </div>
 
       {/* Floating toolbar */}
