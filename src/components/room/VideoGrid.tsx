@@ -3,9 +3,7 @@ import type { RemotePeer } from '@/types/webrtc';
 
 interface ModerationHandlers {
   onMute: (peerId: string) => void;
-  onUnmute: (peerId: string) => void;
   onDisableVideo: (peerId: string) => void;
-  onEnableVideo: (peerId: string) => void;
   onKick: (peerId: string) => void;
 }
 

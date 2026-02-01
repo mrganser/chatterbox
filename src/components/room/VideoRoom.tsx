@@ -112,9 +112,7 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
             screenSharingPeerId={room.screenSharingPeerId}
             moderation={{
               onMute: room.moderation.mutePeer,
-              onUnmute: room.moderation.unmutePeer,
               onDisableVideo: room.moderation.disableVideoPeer,
-              onEnableVideo: room.moderation.enableVideoPeer,
               onKick: room.moderation.kickPeer,
             }}
           />

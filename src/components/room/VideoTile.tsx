@@ -1,13 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { MicOff, VideoOff, User, VolumeX, Volume2, VideoOff as VideoOffIcon, Video, LogOut } from 'lucide-react';
+import { MicOff, VideoOff, User, VolumeX, VideoOff as VideoOffIcon, LogOut } from 'lucide-react';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 interface ModerationHandlers {
   onMute: (peerId: string) => void;
-  onUnmute: (peerId: string) => void;
   onDisableVideo: (peerId: string) => void;
-  onEnableVideo: (peerId: string) => void;
   onKick: (peerId: string) => void;
 }
 
@@ -217,30 +215,18 @@ export function VideoTile({
           compact ? "top-1 right-1" : "top-3 right-3"
         )}>
           <DropdownMenu>
-            {audioEnabled ? (
+            {audioEnabled && (
               <DropdownMenuItem
                 icon={<VolumeX className="h-4 w-4" />}
                 label="Mute"
                 onClick={() => moderation.onMute(peerId)}
               />
-            ) : (
-              <DropdownMenuItem
-                icon={<Volume2 className="h-4 w-4" />}
-                label="Unmute"
-                onClick={() => moderation.onUnmute(peerId)}
-              />
             )}
-            {videoEnabled ? (
+            {videoEnabled && (
               <DropdownMenuItem
                 icon={<VideoOffIcon className="h-4 w-4" />}
                 label="Disable video"
                 onClick={() => moderation.onDisableVideo(peerId)}
-              />
-            ) : (
-              <DropdownMenuItem
-                icon={<Video className="h-4 w-4" />}
-                label="Enable video"
-                onClick={() => moderation.onEnableVideo(peerId)}
               />
             )}
             <DropdownMenuItem
