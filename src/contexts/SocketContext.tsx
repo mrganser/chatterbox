@@ -1,15 +1,23 @@
-import { useEffect, useRef, useState } from 'react';
+'use client';
+
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { io, Socket } from 'socket.io-client';
 import type { ServerToClientEvents, ClientToServerEvents } from '@/types/socket';
 
 type TypedSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
-export function useSocket() {
+interface SocketContextValue {
+  socket: TypedSocket | null;
+  isConnected: boolean;
+}
+
+const SocketContext = createContext<SocketContextValue | null>(null);
+
+export function SocketProvider({ children }: { children: ReactNode }) {
   const socketRef = useRef<TypedSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    // Delay connection to avoid errors during page load/refresh transitions
     const socket: TypedSocket = io({
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 5,
@@ -49,8 +57,17 @@ export function useSocket() {
     };
   }, []);
 
-  return {
-    socket: socketRef.current,
-    isConnected,
-  };
+  return (
+    <SocketContext.Provider value={{ socket: socketRef.current, isConnected }}>
+      {children}
+    </SocketContext.Provider>
+  );
+}
+
+export function useSocketContext() {
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error('useSocketContext must be used within a SocketProvider');
+  }
+  return context;
 }

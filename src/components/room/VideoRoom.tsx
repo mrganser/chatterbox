@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo, Activity } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRoom } from '@/hooks/useRoom';
+import { useChat } from '@/hooks/useChat';
 import { useNavigationGuard } from '@/hooks/useNavigationGuard';
 import { VideoGrid } from './VideoGrid';
 import { Toolbar } from './Toolbar';
@@ -23,6 +24,7 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
   const [startWithAudio, setStartWithAudio] = useState(true);
   const [isLeaving, setIsLeaving] = useState(false);
   const room = useRoom(roomId, userName);
+  const chat = useChat();
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showToolbar, setShowToolbar] = useState(true);
 
@@ -138,13 +140,13 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
         </div>
 
         {/* Chat panel - using Activity to preserve state when hidden */}
-        <Activity mode={room.chat.isOpen ? 'visible' : 'hidden'}>
+        <Activity mode={chat.isOpen ? 'visible' : 'hidden'}>
           <ChatPanel
-            messages={room.chat.messages}
+            messages={chat.messages}
             localPeerId={room.roomState.peerId}
             localName={userName}
-            onSendMessage={room.chat.sendMessage}
-            onClose={room.chat.closeChat}
+            onSendMessage={chat.sendMessage}
+            onClose={chat.closeChat}
           />
         </Activity>
       </div>
@@ -154,12 +156,12 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
         videoEnabled={room.localStream.videoEnabled}
         audioEnabled={room.localStream.audioEnabled}
         isScreenSharing={room.screenShare.isSharing}
-        chatUnreadCount={room.chat.unreadCount}
+        chatUnreadCount={chat.unreadCount}
         visible={showToolbar}
         onToggleVideo={room.localStream.toggleVideo}
         onToggleAudio={room.localStream.toggleAudio}
         onToggleScreenShare={handleToggleScreenShare}
-        onToggleChat={room.chat.toggleChat}
+        onToggleChat={chat.toggleChat}
         onShare={() => setShowShareDialog(true)}
         onLeave={handleLeave}
         onFullscreen={handleFullscreen}

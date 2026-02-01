@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { VideoRoom } from './VideoRoom';
 import { ToastProvider } from '@/contexts/ToastContext';
+import { SocketProvider } from '@/contexts/SocketContext';
 
 // Mock all the child components to simplify testing
 vi.mock('./VideoGrid', () => ({
@@ -66,14 +67,6 @@ vi.mock('@/hooks/useRoom', () => ({
     peers: [],
     activeSpeakerId: null,
     speakerLevels: new Map(),
-    chat: {
-      messages: [],
-      isOpen: mockChatIsOpen,
-      unreadCount: mockChatUnreadCount,
-      sendMessage: mockSendMessage,
-      toggleChat: mockToggleChat,
-      closeChat: mockCloseChat,
-    },
     joinRoom: mockJoinRoom,
     leaveRoom: mockLeaveRoom,
     replaceVideoTrack: mockReplaceVideoTrack,
@@ -88,6 +81,17 @@ vi.mock('@/hooks/useRoom', () => ({
   }),
 }));
 
+vi.mock('@/hooks/useChat', () => ({
+  useChat: () => ({
+    messages: [],
+    isOpen: mockChatIsOpen,
+    unreadCount: mockChatUnreadCount,
+    sendMessage: mockSendMessage,
+    toggleChat: mockToggleChat,
+    closeChat: mockCloseChat,
+  }),
+}));
+
 const mockPush = vi.fn();
 
 vi.mock('next/navigation', () => ({
@@ -96,9 +100,13 @@ vi.mock('next/navigation', () => ({
   }),
 }));
 
-// Helper to render with ToastProvider
+// Helper to render with providers
 const renderWithProviders = (ui: React.ReactElement) => {
-  return render(<ToastProvider>{ui}</ToastProvider>);
+  return render(
+    <SocketProvider>
+      <ToastProvider>{ui}</ToastProvider>
+    </SocketProvider>
+  );
 };
 
 describe('VideoRoom', () => {

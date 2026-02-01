@@ -1,15 +1,14 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useSocket } from './useSocket';
+import { useSocketContext } from '@/contexts/SocketContext';
 import { useLocalStream } from './useLocalStream';
 import { useScreenShare } from './useScreenShare';
 import { usePeerConnections } from './usePeerConnections';
 import { useActiveSpeaker } from './useActiveSpeaker';
-import { useChat } from './useChat';
 import { useModeration } from './useModeration';
 import type { RoomState } from '@/types/room';
 
 export function useRoom(roomId: string, userName?: string) {
-  const { socket, isConnected } = useSocket();
+  const { socket, isConnected } = useSocketContext();
   const localStream = useLocalStream();
   const screenShare = useScreenShare();
   const [roomState, setRoomState] = useState<RoomState>({
@@ -36,8 +35,6 @@ export function useRoom(roomId: string, userName?: string) {
     peerConnections.peers,
     roomState.peerId
   );
-
-  const chat = useChat({ socket });
 
   // Track if user was kicked
   const [wasKicked, setWasKicked] = useState(false);
@@ -313,7 +310,6 @@ export function useRoom(roomId: string, userName?: string) {
     screenSharingPeerId,
     peers: peerConnections.peers,
     speakerLevels,
-    chat,
     joinRoom,
     leaveRoom,
     moderation,

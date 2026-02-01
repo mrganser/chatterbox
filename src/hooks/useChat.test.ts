@@ -30,34 +30,36 @@ function createMockSocket() {
   };
 }
 
-describe('useChat', () => {
-  let mockSocket: ReturnType<typeof createMockSocket>;
+// Mock socket that will be used by useSocketContext
+let mockSocket: ReturnType<typeof createMockSocket> | null = null;
 
+vi.mock('@/contexts/SocketContext', () => ({
+  useSocketContext: () => ({
+    socket: mockSocket,
+    isConnected: mockSocket !== null,
+  }),
+}));
+
+describe('useChat', () => {
   beforeEach(() => {
     mockSocket = createMockSocket();
   });
 
   describe('initial state', () => {
     it('starts with empty messages', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       expect(result.current.messages).toEqual([]);
     });
 
     it('starts with chat closed', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       expect(result.current.isOpen).toBe(false);
     });
 
     it('starts with zero unread count', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       expect(result.current.unreadCount).toBe(0);
     });
@@ -65,55 +67,48 @@ describe('useChat', () => {
 
   describe('sending messages', () => {
     it('emits chat-message event when sending message', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       act(() => {
         result.current.sendMessage('Hello world');
       });
 
-      expect(mockSocket.emit).toHaveBeenCalledWith('chat-message', { message: 'Hello world' });
+      expect(mockSocket!.emit).toHaveBeenCalledWith('chat-message', { message: 'Hello world' });
     });
 
     it('trims whitespace from messages', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       act(() => {
         result.current.sendMessage('  Hello  ');
       });
 
-      expect(mockSocket.emit).toHaveBeenCalledWith('chat-message', { message: 'Hello' });
+      expect(mockSocket!.emit).toHaveBeenCalledWith('chat-message', { message: 'Hello' });
     });
 
     it('does not emit for empty messages', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       act(() => {
         result.current.sendMessage('');
       });
 
-      expect(mockSocket.emit).not.toHaveBeenCalled();
+      expect(mockSocket!.emit).not.toHaveBeenCalled();
     });
 
     it('does not emit for whitespace-only messages', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       act(() => {
         result.current.sendMessage('   ');
       });
 
-      expect(mockSocket.emit).not.toHaveBeenCalled();
+      expect(mockSocket!.emit).not.toHaveBeenCalled();
     });
 
     it('does not emit when socket is null', () => {
-      const { result } = renderHook(() => useChat({ socket: null }));
+      mockSocket = null;
+      const { result } = renderHook(() => useChat());
 
       act(() => {
         result.current.sendMessage('Hello');
@@ -126,9 +121,7 @@ describe('useChat', () => {
 
   describe('receiving messages', () => {
     it('adds received message to messages array', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       const message: ChatMessage = {
         id: '1',
@@ -138,7 +131,7 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket._trigger('chat-message', message);
+        mockSocket!._trigger('chat-message', message);
       });
 
       expect(result.current.messages).toHaveLength(1);
@@ -146,9 +139,7 @@ describe('useChat', () => {
     });
 
     it('accumulates multiple messages', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       const message1: ChatMessage = {
         id: '1',
@@ -165,11 +156,11 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket._trigger('chat-message', message1);
+        mockSocket!._trigger('chat-message', message1);
       });
 
       act(() => {
-        mockSocket._trigger('chat-message', message2);
+        mockSocket!._trigger('chat-message', message2);
       });
 
       expect(result.current.messages).toHaveLength(2);
@@ -178,9 +169,7 @@ describe('useChat', () => {
     });
 
     it('increments unread count when chat is closed', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       const message: ChatMessage = {
         id: '1',
@@ -190,16 +179,14 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket._trigger('chat-message', message);
+        mockSocket!._trigger('chat-message', message);
       });
 
       expect(result.current.unreadCount).toBe(1);
     });
 
     it('does not increment unread count when chat is open', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       // Open chat first
       act(() => {
@@ -214,7 +201,7 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket._trigger('chat-message', message);
+        mockSocket!._trigger('chat-message', message);
       });
 
       expect(result.current.unreadCount).toBe(0);
@@ -223,9 +210,7 @@ describe('useChat', () => {
 
   describe('toggle chat', () => {
     it('opens chat when closed', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       act(() => {
         result.current.toggleChat();
@@ -235,9 +220,7 @@ describe('useChat', () => {
     });
 
     it('closes chat when open', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       act(() => {
         result.current.toggleChat(); // Open
@@ -251,9 +234,7 @@ describe('useChat', () => {
     });
 
     it('clears unread count when opening chat', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       // Receive messages while closed
       const message: ChatMessage = {
@@ -264,8 +245,8 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket._trigger('chat-message', message);
-        mockSocket._trigger('chat-message', { ...message, id: '2' });
+        mockSocket!._trigger('chat-message', message);
+        mockSocket!._trigger('chat-message', { ...message, id: '2' });
       });
 
       expect(result.current.unreadCount).toBe(2);
@@ -281,9 +262,7 @@ describe('useChat', () => {
 
   describe('close chat', () => {
     it('closes an open chat', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       act(() => {
         result.current.toggleChat(); // Open
@@ -299,9 +278,7 @@ describe('useChat', () => {
     });
 
     it('is idempotent when chat is already closed', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       act(() => {
         result.current.closeChat();
@@ -313,29 +290,23 @@ describe('useChat', () => {
 
   describe('socket event cleanup', () => {
     it('subscribes to chat-message event on mount', () => {
-      renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      renderHook(() => useChat());
 
-      expect(mockSocket.on).toHaveBeenCalledWith('chat-message', expect.any(Function));
+      expect(mockSocket!.on).toHaveBeenCalledWith('chat-message', expect.any(Function));
     });
 
     it('unsubscribes from chat-message event on unmount', () => {
-      const { unmount } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { unmount } = renderHook(() => useChat());
 
       unmount();
 
-      expect(mockSocket.off).toHaveBeenCalledWith('chat-message', expect.any(Function));
+      expect(mockSocket!.off).toHaveBeenCalledWith('chat-message', expect.any(Function));
     });
   });
 
   describe('full chat journey', () => {
     it('handles complete chat workflow', () => {
-      const { result } = renderHook(() =>
-        useChat({ socket: mockSocket as unknown as Parameters<typeof useChat>[0]['socket'] })
-      );
+      const { result } = renderHook(() => useChat());
 
       // 1. Receive message while chat is closed
       const incomingMessage: ChatMessage = {
@@ -346,7 +317,7 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket._trigger('chat-message', incomingMessage);
+        mockSocket!._trigger('chat-message', incomingMessage);
       });
 
       expect(result.current.messages).toHaveLength(1);
@@ -365,7 +336,7 @@ describe('useChat', () => {
         result.current.sendMessage('Hi! How are you?');
       });
 
-      expect(mockSocket.emit).toHaveBeenCalledWith('chat-message', {
+      expect(mockSocket!.emit).toHaveBeenCalledWith('chat-message', {
         message: 'Hi! How are you?',
       });
 
@@ -378,7 +349,7 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket._trigger('chat-message', anotherMessage);
+        mockSocket!._trigger('chat-message', anotherMessage);
       });
 
       expect(result.current.messages).toHaveLength(2);
@@ -400,7 +371,7 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket._trigger('chat-message', finalMessage);
+        mockSocket!._trigger('chat-message', finalMessage);
       });
 
       expect(result.current.messages).toHaveLength(3);

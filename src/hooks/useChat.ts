@@ -1,14 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import type { Socket } from 'socket.io-client';
-import type { ServerToClientEvents, ClientToServerEvents, ChatMessage } from '@/types/socket';
+import { useSocketContext } from '@/contexts/SocketContext';
+import type { ChatMessage } from '@/types/socket';
 
-type TypedSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
-
-interface UseChatOptions {
-  socket: TypedSocket | null;
-}
-
-export function useChat({ socket }: UseChatOptions) {
+export function useChat() {
+  const { socket } = useSocketContext();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
