@@ -62,16 +62,17 @@ export function VideoGrid({
 
   // Presentation mode: screen share takes main area, videos in sidebar
   // Triggers for local screen share OR remote screen share (with an actual screen stream)
-  const showPresentationMode = (isScreenSharing && screenShareStream) || (remoteSharingPeer?.screenStream);
+  const showPresentationMode =
+    (isScreenSharing && screenShareStream) || remoteSharingPeer?.screenStream;
 
   if (showPresentationMode) {
     // Determine the screen share stream and label
     // For remote sharing, use screenStream; for local, use screenShareStream
-    const presentationStream = isScreenSharing ? screenShareStream : remoteSharingPeer?.screenStream;
+    const presentationStream = isScreenSharing
+      ? screenShareStream
+      : remoteSharingPeer?.screenStream;
     const sharerName = remoteSharingPeer?.name || `Peer ${remoteSharingPeer?.id.slice(0, 6)}`;
-    const presentationLabel = isScreenSharing
-      ? 'Your screen'
-      : `${sharerName}'s screen`;
+    const presentationLabel = isScreenSharing ? 'Your screen' : `${sharerName}'s screen`;
 
     return (
       <div className="h-full w-full p-4 md:p-6 flex gap-4">

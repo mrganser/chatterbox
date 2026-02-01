@@ -93,7 +93,8 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
 
         // Check if this stream is the screen share (either known or if it's a second video stream)
         const isScreenStream = screenStreamId && stream.id === screenStreamId;
-        const isSecondVideoStream = peer.stream && peer.stream.id !== stream.id && event.track.kind === 'video';
+        const isSecondVideoStream =
+          peer.stream && peer.stream.id !== stream.id && event.track.kind === 'video';
 
         if (isScreenStream || isSecondVideoStream) {
           // This is a screen share stream

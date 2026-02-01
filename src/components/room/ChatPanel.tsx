@@ -22,7 +22,9 @@ function renderMessageWithLinks(message: string, isLocal: boolean) {
           rel="noopener noreferrer"
           className={cn(
             'underline underline-offset-2 break-all',
-            isLocal ? 'text-primary-foreground/90 hover:text-primary-foreground' : 'text-primary hover:text-primary/80'
+            isLocal
+              ? 'text-primary-foreground/90 hover:text-primary-foreground'
+              : 'text-primary hover:text-primary/80'
           )}
         >
           {part}
@@ -41,7 +43,13 @@ interface ChatPanelProps {
   onClose: () => void;
 }
 
-export function ChatPanel({ messages, localPeerId, localName, onSendMessage, onClose }: ChatPanelProps) {
+export function ChatPanel({
+  messages,
+  localPeerId,
+  localName,
+  onSendMessage,
+  onClose,
+}: ChatPanelProps) {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -126,7 +134,9 @@ export function ChatPanel({ messages, localPeerId, localName, onSendMessage, onC
                         : (msg.peerName || msg.peerId).slice(0, 1).toUpperCase()}
                     </div>
                     <span className="text-xs text-muted-foreground">
-                      {isLocal ? (localName || 'You') : (msg.peerName || `Peer ${msg.peerId.slice(0, 6)}`)}
+                      {isLocal
+                        ? localName || 'You'
+                        : msg.peerName || `Peer ${msg.peerId.slice(0, 6)}`}
                     </span>
                   </div>
                 )}
@@ -138,7 +148,9 @@ export function ChatPanel({ messages, localPeerId, localName, onSendMessage, onC
                       : 'bg-secondary/80 text-foreground rounded-bl-md border border-border/50'
                   )}
                 >
-                  <p className="text-sm leading-relaxed break-words">{renderMessageWithLinks(msg.message, isLocal)}</p>
+                  <p className="text-sm leading-relaxed break-words">
+                    {renderMessageWithLinks(msg.message, isLocal)}
+                  </p>
                   <span
                     className={cn(
                       'absolute -bottom-4 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity',

@@ -36,9 +36,14 @@ vi.mock('./VideoTile', () => ({
 import { vi } from 'vitest';
 
 describe('VideoGrid', () => {
-  const createMockPeer = (id: string, stream: MediaStream | null = null): RemotePeer => ({
+  const createMockPeer = (
+    id: string,
+    stream: MediaStream | null = null,
+    screenStream: MediaStream | null = null
+  ): RemotePeer => ({
     id,
     stream,
+    screenStream,
     connection: {} as RTCPeerConnection,
   });
 
@@ -124,7 +129,7 @@ describe('VideoGrid', () => {
 
   describe('screen sharing - remote sharing', () => {
     it('switches to presentation mode when remote peer shares screen', () => {
-      const remotePeer = createMockPeer('peer-1', new MediaStream());
+      const remotePeer = createMockPeer('peer-1', new MediaStream(), new MediaStream());
       const peers = [remotePeer];
 
       render(<VideoGrid {...defaultProps} peers={peers} screenSharingPeerId="peer-1" />);
@@ -133,17 +138,16 @@ describe('VideoGrid', () => {
       expect(screen.getByText(/peer-1's screen/)).toBeInTheDocument();
     });
 
-    it('excludes sharing peer from thumbnails when remote is sharing', () => {
-      const sharingPeer = createMockPeer('peer-1', new MediaStream());
+    it('shows all peers in sidebar when remote is sharing', () => {
+      const sharingPeer = createMockPeer('peer-1', new MediaStream(), new MediaStream());
       const otherPeer = createMockPeer('peer-2', new MediaStream());
       const peers = [sharingPeer, otherPeer];
 
       render(<VideoGrid {...defaultProps} peers={peers} screenSharingPeerId="peer-1" />);
 
-      // peer-1 should not appear as a regular tile (only as screen share)
-      // peer-2 should appear as thumbnail
+      // All peers appear as thumbnails in sidebar during presentation mode
+      expect(screen.getByTestId('video-tile-peer-1')).toBeInTheDocument();
       expect(screen.getByTestId('video-tile-peer-2')).toBeInTheDocument();
-      expect(screen.queryByTestId('video-tile-peer-1')).not.toBeInTheDocument();
     });
   });
 

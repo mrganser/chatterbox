@@ -14,7 +14,13 @@ export interface ToastProps {
   onDismiss: (id: string) => void;
 }
 
-export function Toast({ id, message, variant = 'default', duration = 4000, onDismiss }: ToastProps) {
+export function Toast({
+  id,
+  message,
+  variant = 'default',
+  duration = 4000,
+  onDismiss,
+}: ToastProps) {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {

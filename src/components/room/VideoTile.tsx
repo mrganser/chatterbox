@@ -65,7 +65,7 @@ export function VideoTile({
     };
   }, [stream, peerId, isScreenShare]);
 
-  const displayName = label || (isLocal ? (name || 'You') : (name || `Peer ${peerId.slice(0, 6)}`));
+  const displayName = label || (isLocal ? name || 'You' : name || `Peer ${peerId.slice(0, 6)}`);
   const shouldMirror = isLocal && !isScreenShare;
   const showVideo = stream && videoEnabled;
 
@@ -104,8 +104,10 @@ export function VideoTile({
         'bg-secondary/80 border border-border/50',
         aspectClass,
         onClick && 'cursor-pointer hover:border-primary/30',
+        isSpeaking && 'border-primary/50',
         className
       )}
+      style={glowStyle}
       onClick={onClick}
     >
       {/* Video element */}
@@ -171,42 +173,31 @@ export function VideoTile({
           >
             {displayName}
           </span>
-
-          {/* Speaking indicator */}
-          {isSpeaking && videoEnabled && !compact && (
-            <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-primary/20 border border-primary/30">
-              <div className="flex gap-0.5">
-                <span className="w-0.5 h-2 bg-primary rounded-full animate-pulse" />
-                <span
-                  className="w-0.5 h-3 bg-primary rounded-full animate-pulse"
-                  style={{ animationDelay: '0.1s' }}
-                />
-                <span
-                  className="w-0.5 h-2 bg-primary rounded-full animate-pulse"
-                  style={{ animationDelay: '0.2s' }}
-                />
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Status indicators (not shown for screen share) */}
         {!isScreenShare && (!audioEnabled || !videoEnabled) && (
           <div className="flex items-center gap-1">
             {!audioEnabled && (
-              <span className={cn(
-                "flex items-center justify-center rounded-lg bg-destructive/80 backdrop-blur-sm",
-                compact ? "h-5 w-5" : "h-7 w-7"
-              )}>
-                <MicOff className={compact ? "h-2.5 w-2.5 text-white" : "h-3.5 w-3.5 text-white"} />
+              <span
+                className={cn(
+                  'flex items-center justify-center rounded-lg bg-destructive/80 backdrop-blur-sm',
+                  compact ? 'h-5 w-5' : 'h-7 w-7'
+                )}
+              >
+                <MicOff className={compact ? 'h-2.5 w-2.5 text-white' : 'h-3.5 w-3.5 text-white'} />
               </span>
             )}
             {!videoEnabled && (
-              <span className={cn(
-                "flex items-center justify-center rounded-lg bg-destructive/80 backdrop-blur-sm",
-                compact ? "h-5 w-5" : "h-7 w-7"
-              )}>
-                <VideoOff className={compact ? "h-2.5 w-2.5 text-white" : "h-3.5 w-3.5 text-white"} />
+              <span
+                className={cn(
+                  'flex items-center justify-center rounded-lg bg-destructive/80 backdrop-blur-sm',
+                  compact ? 'h-5 w-5' : 'h-7 w-7'
+                )}
+              >
+                <VideoOff
+                  className={compact ? 'h-2.5 w-2.5 text-white' : 'h-3.5 w-3.5 text-white'}
+                />
               </span>
             )}
           </div>
@@ -215,10 +206,12 @@ export function VideoTile({
 
       {/* Moderation menu for remote peers */}
       {!isLocal && !isScreenShare && moderation && (
-        <div className={cn(
-          "absolute opacity-0 group-hover:opacity-100 transition-opacity",
-          compact ? "top-1 right-1" : "top-3 right-3"
-        )}>
+        <div
+          className={cn(
+            'absolute opacity-0 group-hover:opacity-100 transition-opacity',
+            compact ? 'top-1 right-1' : 'top-3 right-3'
+          )}
+        >
           <DropdownMenu>
             {audioEnabled && (
               <DropdownMenuItem

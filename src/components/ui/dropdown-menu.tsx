@@ -92,7 +92,12 @@ interface DropdownMenuItemProps {
   onClick: () => void;
 }
 
-export function DropdownMenuItem({ icon, label, variant = 'default', onClick }: DropdownMenuItemProps) {
+export function DropdownMenuItem({
+  icon,
+  label,
+  variant = 'default',
+  onClick,
+}: DropdownMenuItemProps) {
   return (
     <button
       onClick={(e) => {

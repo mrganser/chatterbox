@@ -20,7 +20,11 @@ function leaveRoom(socket: Socket, roomId: string) {
   }
 }
 
-function getPeerName(rooms: Map<string, { peers: Map<string, { name?: string }> }>, roomId: string, peerId: string): string | undefined {
+function getPeerName(
+  rooms: Map<string, { peers: Map<string, { name?: string }> }>,
+  roomId: string,
+  peerId: string
+): string | undefined {
   return rooms.get(roomId)?.peers.get(peerId)?.name;
 }
 
