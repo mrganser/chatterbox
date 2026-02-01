@@ -49,16 +49,9 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
 
   const handleToggleScreenShare = useCallback(async () => {
     if (room.screenShare.isSharing) {
-      room.screenShare.stopScreenShare();
-      // Restore camera track
-      const cameraTrack = room.localStream.stream?.getVideoTracks()[0] || null;
-      room.replaceVideoTrack(cameraTrack);
+      await room.screenShare.stopScreenShare();
     } else {
-      const screenStream = await room.screenShare.startScreenShare();
-      if (screenStream) {
-        const screenTrack = screenStream.getVideoTracks()[0];
-        room.replaceVideoTrack(screenTrack);
-      }
+      await room.screenShare.startScreenShare();
     }
   }, [room]);
 

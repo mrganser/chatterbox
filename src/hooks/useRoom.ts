@@ -31,9 +31,6 @@ export function useRoom(roomId: string, userName?: string) {
     localStream: localStream.stream,
   });
 
-  const replaceVideoTrackRef = useRef(peerConnections.replaceVideoTrack);
-  replaceVideoTrackRef.current = peerConnections.replaceVideoTrack;
-
   const { speakerLevels } = useActiveSpeaker(
     localStream.stream,
     peerConnections.peers,
@@ -151,20 +148,25 @@ export function useRoom(roomId: string, userName?: string) {
   const startScreenShareWithSignal = useCallback(async () => {
     const stream = await screenShare.startScreenShare();
     if (stream && socket) {
-      socket.emit('screen-share-started');
+      // Add screen track to all peer connections
+      await peerConnections.addScreenTrack(stream);
+      // Signal with stream ID so peers can identify the screen stream
+      socket.emit('screen-share-started', { streamId: stream.id });
       // Clear any remote sharing state since we're now the presenter
       setScreenSharingPeerId(null);
     }
     return stream;
-  }, [screenShare, socket]);
+  }, [screenShare, socket, peerConnections]);
 
   // Notify others when stopping screen share
-  const stopScreenShareWithSignal = useCallback(() => {
+  const stopScreenShareWithSignal = useCallback(async () => {
+    // Remove screen track from all peer connections
+    await peerConnections.removeScreenTrack();
     screenShare.stopScreenShare();
     if (socket) {
       socket.emit('screen-share-stopped');
     }
-  }, [screenShare, socket]);
+  }, [screenShare, socket, peerConnections]);
 
   // Wrap toggle methods to emit media state changes
   const toggleVideoWithSignal = useCallback(() => {
@@ -222,18 +224,15 @@ export function useRoom(roomId: string, userName?: string) {
       setScreenSharingPeerId((current) => (current === peerId ? null : current));
     };
 
-    const onScreenShareStarted = ({ peerId }: { peerId: string }) => {
-      // If we were sharing, stop our share and restore camera (new share takes over)
-      if (screenShareRef.current.isSharing) {
-        screenShareRef.current.stopScreenShare();
-        // Restore camera track to peer connections
-        const cameraTrack = localStreamRef.current.stream?.getVideoTracks()[0] || null;
-        replaceVideoTrackRef.current(cameraTrack);
-      }
+    const onScreenShareStarted = ({ peerId, streamId }: { peerId: string; streamId: string }) => {
+      // Set the stream ID so we can identify the screen stream when it arrives
+      peerConnections.setScreenStreamId(peerId, streamId);
       setScreenSharingPeerId(peerId);
     };
 
     const onScreenShareStopped = ({ peerId }: { peerId: string }) => {
+      // Clear the screen stream for this peer
+      peerConnections.clearScreenStream(peerId);
       setScreenSharingPeerId((current) => (current === peerId ? null : current));
     };
 
@@ -293,7 +292,6 @@ export function useRoom(roomId: string, userName?: string) {
     chat,
     joinRoom,
     leaveRoom,
-    replaceVideoTrack: peerConnections.replaceVideoTrack,
     moderation,
     wasKicked,
   };

@@ -10,7 +10,7 @@ export interface ServerToClientEvents {
   answer: (data: { from: string; answer: RTCSessionDescriptionInit }) => void;
   'ice-candidate': (data: { from: string; candidate: RTCIceCandidateInit }) => void;
   'chat-message': (data: ChatMessage) => void;
-  'screen-share-started': (data: { peerId: string }) => void;
+  'screen-share-started': (data: { peerId: string; streamId: string }) => void;
   'screen-share-stopped': (data: { peerId: string }) => void;
   'media-state-changed': (data: {
     peerId: string;
@@ -32,7 +32,7 @@ export interface ClientToServerEvents {
   answer: (data: { to: string; answer: RTCSessionDescriptionInit }) => void;
   'ice-candidate': (data: { to: string; candidate: RTCIceCandidateInit }) => void;
   'chat-message': (data: { message: string }) => void;
-  'screen-share-started': () => void;
+  'screen-share-started': (data: { streamId: string }) => void;
   'screen-share-stopped': () => void;
   'media-state-changed': (data: { videoEnabled: boolean; audioEnabled: boolean }) => void;
   'moderation-mute': (data: { targetPeerId: string }) => void;

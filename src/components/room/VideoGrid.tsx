@@ -63,21 +63,17 @@ export function VideoGrid({
     : null;
 
   // Presentation mode: screen share takes main area, videos in sidebar
-  // Triggers for local screen share OR remote screen share
-  const showPresentationMode = (isScreenSharing && screenShareStream) || remoteSharingPeer;
+  // Triggers for local screen share OR remote screen share (with an actual screen stream)
+  const showPresentationMode = (isScreenSharing && screenShareStream) || (remoteSharingPeer?.screenStream);
 
   if (showPresentationMode) {
     // Determine the screen share stream and label
-    const presentationStream = isScreenSharing ? screenShareStream : remoteSharingPeer?.stream;
+    // For remote sharing, use screenStream; for local, use screenShareStream
+    const presentationStream = isScreenSharing ? screenShareStream : remoteSharingPeer?.screenStream;
     const sharerName = remoteSharingPeer?.name || `Peer ${remoteSharingPeer?.id.slice(0, 6)}`;
     const presentationLabel = isScreenSharing
       ? 'Your screen'
       : `${sharerName}'s screen`;
-
-    // For remote sharing, exclude the sharing peer from the thumbnails list
-    const thumbnailPeers = remoteSharingPeer
-      ? peers.filter((p) => p.id !== screenSharingPeerId)
-      : peers;
 
     return (
       <div className="h-full w-full p-4 md:p-6 flex gap-4">
@@ -92,7 +88,7 @@ export function VideoGrid({
           />
         </div>
 
-        {/* Participant thumbnails sidebar */}
+        {/* Participant thumbnails sidebar - now includes ALL participants with their cameras */}
         <div className="w-48 lg:w-56 flex flex-col gap-3 overflow-y-auto">
           {/* Local video tile */}
           <VideoTile
@@ -107,8 +103,8 @@ export function VideoGrid({
             compact
           />
 
-          {/* Remote peer tiles (excluding the one sharing) */}
-          {thumbnailPeers.map((peer) => (
+          {/* Remote peer tiles - all peers show their camera */}
+          {peers.map((peer) => (
             <VideoTile
               key={peer.id}
               stream={peer.stream}

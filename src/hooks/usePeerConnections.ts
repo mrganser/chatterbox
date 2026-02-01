@@ -16,6 +16,8 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
   const peersRef = useRef<Map<string, RemotePeer>>(new Map());
   const pendingCandidatesRef = useRef<Map<string, RTCIceCandidateInit[]>>(new Map());
   const pendingNamesRef = useRef<Map<string, string | undefined>>(new Map());
+  // Track which stream IDs are screen shares (peerId -> streamId)
+  const screenStreamIdsRef = useRef<Map<string, string>>(new Map());
   const localStreamRef = useRef<MediaStream | null>(localStream);
 
   localStreamRef.current = localStream;
@@ -79,8 +81,21 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
         if (!peer) return;
 
         const stream = event.streams[0] || new MediaStream([event.track]);
-        const updatedPeer = { ...peer, stream };
-        peersRef.current.set(peerId, updatedPeer);
+        const screenStreamId = screenStreamIdsRef.current.get(peerId);
+
+        // Check if this stream is the screen share (either known or if it's a second video stream)
+        const isScreenStream = screenStreamId && stream.id === screenStreamId;
+        const isSecondVideoStream = peer.stream && peer.stream.id !== stream.id && event.track.kind === 'video';
+
+        if (isScreenStream || isSecondVideoStream) {
+          // This is a screen share stream
+          const updatedPeer = { ...peer, screenStream: stream };
+          peersRef.current.set(peerId, updatedPeer);
+        } else if (!peer.stream || peer.stream.id === stream.id) {
+          // This is the camera stream (first stream or same stream with new track)
+          const updatedPeer = { ...peer, stream };
+          peersRef.current.set(peerId, updatedPeer);
+        }
         setPeers(new Map(peersRef.current));
       };
 
@@ -115,6 +130,7 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
         id: peerId,
         name: resolvedName,
         stream: null,
+        screenStream: null,
         connection: pc,
         videoEnabled: true,
         audioEnabled: true,
@@ -263,13 +279,82 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
     setPeers(new Map());
   }, []);
 
-  const replaceVideoTrack = useCallback((newTrack: MediaStreamTrack | null) => {
-    peersRef.current.forEach((peer) => {
-      const sender = peer.connection.getSenders().find((s) => s.track?.kind === 'video');
-      if (sender) {
-        sender.replaceTrack(newTrack);
+  // Track screen senders so we can remove them later
+  const screenSendersRef = useRef<Map<string, RTCRtpSender>>(new Map());
+
+  // Add screen share track to all peer connections
+  const addScreenTrack = useCallback(
+    async (screenStream: MediaStream) => {
+      const screenTrack = screenStream.getVideoTracks()[0];
+      if (!screenTrack || !socket) return;
+
+      const peerEntries = Array.from(peersRef.current.entries());
+      for (let i = 0; i < peerEntries.length; i++) {
+        const [peerId, peer] = peerEntries[i];
+        try {
+          const sender = peer.connection.addTrack(screenTrack, screenStream);
+          screenSendersRef.current.set(peerId, sender);
+
+          // Need to renegotiate
+          if (peer.connection.signalingState === 'stable') {
+            const offer = await peer.connection.createOffer();
+            await peer.connection.setLocalDescription(offer);
+            socket.emit('offer', {
+              to: peerId,
+              offer: peer.connection.localDescription!,
+            });
+          }
+        } catch {
+          // Failed to add track
+        }
       }
-    });
+    },
+    [socket]
+  );
+
+  // Remove screen share track from all peer connections
+  const removeScreenTrack = useCallback(async () => {
+    if (!socket) return;
+
+    const senderEntries = Array.from(screenSendersRef.current.entries());
+    for (let i = 0; i < senderEntries.length; i++) {
+      const [peerId, sender] = senderEntries[i];
+      const peer = peersRef.current.get(peerId);
+      if (peer) {
+        try {
+          peer.connection.removeTrack(sender);
+
+          // Need to renegotiate
+          if (peer.connection.signalingState === 'stable') {
+            const offer = await peer.connection.createOffer();
+            await peer.connection.setLocalDescription(offer);
+            socket.emit('offer', {
+              to: peerId,
+              offer: peer.connection.localDescription!,
+            });
+          }
+        } catch {
+          // Failed to remove track
+        }
+      }
+    }
+    screenSendersRef.current.clear();
+  }, [socket]);
+
+  // Set the expected screen stream ID for a peer (called when receiving screen-share-started)
+  const setScreenStreamId = useCallback((peerId: string, streamId: string) => {
+    screenStreamIdsRef.current.set(peerId, streamId);
+  }, []);
+
+  // Clear screen stream for a peer (called when receiving screen-share-stopped)
+  const clearScreenStream = useCallback((peerId: string) => {
+    screenStreamIdsRef.current.delete(peerId);
+    const peer = peersRef.current.get(peerId);
+    if (peer && peer.screenStream) {
+      const updatedPeer = { ...peer, screenStream: null };
+      peersRef.current.set(peerId, updatedPeer);
+      setPeers(new Map(peersRef.current));
+    }
   }, []);
 
   // Store peer name (used when peer-joined fires before offer is received)
@@ -350,7 +435,10 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
     createOffer,
     removePeer,
     closeAllConnections,
-    replaceVideoTrack,
+    addScreenTrack,
+    removeScreenTrack,
+    setScreenStreamId,
+    clearScreenStream,
     setPeerName,
   };
 }

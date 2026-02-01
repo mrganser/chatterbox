@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { Mic, MicOff, VideoOff, User, VolumeX, Volume2, VideoOff as VideoOffIcon, Video, LogOut } from 'lucide-react';
+import { MicOff, VideoOff, User, VolumeX, Volume2, VideoOff as VideoOffIcon, Video, LogOut } from 'lucide-react';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 interface ModerationHandlers {
@@ -187,8 +187,8 @@ export function VideoTile({
           )}
         </div>
 
-        {/* Status indicators */}
-        {!compact && (
+        {/* Status indicators (not shown for screen share) */}
+        {!compact && !isScreenShare && (!audioEnabled || !videoEnabled) && (
           <div className="flex items-center gap-1.5">
             {!audioEnabled && (
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-destructive/80 backdrop-blur-sm">
@@ -200,32 +200,9 @@ export function VideoTile({
                 <VideoOff className="h-3.5 w-3.5 text-white" />
               </span>
             )}
-            {audioEnabled && videoEnabled && (
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                <Mic className="h-3.5 w-3.5 text-white/70" />
-              </span>
-            )}
           </div>
         )}
       </div>
-
-      {/* Local indicator */}
-      {isLocal && !compact && (
-        <div className="absolute top-3 left-3">
-          <span className="px-2 py-1 rounded-md text-[10px] font-medium uppercase tracking-wider bg-primary/20 text-primary border border-primary/30 backdrop-blur-sm">
-            You
-          </span>
-        </div>
-      )}
-
-      {/* Screen share indicator */}
-      {isScreenShare && (
-        <div className="absolute top-3 left-3">
-          <span className="px-2 py-1 rounded-md text-[10px] font-medium uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/30 backdrop-blur-sm">
-            Screen
-          </span>
-        </div>
-      )}
 
       {/* Moderation menu for remote peers */}
       {!isLocal && !isScreenShare && moderation && !compact && (

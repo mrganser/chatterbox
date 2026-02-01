@@ -92,9 +92,9 @@ export function setupSocketHandlers(io: SocketIOServer) {
       }
     });
 
-    socket.on('screen-share-started', () => {
+    socket.on('screen-share-started', ({ streamId }: { streamId: string }) => {
       if (currentRoomId) {
-        socket.to(currentRoomId).emit('screen-share-started', { peerId: socket.id });
+        socket.to(currentRoomId).emit('screen-share-started', { peerId: socket.id, streamId });
       }
     });
 
