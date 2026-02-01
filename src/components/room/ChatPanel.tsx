@@ -5,6 +5,34 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import type { ChatMessage } from '@/types/socket';
 
+const URL_REGEX = /(https?:\/\/[^\s<]+[^\s<.,;:!?"')\]])/g;
+
+function renderMessageWithLinks(message: string, isLocal: boolean) {
+  const parts = message.split(URL_REGEX);
+
+  return parts.map((part, index) => {
+    if (URL_REGEX.test(part)) {
+      // Reset regex lastIndex since we're using the global flag
+      URL_REGEX.lastIndex = 0;
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            'underline underline-offset-2 break-all',
+            isLocal ? 'text-primary-foreground/90 hover:text-primary-foreground' : 'text-primary hover:text-primary/80'
+          )}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 interface ChatPanelProps {
   messages: ChatMessage[];
   localPeerId: string | null;
@@ -110,7 +138,7 @@ export function ChatPanel({ messages, localPeerId, localName, onSendMessage, onC
                       : 'bg-secondary/80 text-foreground rounded-bl-md border border-border/50'
                   )}
                 >
-                  <p className="text-sm leading-relaxed break-words">{msg.message}</p>
+                  <p className="text-sm leading-relaxed break-words">{renderMessageWithLinks(msg.message, isLocal)}</p>
                   <span
                     className={cn(
                       'absolute -bottom-4 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity',
