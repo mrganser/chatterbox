@@ -6,11 +6,14 @@ Create a room with a name and share the link with your partners so they can join
 
 ## Features
 
-- Real-time video and audio conferencing
-- Screen sharing with presentation mode
-- Text chat
-- Speaker volume effects
-- Moderation actions
+- **Video & Audio Conferencing:** Real-time peer-to-peer communication via WebRTC
+- **Screen Sharing:** Share your screen with presentation mode layout
+- **Text Chat:** In-call messaging with clickable link detection
+- **Active Speaker Detection:** Visual glow indicator when participants speak
+- **Pre-call Controls:** Set display name and toggle camera/mic before joining
+- **Room Sharing:** One-click copy room link to invite others
+- **Navigation Guard:** Confirmation prompt to prevent accidental call exit
+- **Moderation Tools:** Mute, disable video, or remove participants from the call
 
 ## Demo
 
@@ -90,7 +93,7 @@ npm start
 
 This project is ready to deploy to render.com:
 
-1. Set build command: `npm ci --production && npm run build`
+1. Set build command: `npm ci --production=false && npm run build && npm prune --production`
 2. Set start command: `npm start`
 
 ## Authors
