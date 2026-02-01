@@ -19,6 +19,8 @@ interface VideoRoomProps {
 export function VideoRoom({ roomId }: VideoRoomProps) {
   const router = useRouter();
   const [userName, setUserName] = useState('');
+  const [startWithVideo, setStartWithVideo] = useState(true);
+  const [startWithAudio, setStartWithAudio] = useState(true);
   const room = useRoom(roomId, userName);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showToolbar, setShowToolbar] = useState(true);
@@ -76,7 +78,11 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
         isConnecting={!room.isConnected}
         name={userName}
         onNameChange={setUserName}
-        onJoin={room.joinRoom}
+        startWithVideo={startWithVideo}
+        startWithAudio={startWithAudio}
+        onToggleStartWithVideo={() => setStartWithVideo((v) => !v)}
+        onToggleStartWithAudio={() => setStartWithAudio((a) => !a)}
+        onJoin={() => room.joinRoom({ video: startWithVideo, audio: startWithAudio })}
       />
     );
   }

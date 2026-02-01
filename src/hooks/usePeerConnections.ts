@@ -16,6 +16,9 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
   const peersRef = useRef<Map<string, RemotePeer>>(new Map());
   const pendingCandidatesRef = useRef<Map<string, RTCIceCandidateInit[]>>(new Map());
   const pendingNamesRef = useRef<Map<string, string | undefined>>(new Map());
+  const pendingMediaStateRef = useRef<
+    Map<string, { videoEnabled: boolean; audioEnabled: boolean }>
+  >(new Map());
   // Track which stream IDs are screen shares (peerId -> streamId)
   const screenStreamIdsRef = useRef<Map<string, string>>(new Map());
   const localStreamRef = useRef<MediaStream | null>(localStream);
@@ -50,7 +53,12 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
   }, [localStream, socket]);
 
   const createPeerConnection = useCallback(
-    (peerId: string, addTracks: boolean = true, peerName?: string): RTCPeerConnection => {
+    (
+      peerId: string,
+      addTracks: boolean = true,
+      peerName?: string,
+      initialMediaState?: { videoEnabled: boolean; audioEnabled: boolean }
+    ): RTCPeerConnection => {
       const existingPeer = peersRef.current.get(peerId);
       if (existingPeer) {
         // Update name if provided and peer exists
@@ -126,14 +134,18 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
       const resolvedName = peerName ?? pendingNamesRef.current.get(peerId);
       pendingNamesRef.current.delete(peerId);
 
+      // Use provided media state or check pending state, default to true
+      const resolvedMediaState = initialMediaState ?? pendingMediaStateRef.current.get(peerId);
+      pendingMediaStateRef.current.delete(peerId);
+
       const newPeer: RemotePeer = {
         id: peerId,
         name: resolvedName,
         stream: null,
         screenStream: null,
         connection: pc,
-        videoEnabled: true,
-        audioEnabled: true,
+        videoEnabled: resolvedMediaState?.videoEnabled ?? true,
+        audioEnabled: resolvedMediaState?.audioEnabled ?? true,
       };
 
       peersRef.current.set(peerId, newPeer);
@@ -169,13 +181,17 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
   }, []);
 
   const createOffer = useCallback(
-    async (peerId: string, peerName?: string) => {
+    async (
+      peerId: string,
+      peerName?: string,
+      initialMediaState?: { videoEnabled: boolean; audioEnabled: boolean }
+    ) => {
       if (!localStreamRef.current) {
-        createPeerConnection(peerId, true, peerName);
+        createPeerConnection(peerId, true, peerName, initialMediaState);
         return;
       }
 
-      const pc = createPeerConnection(peerId, true, peerName);
+      const pc = createPeerConnection(peerId, true, peerName, initialMediaState);
 
       if (pc.signalingState !== 'stable') {
         return;
@@ -357,21 +373,34 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
     }
   }, []);
 
-  // Store peer name (used when peer-joined fires before offer is received)
-  const setPeerName = useCallback((peerId: string, name?: string) => {
-    const peer = peersRef.current.get(peerId);
-    if (peer) {
-      // Peer already exists, update the name
-      if (name && !peer.name) {
-        const updatedPeer = { ...peer, name };
+  // Store peer info (used when peer-joined fires before offer is received)
+  const setPeerName = useCallback(
+    (
+      peerId: string,
+      name?: string,
+      mediaState?: { videoEnabled: boolean; audioEnabled: boolean }
+    ) => {
+      const peer = peersRef.current.get(peerId);
+      if (peer) {
+        // Peer already exists, update the name and media state
+        const updatedPeer = {
+          ...peer,
+          name: name ?? peer.name,
+          videoEnabled: mediaState?.videoEnabled ?? peer.videoEnabled,
+          audioEnabled: mediaState?.audioEnabled ?? peer.audioEnabled,
+        };
         peersRef.current.set(peerId, updatedPeer);
         setPeers(new Map(peersRef.current));
+      } else {
+        // Store for when peer connection is created
+        pendingNamesRef.current.set(peerId, name);
+        if (mediaState) {
+          pendingMediaStateRef.current.set(peerId, mediaState);
+        }
       }
-    } else {
-      // Store name for when peer connection is created
-      pendingNamesRef.current.set(peerId, name);
-    }
-  }, []);
+    },
+    []
+  );
 
   useEffect(() => {
     if (!socket) return;

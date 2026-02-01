@@ -2,9 +2,14 @@ export interface ServerToClientEvents {
   'room-joined': (data: {
     roomId: string;
     peerId: string;
-    peers: Array<{ id: string; name?: string }>;
+    peers: Array<{ id: string; name?: string; videoEnabled: boolean; audioEnabled: boolean }>;
   }) => void;
-  'peer-joined': (data: { peerId: string; name?: string }) => void;
+  'peer-joined': (data: {
+    peerId: string;
+    name?: string;
+    videoEnabled: boolean;
+    audioEnabled: boolean;
+  }) => void;
   'peer-left': (data: { peerId: string }) => void;
   offer: (data: { from: string; offer: RTCSessionDescriptionInit }) => void;
   answer: (data: { from: string; answer: RTCSessionDescriptionInit }) => void;
@@ -26,7 +31,12 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  'join-room': (data: { roomId: string; name?: string }) => void;
+  'join-room': (data: {
+    roomId: string;
+    name?: string;
+    videoEnabled?: boolean;
+    audioEnabled?: boolean;
+  }) => void;
   'leave-room': () => void;
   offer: (data: { to: string; offer: RTCSessionDescriptionInit }) => void;
   answer: (data: { to: string; answer: RTCSessionDescriptionInit }) => void;

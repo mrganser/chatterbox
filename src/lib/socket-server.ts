@@ -1,7 +1,10 @@
 import type { Server as SocketIOServer, Socket } from 'socket.io';
 
 // Room management
-const rooms = new Map<string, { peers: Map<string, { name?: string }> }>();
+const rooms = new Map<
+  string,
+  { peers: Map<string, { name?: string; videoEnabled: boolean; audioEnabled: boolean }> }
+>();
 
 function leaveRoom(socket: Socket, roomId: string) {
   const room = rooms.get(roomId);
@@ -26,35 +29,55 @@ export function setupSocketHandlers(io: SocketIOServer) {
     console.log(`Client connected: ${socket.id}`);
     let currentRoomId: string | null = null;
 
-    socket.on('join-room', ({ roomId, name }: { roomId: string; name?: string }) => {
-      if (currentRoomId) {
-        leaveRoom(socket, currentRoomId);
-      }
-
-      currentRoomId = roomId;
-
-      if (!rooms.has(roomId)) {
-        rooms.set(roomId, { peers: new Map() });
-      }
-
-      const room = rooms.get(roomId)!;
-      const existingPeers = Array.from(room.peers.entries()).map(([id, data]) => ({
-        id,
-        name: data.name,
-      }));
-
-      room.peers.set(socket.id, { name });
-      socket.join(roomId);
-
-      socket.emit('room-joined', {
+    socket.on(
+      'join-room',
+      ({
         roomId,
-        peerId: socket.id,
-        peers: existingPeers,
-      });
+        name,
+        videoEnabled = true,
+        audioEnabled = true,
+      }: {
+        roomId: string;
+        name?: string;
+        videoEnabled?: boolean;
+        audioEnabled?: boolean;
+      }) => {
+        if (currentRoomId) {
+          leaveRoom(socket, currentRoomId);
+        }
 
-      socket.to(roomId).emit('peer-joined', { peerId: socket.id, name });
-      console.log(`${socket.id}${name ? ` (${name})` : ''} joined room ${roomId}`);
-    });
+        currentRoomId = roomId;
+
+        if (!rooms.has(roomId)) {
+          rooms.set(roomId, { peers: new Map() });
+        }
+
+        const room = rooms.get(roomId)!;
+        const existingPeers = Array.from(room.peers.entries()).map(([id, data]) => ({
+          id,
+          name: data.name,
+          videoEnabled: data.videoEnabled,
+          audioEnabled: data.audioEnabled,
+        }));
+
+        room.peers.set(socket.id, { name, videoEnabled, audioEnabled });
+        socket.join(roomId);
+
+        socket.emit('room-joined', {
+          roomId,
+          peerId: socket.id,
+          peers: existingPeers,
+        });
+
+        socket.to(roomId).emit('peer-joined', {
+          peerId: socket.id,
+          name,
+          videoEnabled,
+          audioEnabled,
+        });
+        console.log(`${socket.id}${name ? ` (${name})` : ''} joined room ${roomId}`);
+      }
+    );
 
     socket.on('leave-room', () => {
       if (currentRoomId) {
@@ -108,6 +131,13 @@ export function setupSocketHandlers(io: SocketIOServer) {
       'media-state-changed',
       ({ videoEnabled, audioEnabled }: { videoEnabled: boolean; audioEnabled: boolean }) => {
         if (currentRoomId) {
+          // Update stored state
+          const room = rooms.get(currentRoomId);
+          const peerData = room?.peers.get(socket.id);
+          if (peerData) {
+            peerData.videoEnabled = videoEnabled;
+            peerData.audioEnabled = audioEnabled;
+          }
           socket
             .to(currentRoomId)
             .emit('media-state-changed', { peerId: socket.id, videoEnabled, audioEnabled });

@@ -1,4 +1,4 @@
-import { Video, Wifi, User } from 'lucide-react';
+import { Video, VideoOff, Mic, MicOff, Wifi, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,10 @@ interface PreCallActionsProps {
   isConnecting: boolean;
   name: string;
   onNameChange: (name: string) => void;
+  startWithVideo: boolean;
+  startWithAudio: boolean;
+  onToggleStartWithVideo: () => void;
+  onToggleStartWithAudio: () => void;
   onJoin: () => void;
 }
 
@@ -16,6 +20,10 @@ export function PreCallActions({
   isConnecting,
   name,
   onNameChange,
+  startWithVideo,
+  startWithAudio,
+  onToggleStartWithVideo,
+  onToggleStartWithAudio,
   onJoin,
 }: PreCallActionsProps) {
   return (
@@ -68,23 +76,36 @@ export function PreCallActions({
             </div>
           </div>
 
+          {/* Media toggles */}
+          <div className="flex justify-center gap-4">
+            <button
+              type="button"
+              onClick={onToggleStartWithVideo}
+              className={`flex h-14 w-14 items-center justify-center rounded-xl transition-all duration-200 ${
+                startWithVideo
+                  ? 'bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20'
+                  : 'bg-destructive/10 border border-destructive/30 text-destructive hover:bg-destructive/20'
+              }`}
+              title={startWithVideo ? 'Camera will be on' : 'Camera will be off'}
+            >
+              {startWithVideo ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
+            </button>
+            <button
+              type="button"
+              onClick={onToggleStartWithAudio}
+              className={`flex h-14 w-14 items-center justify-center rounded-xl transition-all duration-200 ${
+                startWithAudio
+                  ? 'bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20'
+                  : 'bg-destructive/10 border border-destructive/30 text-destructive hover:bg-destructive/20'
+              }`}
+              title={startWithAudio ? 'Microphone will be on' : 'Microphone will be muted'}
+            >
+              {startWithAudio ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
+            </button>
+          </div>
+
           {/* Info items */}
           <div className="space-y-3 py-2">
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/5">
-                <svg
-                  className="h-4 w-4 text-primary"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
-                  <path d="m9 12 2 2 4-4" />
-                </svg>
-              </div>
-              <span>Camera and microphone access required</span>
-            </div>
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/5">
                 <svg
@@ -122,7 +143,7 @@ export function PreCallActions({
           </Button>
 
           <p className="text-center text-xs text-muted-foreground/60">
-            By joining, you agree to share your camera and microphone
+            You can toggle camera and mic on or off after joining
           </p>
         </CardContent>
       </Card>

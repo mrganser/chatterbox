@@ -74,11 +74,31 @@ export function useActiveSpeaker(
         levels.push({ peerId, level: average });
       });
 
-      const newLevels = new Map<string, number>();
-      levels.forEach(({ peerId, level }) => {
-        newLevels.set(peerId, level);
+      // Only update state if levels have meaningfully changed
+      setSpeakerLevels((prevLevels) => {
+        let hasChanged = levels.length !== prevLevels.size;
+
+        if (!hasChanged) {
+          for (const { peerId, level } of levels) {
+            const prevLevel = prevLevels.get(peerId);
+            // Consider changed if difference is > 5 (reduces noise)
+            if (prevLevel === undefined || Math.abs(level - prevLevel) > 5) {
+              hasChanged = true;
+              break;
+            }
+          }
+        }
+
+        if (!hasChanged) {
+          return prevLevels;
+        }
+
+        const newLevels = new Map<string, number>();
+        levels.forEach(({ peerId, level }) => {
+          newLevels.set(peerId, level);
+        });
+        return newLevels;
       });
-      setSpeakerLevels(newLevels);
 
       animationFrameId = requestAnimationFrame(checkLevels);
     };

@@ -12,8 +12,11 @@ export function useLocalStream() {
 
   const streamRef = useRef<MediaStream | null>(null);
 
-  const startStream = useCallback(async () => {
+  const startStream = useCallback(async (options?: { video?: boolean; audio?: boolean }) => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
+    const initialVideo = options?.video ?? true;
+    const initialAudio = options?.audio ?? true;
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -21,11 +24,25 @@ export function useLocalStream() {
         audio: true,
       });
 
+      // Apply initial preferences by disabling tracks if needed
+      if (!initialVideo) {
+        const videoTrack = stream.getVideoTracks()[0];
+        if (videoTrack) {
+          videoTrack.enabled = false;
+        }
+      }
+      if (!initialAudio) {
+        const audioTrack = stream.getAudioTracks()[0];
+        if (audioTrack) {
+          audioTrack.enabled = false;
+        }
+      }
+
       streamRef.current = stream;
       setState({
         stream,
-        videoEnabled: true,
-        audioEnabled: true,
+        videoEnabled: initialVideo,
+        audioEnabled: initialAudio,
         isLoading: false,
         error: null,
       });

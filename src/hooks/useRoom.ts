@@ -108,26 +108,37 @@ export function useRoom(roomId: string, userName?: string) {
     onKicked: handleKicked,
   });
 
-  const joinRoom = useCallback(async () => {
-    if (!socket || !isConnected) {
-      setRoomState((prev) => ({ ...prev, status: 'error', error: 'Not connected to server' }));
-      return;
-    }
+  const joinRoom = useCallback(
+    async (options?: { video?: boolean; audio?: boolean }) => {
+      if (!socket || !isConnected) {
+        setRoomState((prev) => ({ ...prev, status: 'error', error: 'Not connected to server' }));
+        return;
+      }
 
-    setRoomState((prev) => ({ ...prev, status: 'joining' }));
+      setRoomState((prev) => ({ ...prev, status: 'joining' }));
 
-    const stream = await localStream.startStream();
-    if (!stream) {
-      setRoomState((prev) => ({
-        ...prev,
-        status: 'error',
-        error: localStream.error || 'Failed to access camera/microphone',
-      }));
-      return;
-    }
+      const initialVideo = options?.video ?? true;
+      const initialAudio = options?.audio ?? true;
 
-    socket.emit('join-room', { roomId, name: userName || undefined });
-  }, [socket, isConnected, roomId, localStream, userName]);
+      const stream = await localStream.startStream({ video: initialVideo, audio: initialAudio });
+      if (!stream) {
+        setRoomState((prev) => ({
+          ...prev,
+          status: 'error',
+          error: localStream.error || 'Failed to access camera/microphone',
+        }));
+        return;
+      }
+
+      socket.emit('join-room', {
+        roomId,
+        name: userName || undefined,
+        videoEnabled: initialVideo,
+        audioEnabled: initialAudio,
+      });
+    },
+    [socket, isConnected, roomId, localStream, userName]
+  );
 
   const leaveRoom = useCallback(() => {
     if (socket) {
@@ -200,7 +211,7 @@ export function useRoom(roomId: string, userName?: string) {
     }: {
       roomId: string;
       peerId: string;
-      peers: Array<{ id: string; name?: string }>;
+      peers: Array<{ id: string; name?: string; videoEnabled: boolean; audioEnabled: boolean }>;
     }) => {
       setRoomState({
         roomId: joinedRoomId,
@@ -210,13 +221,26 @@ export function useRoom(roomId: string, userName?: string) {
       });
 
       peers.forEach((peer) => {
-        peerConnections.createOffer(peer.id, peer.name);
+        peerConnections.createOffer(peer.id, peer.name, {
+          videoEnabled: peer.videoEnabled,
+          audioEnabled: peer.audioEnabled,
+        });
       });
     };
 
-    const onPeerJoined = ({ peerId, name }: { peerId: string; name?: string }) => {
-      // Store the peer name so it's available when they send us an offer
-      peerConnections.setPeerName(peerId, name);
+    const onPeerJoined = ({
+      peerId,
+      name,
+      videoEnabled,
+      audioEnabled,
+    }: {
+      peerId: string;
+      name?: string;
+      videoEnabled: boolean;
+      audioEnabled: boolean;
+    }) => {
+      // Store the peer info so it's available when they send us an offer
+      peerConnections.setPeerName(peerId, name, { videoEnabled, audioEnabled });
     };
 
     const onPeerLeft = ({ peerId }: { peerId: string }) => {
