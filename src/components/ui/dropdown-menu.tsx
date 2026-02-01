@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import { MoreVertical } from 'lucide-react';
 
@@ -11,11 +12,18 @@ interface DropdownMenuProps {
 
 export function DropdownMenu({ children, className }: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -29,13 +37,23 @@ export function DropdownMenu({ children, className }: DropdownMenuProps) {
     };
   }, [isOpen]);
 
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setMenuPosition({
+        top: rect.bottom + 4,
+        left: rect.right - 160, // menu width
+      });
+    }
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <div ref={menuRef} className={cn('relative', className)}>
+    <div className={cn('relative', className)}>
       <button
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen(!isOpen);
-        }}
+        ref={buttonRef}
+        onClick={handleToggle}
         className={cn(
           'flex h-8 w-8 items-center justify-center rounded-lg',
           'bg-black/40 backdrop-blur-sm border border-white/10',
@@ -46,19 +64,23 @@ export function DropdownMenu({ children, className }: DropdownMenuProps) {
         <MoreVertical className="h-4 w-4" />
       </button>
 
-      {isOpen && (
-        <div
-          className={cn(
-            'absolute right-0 top-full mt-1 z-50',
-            'min-w-[160px] py-1 rounded-xl',
-            'bg-secondary/95 backdrop-blur-md border border-border/50 shadow-xl',
-            'animate-in fade-in-0 zoom-in-95 duration-100'
-          )}
-          onClick={() => setIsOpen(false)}
-        >
-          {children}
-        </div>
-      )}
+      {isOpen &&
+        createPortal(
+          <div
+            ref={menuRef}
+            style={{ top: menuPosition.top, left: menuPosition.left }}
+            className={cn(
+              'fixed z-50',
+              'min-w-[160px] py-1 rounded-xl',
+              'bg-secondary/95 backdrop-blur-md border border-border/50 shadow-xl',
+              'animate-in fade-in-0 zoom-in-95 duration-100'
+            )}
+            onClick={() => setIsOpen(false)}
+          >
+            {children}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

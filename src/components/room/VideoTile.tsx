@@ -188,16 +188,22 @@ export function VideoTile({
         </div>
 
         {/* Status indicators (not shown for screen share) */}
-        {!compact && !isScreenShare && (!audioEnabled || !videoEnabled) && (
-          <div className="flex items-center gap-1.5">
+        {!isScreenShare && (!audioEnabled || !videoEnabled) && (
+          <div className="flex items-center gap-1">
             {!audioEnabled && (
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-destructive/80 backdrop-blur-sm">
-                <MicOff className="h-3.5 w-3.5 text-white" />
+              <span className={cn(
+                "flex items-center justify-center rounded-lg bg-destructive/80 backdrop-blur-sm",
+                compact ? "h-5 w-5" : "h-7 w-7"
+              )}>
+                <MicOff className={compact ? "h-2.5 w-2.5 text-white" : "h-3.5 w-3.5 text-white"} />
               </span>
             )}
             {!videoEnabled && (
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-destructive/80 backdrop-blur-sm">
-                <VideoOff className="h-3.5 w-3.5 text-white" />
+              <span className={cn(
+                "flex items-center justify-center rounded-lg bg-destructive/80 backdrop-blur-sm",
+                compact ? "h-5 w-5" : "h-7 w-7"
+              )}>
+                <VideoOff className={compact ? "h-2.5 w-2.5 text-white" : "h-3.5 w-3.5 text-white"} />
               </span>
             )}
           </div>
@@ -205,8 +211,11 @@ export function VideoTile({
       </div>
 
       {/* Moderation menu for remote peers */}
-      {!isLocal && !isScreenShare && moderation && !compact && (
-        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+      {!isLocal && !isScreenShare && moderation && (
+        <div className={cn(
+          "absolute opacity-0 group-hover:opacity-100 transition-opacity",
+          compact ? "top-1 right-1" : "top-3 right-3"
+        )}>
           <DropdownMenu>
             {audioEnabled ? (
               <DropdownMenuItem
