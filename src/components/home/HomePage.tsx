@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, Zap, Users, MonitorPlay, ArrowRight, Sparkles, Github } from 'lucide-react';
+import { Lock, AudioWaveform, MessageCircle, MonitorPlay, UserCog, UserX, ArrowRight, Sparkles, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FeatureCard } from './FeatureCard';
@@ -101,26 +101,36 @@ export function HomePage() {
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
             <FeatureCard
-              icon={Shield}
-              title="End-to-End Secure"
-              description="Direct peer connections with encrypted streams"
+              icon={Lock}
+              title="Peer-to-Peer Encrypted"
+              description="Video and audio flow directly between participants, never through our servers"
             />
             <FeatureCard
-              icon={Zap}
-              title="Ultra Low Latency"
-              description="No middleman servers slowing you down"
+              icon={AudioWaveform}
+              title="Active Speaker Detection"
+              description="Visual glow highlights who's talking so you never miss a beat"
             />
             <FeatureCard
-              icon={Users}
-              title="Share & Connect"
-              description="One link is all it takes to join"
+              icon={MessageCircle}
+              title="In-Call Chat"
+              description="Send messages and links without interrupting the conversation"
             />
             <FeatureCard
               icon={MonitorPlay}
-              title="Screen Sharing"
-              description="Present your work with a single click"
+              title="Presentation Mode"
+              description="Share your screen with automatic layout that keeps everyone visible"
+            />
+            <FeatureCard
+              icon={UserCog}
+              title="Moderation Controls"
+              description="Mute, disable video, or remove participants when needed"
+            />
+            <FeatureCard
+              icon={UserX}
+              title="No Account Needed"
+              description="Start or join a call instantly. Zero sign-ups, zero friction"
             />
           </div>
         </div>

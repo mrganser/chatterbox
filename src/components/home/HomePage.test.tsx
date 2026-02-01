@@ -39,10 +39,12 @@ describe('HomePage', () => {
     it('renders feature cards', () => {
       render(<HomePage />);
 
-      expect(screen.getByText('End-to-End Secure')).toBeInTheDocument();
-      expect(screen.getByText('Ultra Low Latency')).toBeInTheDocument();
-      expect(screen.getByText('Share & Connect')).toBeInTheDocument();
-      expect(screen.getByText('Screen Sharing')).toBeInTheDocument();
+      expect(screen.getByText('Peer-to-Peer Encrypted')).toBeInTheDocument();
+      expect(screen.getByText('Active Speaker Detection')).toBeInTheDocument();
+      expect(screen.getByText('In-Call Chat')).toBeInTheDocument();
+      expect(screen.getByText('Presentation Mode')).toBeInTheDocument();
+      expect(screen.getByText('Moderation Controls')).toBeInTheDocument();
+      expect(screen.getByText('No Account Needed')).toBeInTheDocument();
     });
 
     it('renders the GitHub link', () => {
