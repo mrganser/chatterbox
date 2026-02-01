@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { VideoRoom } from './VideoRoom';
 import { ToastProvider } from '@/contexts/ToastContext';
@@ -331,9 +331,11 @@ describe('VideoRoom', () => {
       await user.type(input, 'Hello world');
 
       const form = input.closest('form')!;
-      form.dispatchEvent(new Event('submit', { bubbles: true }));
+      fireEvent.submit(form);
 
-      expect(mockSendMessage).toHaveBeenCalledWith('Hello world');
+      await waitFor(() => {
+        expect(mockSendMessage).toHaveBeenCalledWith('Hello world');
+      });
     });
 
     it('closes chat when close button is clicked', async () => {

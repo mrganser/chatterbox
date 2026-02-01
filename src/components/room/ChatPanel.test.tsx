@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ChatPanel } from './ChatPanel';
 import type { ChatMessage } from '@/types/socket';
@@ -132,9 +132,11 @@ describe('ChatPanel', () => {
       await user.type(input, 'Hello world');
 
       const form = input.closest('form')!;
-      form.dispatchEvent(new Event('submit', { bubbles: true }));
+      fireEvent.submit(form);
 
-      expect(mockOnSendMessage).toHaveBeenCalledWith('Hello world');
+      await waitFor(() => {
+        expect(mockOnSendMessage).toHaveBeenCalledWith('Hello world');
+      });
     });
 
     it('sends message on button click', async () => {
@@ -148,7 +150,9 @@ describe('ChatPanel', () => {
       const sendButton = buttons.find((btn) => btn.querySelector('svg.lucide-send'))!;
       await user.click(sendButton);
 
-      expect(mockOnSendMessage).toHaveBeenCalledWith('Test message');
+      await waitFor(() => {
+        expect(mockOnSendMessage).toHaveBeenCalledWith('Test message');
+      });
     });
 
     it('clears input after sending', async () => {
@@ -162,7 +166,9 @@ describe('ChatPanel', () => {
       const sendButton = buttons.find((btn) => btn.querySelector('svg.lucide-send'))!;
       await user.click(sendButton);
 
-      expect(input).toHaveValue('');
+      await waitFor(() => {
+        expect(input).toHaveValue('');
+      });
     });
 
     it('does not send empty messages', async () => {
@@ -173,7 +179,9 @@ describe('ChatPanel', () => {
       const sendButton = buttons.find((btn) => btn.querySelector('svg.lucide-send'))!;
       await user.click(sendButton);
 
-      expect(mockOnSendMessage).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockOnSendMessage).not.toHaveBeenCalled();
+      });
     });
 
     it('does not send whitespace-only messages', async () => {
@@ -187,7 +195,9 @@ describe('ChatPanel', () => {
       const sendButton = buttons.find((btn) => btn.querySelector('svg.lucide-send'))!;
       await user.click(sendButton);
 
-      expect(mockOnSendMessage).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockOnSendMessage).not.toHaveBeenCalled();
+      });
     });
 
     it('disables send button when input is empty', () => {
@@ -205,9 +215,11 @@ describe('ChatPanel', () => {
       const input = screen.getByPlaceholderText('Type a message...');
       await user.type(input, 'Some text');
 
-      const buttons = screen.getAllByRole('button');
-      const sendButton = buttons.find((btn) => btn.querySelector('svg.lucide-send'))!;
-      expect(sendButton).not.toBeDisabled();
+      await waitFor(() => {
+        const buttons = screen.getAllByRole('button');
+        const sendButton = buttons.find((btn) => btn.querySelector('svg.lucide-send'))!;
+        expect(sendButton).not.toBeDisabled();
+      });
     });
   });
 
@@ -222,7 +234,9 @@ describe('ChatPanel', () => {
 
       if (closeButton) {
         await user.click(closeButton);
-        expect(mockOnClose).toHaveBeenCalledTimes(1);
+        await waitFor(() => {
+          expect(mockOnClose).toHaveBeenCalledTimes(1);
+        });
       }
     });
   });
