@@ -12,6 +12,7 @@ interface ModerationHandlers {
 interface VideoGridProps {
   localStream: MediaStream | null;
   localPeerId: string | null;
+  localName?: string;
   peers: RemotePeer[];
   speakerLevels: Map<string, number>;
   videoEnabled: boolean;
@@ -25,6 +26,7 @@ interface VideoGridProps {
 export function VideoGrid({
   localStream,
   localPeerId,
+  localName,
   peers,
   speakerLevels,
   videoEnabled,
@@ -67,9 +69,10 @@ export function VideoGrid({
   if (showPresentationMode) {
     // Determine the screen share stream and label
     const presentationStream = isScreenSharing ? screenShareStream : remoteSharingPeer?.stream;
+    const sharerName = remoteSharingPeer?.name || `Peer ${remoteSharingPeer?.id.slice(0, 6)}`;
     const presentationLabel = isScreenSharing
       ? 'Your screen'
-      : `${remoteSharingPeer?.id.slice(0, 6)}'s screen`;
+      : `${sharerName}'s screen`;
 
     // For remote sharing, exclude the sharing peer from the thumbnails list
     const thumbnailPeers = remoteSharingPeer
@@ -95,6 +98,7 @@ export function VideoGrid({
           <VideoTile
             stream={localStream}
             peerId={localPeerId || 'local'}
+            name={localName}
             isLocal
             speakerLevel={speakerLevels.get(localPeerId || '') || 0}
             videoEnabled={videoEnabled}
@@ -109,6 +113,7 @@ export function VideoGrid({
               key={peer.id}
               stream={peer.stream}
               peerId={peer.id}
+              name={peer.name}
               speakerLevel={speakerLevels.get(peer.id) || 0}
               videoEnabled={peer.videoEnabled}
               audioEnabled={peer.audioEnabled}
@@ -129,6 +134,7 @@ export function VideoGrid({
         <VideoTile
           stream={localStream}
           peerId={localPeerId || 'local'}
+          name={localName}
           isLocal
           speakerLevel={speakerLevels.get(localPeerId || '') || 0}
           videoEnabled={videoEnabled}
@@ -143,6 +149,7 @@ export function VideoGrid({
             key={peer.id}
             stream={peer.stream}
             peerId={peer.id}
+            name={peer.name}
             speakerLevel={speakerLevels.get(peer.id) || 0}
             videoEnabled={peer.videoEnabled}
             audioEnabled={peer.audioEnabled}

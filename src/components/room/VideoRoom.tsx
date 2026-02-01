@@ -18,7 +18,8 @@ interface VideoRoomProps {
 
 export function VideoRoom({ roomId }: VideoRoomProps) {
   const router = useRouter();
-  const room = useRoom(roomId);
+  const [userName, setUserName] = useState('');
+  const room = useRoom(roomId, userName);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showToolbar, setShowToolbar] = useState(true);
 
@@ -77,7 +78,13 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
 
   if (room.roomState.status === 'idle') {
     return (
-      <PreCallActions roomId={roomId} isConnecting={!room.isConnected} onJoin={room.joinRoom} />
+      <PreCallActions
+        roomId={roomId}
+        isConnecting={!room.isConnected}
+        name={userName}
+        onNameChange={setUserName}
+        onJoin={room.joinRoom}
+      />
     );
   }
 
@@ -102,6 +109,7 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
           <VideoGrid
             localStream={room.localStream.stream}
             localPeerId={room.roomState.peerId}
+            localName={userName}
             peers={room.peers}
             speakerLevels={room.speakerLevels}
             videoEnabled={room.localStream.videoEnabled}
@@ -124,6 +132,7 @@ export function VideoRoom({ roomId }: VideoRoomProps) {
           <ChatPanel
             messages={room.chat.messages}
             localPeerId={room.roomState.peerId}
+            localName={userName}
             onSendMessage={room.chat.sendMessage}
             onClose={room.chat.closeChat}
           />

@@ -8,11 +8,12 @@ import type { ChatMessage } from '@/types/socket';
 interface ChatPanelProps {
   messages: ChatMessage[];
   localPeerId: string | null;
+  localName?: string;
   onSendMessage: (message: string) => void;
   onClose: () => void;
 }
 
-export function ChatPanel({ messages, localPeerId, onSendMessage, onClose }: ChatPanelProps) {
+export function ChatPanel({ messages, localPeerId, localName, onSendMessage, onClose }: ChatPanelProps) {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -92,10 +93,12 @@ export function ChatPanel({ messages, localPeerId, onSendMessage, onClose }: Cha
                           : 'bg-glow-secondary/20 text-glow-secondary'
                       )}
                     >
-                      {isLocal ? 'Y' : msg.peerId.slice(0, 1).toUpperCase()}
+                      {isLocal
+                        ? (localName || 'You').slice(0, 1).toUpperCase()
+                        : (msg.peerName || msg.peerId).slice(0, 1).toUpperCase()}
                     </div>
                     <span className="text-xs text-muted-foreground">
-                      {isLocal ? 'You' : `Peer ${msg.peerId.slice(0, 6)}`}
+                      {isLocal ? (localName || 'You') : (msg.peerName || `Peer ${msg.peerId.slice(0, 6)}`)}
                     </span>
                   </div>
                 )}

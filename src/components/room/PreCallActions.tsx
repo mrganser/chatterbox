@@ -1,14 +1,23 @@
-import { Video, Wifi } from 'lucide-react';
+import { Video, Wifi, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 interface PreCallActionsProps {
   roomId: string;
   isConnecting: boolean;
+  name: string;
+  onNameChange: (name: string) => void;
   onJoin: () => void;
 }
 
-export function PreCallActions({ roomId, isConnecting, onJoin }: PreCallActionsProps) {
+export function PreCallActions({
+  roomId,
+  isConnecting,
+  name,
+  onNameChange,
+  onJoin,
+}: PreCallActionsProps) {
   return (
     <div className="relative flex h-[calc(100vh-4rem)] items-center justify-center p-6">
       {/* Background effects */}
@@ -35,6 +44,30 @@ export function PreCallActions({ roomId, isConnecting, onJoin }: PreCallActionsP
         </CardHeader>
 
         <CardContent className="flex flex-col gap-6">
+          {/* Name input */}
+          <div className="mt-2">
+            <label htmlFor="display-name" className="text-sm font-medium text-muted-foreground">
+              Display name (optional)
+            </label>
+            <div className="relative mt-1">
+              <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+              <Input
+                id="display-name"
+                type="text"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => onNameChange(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !isConnecting) {
+                    onJoin();
+                  }
+                }}
+                className="pl-10"
+                maxLength={30}
+              />
+            </div>
+          </div>
+
           {/* Info items */}
           <div className="space-y-3 py-2">
             <div className="flex items-center gap-3 text-sm text-muted-foreground">

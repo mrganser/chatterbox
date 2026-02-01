@@ -15,6 +15,7 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
   const [peers, setPeers] = useState<Map<string, RemotePeer>>(new Map());
   const peersRef = useRef<Map<string, RemotePeer>>(new Map());
   const pendingCandidatesRef = useRef<Map<string, RTCIceCandidateInit[]>>(new Map());
+  const pendingNamesRef = useRef<Map<string, string | undefined>>(new Map());
   const localStreamRef = useRef<MediaStream | null>(localStream);
 
   localStreamRef.current = localStream;
@@ -47,9 +48,15 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
   }, [localStream, socket]);
 
   const createPeerConnection = useCallback(
-    (peerId: string, addTracks: boolean = true): RTCPeerConnection => {
+    (peerId: string, addTracks: boolean = true, peerName?: string): RTCPeerConnection => {
       const existingPeer = peersRef.current.get(peerId);
       if (existingPeer) {
+        // Update name if provided and peer exists
+        if (peerName && !existingPeer.name) {
+          const updatedPeer = { ...existingPeer, name: peerName };
+          peersRef.current.set(peerId, updatedPeer);
+          setPeers(new Map(peersRef.current));
+        }
         return existingPeer.connection;
       }
 
@@ -100,8 +107,13 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
         });
       }
 
+      // Use provided name or check pending names
+      const resolvedName = peerName ?? pendingNamesRef.current.get(peerId);
+      pendingNamesRef.current.delete(peerId);
+
       const newPeer: RemotePeer = {
         id: peerId,
+        name: resolvedName,
         stream: null,
         connection: pc,
         videoEnabled: true,
@@ -141,13 +153,13 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
   }, []);
 
   const createOffer = useCallback(
-    async (peerId: string) => {
+    async (peerId: string, peerName?: string) => {
       if (!localStreamRef.current) {
-        createPeerConnection(peerId);
+        createPeerConnection(peerId, true, peerName);
         return;
       }
 
-      const pc = createPeerConnection(peerId);
+      const pc = createPeerConnection(peerId, true, peerName);
 
       if (pc.signalingState !== 'stable') {
         return;
@@ -260,6 +272,22 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
     });
   }, []);
 
+  // Store peer name (used when peer-joined fires before offer is received)
+  const setPeerName = useCallback((peerId: string, name?: string) => {
+    const peer = peersRef.current.get(peerId);
+    if (peer) {
+      // Peer already exists, update the name
+      if (name && !peer.name) {
+        const updatedPeer = { ...peer, name };
+        peersRef.current.set(peerId, updatedPeer);
+        setPeers(new Map(peersRef.current));
+      }
+    } else {
+      // Store name for when peer connection is created
+      pendingNamesRef.current.set(peerId, name);
+    }
+  }, []);
+
   useEffect(() => {
     if (!socket) return;
 
@@ -323,5 +351,6 @@ export function usePeerConnections({ socket, localStream }: UsePeerConnectionsOp
     removePeer,
     closeAllConnections,
     replaceVideoTrack,
+    setPeerName,
   };
 }

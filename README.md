@@ -10,6 +10,7 @@ Create a room with a name and share the link with your partners so they can join
 - Screen sharing with presentation mode
 - Text chat
 - Speaker volume effects
+- Moderation actions
 
 ## Demo
 
@@ -72,18 +73,18 @@ npm start
 
 ## Scripts
 
-| Command                | Description              |
-| ---------------------- | ------------------------ |
-| `npm run dev`          | Start development server |
-| `npm run build`        | Build for production     |
-| `npm start`            | Start production server  |
-| `npm test`             | Run tests in watch mode  |
-| `npm run test:run`     | Run tests once           |
-| `npm run test:coverage`| Run tests with coverage  |
-| `npm run lint`         | Run linter (oxlint)      |
-| `npm run lint:fix`     | Run linter with auto-fix |
-| `npm run format`       | Format code (oxfmt)      |
-| `npm run format:check` | Check code formatting    |
+| Command                 | Description              |
+| ----------------------- | ------------------------ |
+| `npm run dev`           | Start development server |
+| `npm run build`         | Build for production     |
+| `npm start`             | Start production server  |
+| `npm test`              | Run tests in watch mode  |
+| `npm run test:run`      | Run tests once           |
+| `npm run test:coverage` | Run tests with coverage  |
+| `npm run lint`          | Run linter (oxlint)      |
+| `npm run lint:fix`      | Run linter with auto-fix |
+| `npm run format`        | Format code (oxfmt)      |
+| `npm run format:check`  | Check code formatting    |
 
 ## Deployment
 

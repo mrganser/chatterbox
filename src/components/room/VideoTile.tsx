@@ -14,6 +14,7 @@ interface ModerationHandlers {
 interface VideoTileProps {
   stream: MediaStream | null;
   peerId: string;
+  name?: string;
   isLocal?: boolean;
   speakerLevel?: number;
   videoEnabled?: boolean;
@@ -30,6 +31,7 @@ interface VideoTileProps {
 export function VideoTile({
   stream,
   peerId,
+  name,
   isLocal = false,
   speakerLevel = 0,
   videoEnabled = true,
@@ -65,7 +67,7 @@ export function VideoTile({
     };
   }, [stream, peerId, isScreenShare]);
 
-  const displayName = label || (isLocal ? 'You' : `Peer ${peerId.slice(0, 6)}`);
+  const displayName = label || (isLocal ? (name || 'You') : (name || `Peer ${peerId.slice(0, 6)}`));
   const shouldMirror = isLocal && !isScreenShare;
   const showVideo = stream && videoEnabled;
 

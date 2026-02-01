@@ -1,7 +1,7 @@
 import type { Server as SocketIOServer, Socket } from 'socket.io';
 
 // Room management
-const rooms = new Map<string, { peers: Set<string> }>();
+const rooms = new Map<string, { peers: Map<string, { name?: string }> }>();
 
 function leaveRoom(socket: Socket, roomId: string) {
   const room = rooms.get(roomId);
@@ -17,12 +17,16 @@ function leaveRoom(socket: Socket, roomId: string) {
   }
 }
 
+function getPeerName(rooms: Map<string, { peers: Map<string, { name?: string }> }>, roomId: string, peerId: string): string | undefined {
+  return rooms.get(roomId)?.peers.get(peerId)?.name;
+}
+
 export function setupSocketHandlers(io: SocketIOServer) {
   io.on('connection', (socket) => {
     console.log(`Client connected: ${socket.id}`);
     let currentRoomId: string | null = null;
 
-    socket.on('join-room', ({ roomId }: { roomId: string }) => {
+    socket.on('join-room', ({ roomId, name }: { roomId: string; name?: string }) => {
       if (currentRoomId) {
         leaveRoom(socket, currentRoomId);
       }
@@ -30,13 +34,16 @@ export function setupSocketHandlers(io: SocketIOServer) {
       currentRoomId = roomId;
 
       if (!rooms.has(roomId)) {
-        rooms.set(roomId, { peers: new Set() });
+        rooms.set(roomId, { peers: new Map() });
       }
 
       const room = rooms.get(roomId)!;
-      const existingPeers = Array.from(room.peers);
+      const existingPeers = Array.from(room.peers.entries()).map(([id, data]) => ({
+        id,
+        name: data.name,
+      }));
 
-      room.peers.add(socket.id);
+      room.peers.set(socket.id, { name });
       socket.join(roomId);
 
       socket.emit('room-joined', {
@@ -45,8 +52,8 @@ export function setupSocketHandlers(io: SocketIOServer) {
         peers: existingPeers,
       });
 
-      socket.to(roomId).emit('peer-joined', { peerId: socket.id });
-      console.log(`${socket.id} joined room ${roomId}`);
+      socket.to(roomId).emit('peer-joined', { peerId: socket.id, name });
+      console.log(`${socket.id}${name ? ` (${name})` : ''} joined room ${roomId}`);
     });
 
     socket.on('leave-room', () => {
@@ -73,9 +80,11 @@ export function setupSocketHandlers(io: SocketIOServer) {
 
     socket.on('chat-message', ({ message }: { message: string }) => {
       if (currentRoomId) {
+        const peerName = getPeerName(rooms, currentRoomId, socket.id);
         const chatMessage = {
           id: `${socket.id}-${Date.now()}`,
           peerId: socket.id,
+          peerName,
           message,
           timestamp: Date.now(),
         };

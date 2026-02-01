@@ -1,5 +1,6 @@
 export interface RemotePeer {
   id: string;
+  name?: string;
   stream: MediaStream | null;
   connection: RTCPeerConnection;
   videoEnabled: boolean;

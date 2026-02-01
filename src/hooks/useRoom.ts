@@ -8,7 +8,7 @@ import { useChat } from './useChat';
 import { useModeration } from './useModeration';
 import type { RoomState } from '@/types/room';
 
-export function useRoom(roomId: string) {
+export function useRoom(roomId: string, userName?: string) {
   const { socket, isConnected } = useSocket();
   const localStream = useLocalStream();
   const screenShare = useScreenShare();
@@ -129,8 +129,8 @@ export function useRoom(roomId: string) {
       return;
     }
 
-    socket.emit('join-room', { roomId });
-  }, [socket, isConnected, roomId, localStream]);
+    socket.emit('join-room', { roomId, name: userName || undefined });
+  }, [socket, isConnected, roomId, localStream, userName]);
 
   const leaveRoom = useCallback(() => {
     if (socket) {
@@ -198,7 +198,7 @@ export function useRoom(roomId: string) {
     }: {
       roomId: string;
       peerId: string;
-      peers: string[];
+      peers: Array<{ id: string; name?: string }>;
     }) => {
       setRoomState({
         roomId: joinedRoomId,
@@ -207,13 +207,14 @@ export function useRoom(roomId: string) {
         error: null,
       });
 
-      peers.forEach((existingPeerId) => {
-        peerConnections.createOffer(existingPeerId);
+      peers.forEach((peer) => {
+        peerConnections.createOffer(peer.id, peer.name);
       });
     };
 
-    const onPeerJoined = () => {
-      // New peer will send us an offer - we just wait and respond
+    const onPeerJoined = ({ peerId, name }: { peerId: string; name?: string }) => {
+      // Store the peer name so it's available when they send us an offer
+      peerConnections.setPeerName(peerId, name);
     };
 
     const onPeerLeft = ({ peerId }: { peerId: string }) => {

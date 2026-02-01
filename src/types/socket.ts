@@ -1,6 +1,10 @@
 export interface ServerToClientEvents {
-  'room-joined': (data: { roomId: string; peerId: string; peers: string[] }) => void;
-  'peer-joined': (data: { peerId: string }) => void;
+  'room-joined': (data: {
+    roomId: string;
+    peerId: string;
+    peers: Array<{ id: string; name?: string }>;
+  }) => void;
+  'peer-joined': (data: { peerId: string; name?: string }) => void;
   'peer-left': (data: { peerId: string }) => void;
   offer: (data: { from: string; offer: RTCSessionDescriptionInit }) => void;
   answer: (data: { from: string; answer: RTCSessionDescriptionInit }) => void;
@@ -22,7 +26,7 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  'join-room': (data: { roomId: string }) => void;
+  'join-room': (data: { roomId: string; name?: string }) => void;
   'leave-room': () => void;
   offer: (data: { to: string; offer: RTCSessionDescriptionInit }) => void;
   answer: (data: { to: string; answer: RTCSessionDescriptionInit }) => void;
@@ -41,6 +45,7 @@ export interface ClientToServerEvents {
 export interface ChatMessage {
   id: string;
   peerId: string;
+  peerName?: string;
   message: string;
   timestamp: number;
 }
