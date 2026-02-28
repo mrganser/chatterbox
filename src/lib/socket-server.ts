@@ -20,11 +20,7 @@ function leaveRoom(socket: Socket, roomId: string) {
   }
 }
 
-function getPeerName(
-  rooms: Map<string, { peers: Map<string, { name?: string }> }>,
-  roomId: string,
-  peerId: string
-): string | undefined {
+function getPeerName(roomId: string, peerId: string): string | undefined {
   return rooms.get(roomId)?.peers.get(peerId)?.name;
 }
 
@@ -107,7 +103,7 @@ export function setupSocketHandlers(io: SocketIOServer) {
 
     socket.on('chat-message', ({ message }: { message: string }) => {
       if (currentRoomId) {
-        const peerName = getPeerName(rooms, currentRoomId, socket.id);
+        const peerName = getPeerName(currentRoomId, socket.id);
         const chatMessage = {
           id: `${socket.id}-${Date.now()}`,
           peerId: socket.id,

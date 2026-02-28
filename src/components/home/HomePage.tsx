@@ -2,7 +2,17 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock, AudioWaveform, MessageCircle, MonitorPlay, UserCog, UserX, ArrowRight, Sparkles, Github } from 'lucide-react';
+import {
+  Lock,
+  AudioWaveform,
+  MessageCircle,
+  MonitorPlay,
+  UserCog,
+  UserX,
+  ArrowRight,
+  Sparkles,
+  Github,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FeatureCard } from './FeatureCard';
