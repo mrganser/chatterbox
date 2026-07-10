@@ -19,7 +19,7 @@ function createMockSocket() {
       }
     }),
     emit: vi.fn(),
-    _trigger: (event: string, ...args: unknown[]) => {
+    trigger: (event: string, ...args: unknown[]) => {
       if (listeners[event]) {
         listeners[event].forEach((cb) => cb(...args));
       }
@@ -161,7 +161,7 @@ describe('usePeerConnections', () => {
       );
 
       await act(async () => {
-        mockSocket._trigger('offer', {
+        mockSocket.trigger('offer', {
           from: 'peer-1',
           offer: { type: 'offer', sdp: 'remote-offer-sdp' },
         });
@@ -189,7 +189,7 @@ describe('usePeerConnections', () => {
 
       // Then receive answer
       await act(async () => {
-        mockSocket._trigger('answer', {
+        mockSocket.trigger('answer', {
           from: 'peer-1',
           answer: { type: 'answer', sdp: 'remote-answer-sdp' },
         });
@@ -213,7 +213,7 @@ describe('usePeerConnections', () => {
       });
 
       await act(async () => {
-        mockSocket._trigger('answer', {
+        mockSocket.trigger('answer', {
           from: 'peer-1',
           answer: { type: 'answer', sdp: 'remote-answer-sdp' },
         });
@@ -221,7 +221,7 @@ describe('usePeerConnections', () => {
 
       // Now receive ICE candidate
       await act(async () => {
-        mockSocket._trigger('ice-candidate', {
+        mockSocket.trigger('ice-candidate', {
           from: 'peer-1',
           candidate: { candidate: 'mock-candidate', sdpMid: '0', sdpMLineIndex: 0 },
         });
@@ -263,7 +263,7 @@ describe('usePeerConnections', () => {
       });
 
       act(() => {
-        mockSocket._trigger('peer-left', { peerId: 'peer-1' });
+        mockSocket.trigger('peer-left', { peerId: 'peer-1' });
       });
 
       expect(result.current.peers).toHaveLength(0);
@@ -354,7 +354,7 @@ describe('usePeerConnections', () => {
 
       // Now create the peer via offer
       await act(async () => {
-        mockSocket._trigger('offer', {
+        mockSocket.trigger('offer', {
           from: 'peer-1',
           offer: { type: 'offer', sdp: 'remote-offer-sdp' },
         });
@@ -383,7 +383,7 @@ describe('usePeerConnections', () => {
       });
 
       act(() => {
-        mockSocket._trigger('media-state-changed', {
+        mockSocket.trigger('media-state-changed', {
           peerId: 'peer-1',
           videoEnabled: false,
           audioEnabled: false,
@@ -401,7 +401,7 @@ describe('usePeerConnections', () => {
 
       // Should not throw
       act(() => {
-        mockSocket._trigger('media-state-changed', {
+        mockSocket.trigger('media-state-changed', {
           peerId: 'non-existent',
           videoEnabled: false,
           audioEnabled: false,

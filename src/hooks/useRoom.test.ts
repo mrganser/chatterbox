@@ -19,7 +19,7 @@ function createMockSocket() {
       }
     }),
     emit: vi.fn(),
-    _trigger: (event: string, ...args: unknown[]) => {
+    trigger: (event: string, ...args: unknown[]) => {
       if (listeners[event]) {
         listeners[event].forEach((cb) => cb(...args));
       }
@@ -292,7 +292,7 @@ describe('useRoom', () => {
       const { result } = renderHook(() => useRoom('test-room'));
 
       act(() => {
-        mockSocket!._trigger('room-joined', {
+        mockSocket!.trigger('room-joined', {
           roomId: 'test-room',
           peerId: 'my-peer-id',
           peers: [
@@ -326,7 +326,7 @@ describe('useRoom', () => {
       renderHook(() => useRoom('test-room'));
 
       act(() => {
-        mockSocket!._trigger('peer-joined', {
+        mockSocket!.trigger('peer-joined', {
           peerId: 'new-peer',
           name: 'Charlie',
           videoEnabled: true,
@@ -347,7 +347,7 @@ describe('useRoom', () => {
 
       // Set up screen sharing from a peer
       act(() => {
-        mockSocket!._trigger('screen-share-started', {
+        mockSocket!.trigger('screen-share-started', {
           peerId: 'sharing-peer',
           streamId: 'stream-123',
         });
@@ -357,7 +357,7 @@ describe('useRoom', () => {
 
       // Peer leaves
       act(() => {
-        mockSocket!._trigger('peer-left', { peerId: 'sharing-peer' });
+        mockSocket!.trigger('peer-left', { peerId: 'sharing-peer' });
       });
 
       expect(result.current.screenSharingPeerId).toBeNull();
@@ -368,7 +368,7 @@ describe('useRoom', () => {
 
       // Set up screen sharing
       act(() => {
-        mockSocket!._trigger('screen-share-started', {
+        mockSocket!.trigger('screen-share-started', {
           peerId: 'sharing-peer',
           streamId: 'stream-123',
         });
@@ -376,7 +376,7 @@ describe('useRoom', () => {
 
       // Different peer leaves
       act(() => {
-        mockSocket!._trigger('peer-left', { peerId: 'other-peer' });
+        mockSocket!.trigger('peer-left', { peerId: 'other-peer' });
       });
 
       expect(result.current.screenSharingPeerId).toBe('sharing-peer');
@@ -388,7 +388,7 @@ describe('useRoom', () => {
       const { result } = renderHook(() => useRoom('test-room'));
 
       act(() => {
-        mockSocket!._trigger('screen-share-started', {
+        mockSocket!.trigger('screen-share-started', {
           peerId: 'peer-1',
           streamId: 'screen-stream-id',
         });
@@ -406,7 +406,7 @@ describe('useRoom', () => {
 
       // Start sharing first
       act(() => {
-        mockSocket!._trigger('screen-share-started', {
+        mockSocket!.trigger('screen-share-started', {
           peerId: 'peer-1',
           streamId: 'screen-stream-id',
         });
@@ -414,7 +414,7 @@ describe('useRoom', () => {
 
       // Stop sharing
       act(() => {
-        mockSocket!._trigger('screen-share-stopped', { peerId: 'peer-1' });
+        mockSocket!.trigger('screen-share-stopped', { peerId: 'peer-1' });
       });
 
       expect(mockPeerConnections.clearScreenStream).toHaveBeenCalledWith('peer-1');
@@ -427,7 +427,7 @@ describe('useRoom', () => {
       const { result } = renderHook(() => useRoom('test-room'));
 
       act(() => {
-        mockSocket!._trigger('error', { message: 'Room is full' });
+        mockSocket!.trigger('error', { message: 'Room is full' });
       });
 
       expect(result.current.roomState.status).toBe('error');

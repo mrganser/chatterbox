@@ -27,7 +27,7 @@ function createMockSocket() {
       }
     }),
     emit: vi.fn(),
-    _trigger: (event: string, ...args: unknown[]) => {
+    trigger: (event: string, ...args: unknown[]) => {
       if (listeners[event]) {
         listeners[event].forEach((cb) => cb(...args));
       }
@@ -223,7 +223,7 @@ describe('useModeration', () => {
       );
 
       act(() => {
-        mockSocket._trigger('moderation-mute');
+        mockSocket.trigger('moderation-mute');
       });
 
       expect(mockShowToast).toHaveBeenCalledWith('You have been muted', 'warning');
@@ -239,7 +239,7 @@ describe('useModeration', () => {
       );
 
       act(() => {
-        mockSocket._trigger('moderation-unmute');
+        mockSocket.trigger('moderation-unmute');
       });
 
       expect(mockShowToast).toHaveBeenCalledWith('You have been unmuted', 'default');
@@ -255,7 +255,7 @@ describe('useModeration', () => {
       );
 
       act(() => {
-        mockSocket._trigger('moderation-disable-video');
+        mockSocket.trigger('moderation-disable-video');
       });
 
       expect(mockShowToast).toHaveBeenCalledWith('Your camera has been disabled', 'warning');
@@ -271,7 +271,7 @@ describe('useModeration', () => {
       );
 
       act(() => {
-        mockSocket._trigger('moderation-enable-video');
+        mockSocket.trigger('moderation-enable-video');
       });
 
       expect(mockShowToast).toHaveBeenCalledWith('Your camera has been enabled', 'default');
@@ -287,7 +287,7 @@ describe('useModeration', () => {
       );
 
       act(() => {
-        mockSocket._trigger('moderation-kick');
+        mockSocket.trigger('moderation-kick');
       });
 
       expect(mockShowToast).toHaveBeenCalledWith(

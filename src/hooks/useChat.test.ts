@@ -21,7 +21,7 @@ function createMockSocket() {
     }),
     emit: vi.fn(),
     // Helper to trigger events for testing
-    _trigger: (event: string, ...args: unknown[]) => {
+    trigger: (event: string, ...args: unknown[]) => {
       if (listeners[event]) {
         listeners[event].forEach((cb) => cb(...args));
       }
@@ -131,7 +131,7 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket!._trigger('chat-message', message);
+        mockSocket!.trigger('chat-message', message);
       });
 
       expect(result.current.messages).toHaveLength(1);
@@ -156,11 +156,11 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket!._trigger('chat-message', message1);
+        mockSocket!.trigger('chat-message', message1);
       });
 
       act(() => {
-        mockSocket!._trigger('chat-message', message2);
+        mockSocket!.trigger('chat-message', message2);
       });
 
       expect(result.current.messages).toHaveLength(2);
@@ -179,7 +179,7 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket!._trigger('chat-message', message);
+        mockSocket!.trigger('chat-message', message);
       });
 
       expect(result.current.unreadCount).toBe(1);
@@ -201,7 +201,7 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket!._trigger('chat-message', message);
+        mockSocket!.trigger('chat-message', message);
       });
 
       expect(result.current.unreadCount).toBe(0);
@@ -245,8 +245,8 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket!._trigger('chat-message', message);
-        mockSocket!._trigger('chat-message', { ...message, id: '2' });
+        mockSocket!.trigger('chat-message', message);
+        mockSocket!.trigger('chat-message', { ...message, id: '2' });
       });
 
       expect(result.current.unreadCount).toBe(2);
@@ -317,7 +317,7 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket!._trigger('chat-message', incomingMessage);
+        mockSocket!.trigger('chat-message', incomingMessage);
       });
 
       expect(result.current.messages).toHaveLength(1);
@@ -349,7 +349,7 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket!._trigger('chat-message', anotherMessage);
+        mockSocket!.trigger('chat-message', anotherMessage);
       });
 
       expect(result.current.messages).toHaveLength(2);
@@ -371,7 +371,7 @@ describe('useChat', () => {
       };
 
       act(() => {
-        mockSocket!._trigger('chat-message', finalMessage);
+        mockSocket!.trigger('chat-message', finalMessage);
       });
 
       expect(result.current.messages).toHaveLength(3);
